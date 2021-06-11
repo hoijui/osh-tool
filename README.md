@@ -55,6 +55,21 @@ Simply run `osh -h` to see usage information.
 
 Ask anything, as an issue!
 
+## Similar Projects
+
+We are not just standing on the shoulders of giants,
+but also shoulder on shoulder wiht them!
+
+These are two of our big sister projects.
+They are similar both in spirit
+and in the way they are used on the command-line.
+They also work well in combination with this tool.
+
+* [`git`](https://git-scm.com/) -
+  Master of history
+* [`reuse`](https://git.fsfe.org/reuse/tool) -
+  Handles all things regarding licensing of a project and its sources
+
 ## License
 
 GNU General Public License version 3
