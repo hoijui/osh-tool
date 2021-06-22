@@ -11,6 +11,7 @@ import ./check
 from checks/readme_exists import nil
 from checks/license_exists import nil
 from checks/okh_file_exists import nil
+from checks/unwanted_files_exist_not import nil
 
 #proc logChecking(msg: string) =
 #  stdout.writeLine(fmt"Checking {msg} ...")
@@ -29,6 +30,7 @@ method registerChecks*(this: var ChecksRegistry) {.base.} =
   this.register(readme_exists.createDefault())
   this.register(license_exists.createDefault())
   this.register(okh_file_exists.createDefault())
+  this.register(unwanted_files_exist_not.createDefault())
 
 proc newChecksRegistry*(): ChecksRegistry =
   return ChecksRegistry(
