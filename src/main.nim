@@ -36,11 +36,44 @@ Options:
 
 import docopt
 import os
+import options
+import strformat
 import ./config
 import ./tools
+import ./check
 import ./checks
+import ./init_update
 import ./init_updates
 import ./state
+
+proc check(registry: ChecksRegistry, state: var State) =
+  echo "Checking OSH project directory ..."
+  for check in registry.checks:
+    let res = check.run(state)
+    if res.error.isNone():
+      stdout.writeLine(fmt"Check - {check.name()}? - Succeeded")
+    else:
+      stderr.writeLine(fmt"Check - {check.name()}? - Failed: {res.error.get()}")
+
+proc init*(registry: InitUpdatesRegistry, state: var State) =
+  echo "Initializing OSH project directory ..."
+
+  for iu in registry.initUpdates:
+    let res = iu.init(state)
+    if res.error.isNone():
+      stdout.writeLine(fmt"Init - {iu.name()}? - Succeeded")
+    else:
+      stderr.writeLine(fmt"Init - {iu.name()}? - Failed: {res.error.get()}")
+
+proc update*(registry: InitUpdatesRegistry, state: var State) =
+  echo "Updating OSH project directory to the latest guidelines ..."
+
+  for iu in registry.initUpdates:
+    let res = iu.update(state)
+    if res.error.isNone():
+      stdout.writeLine(fmt"Update - {iu.name()}? - Succeeded")
+    else:
+      stderr.writeLine(fmt"Update - {iu.name()}? - Failed: {res.error.get()}")
 
 proc cli() =
   let args = docopt(doc, version = version)
@@ -56,7 +89,8 @@ proc cli() =
     elif args["--no-electronics"]:
       false
     else:
-      containsFilesWithSuffix(proj_root, ".kicad_pcb") or containsFilesWithSuffix(proj_root, ".sch")
+      containsFilesWithSuffix(proj_root, ".kicad_pcb") or
+          containsFilesWithSuffix(proj_root, ".sch")
   let mechanics =
     if args["--mechanics"]:
       true
@@ -65,28 +99,27 @@ proc cli() =
     else:
       containsFilesWithSuffix(proj_root, ".fcstd")
   let config = RunConfig(
-    proj_root : proj_root,
+    proj_root: proj_root,
     force: args["--force"],
     readme: args["--readme"],
     license: args["--license"],
     electronics: electronics,
-    mechanics : mechanics,
+    mechanics: mechanics,
     )
 
-  var run_state = State(
-    config: config,
-    checks: @[],
-    init_updates: @[]
-    )
+  var runState = newState(config)
   if args["init"]:
-    run_state.registerInitUpdates()
-    init(run_state)
+    var registry = newInitUpdatesRegistry()
+    registry.registerInitUpdates()
+    init(registry, runState)
   elif args["update"]:
-    run_state.registerInitUpdates()
-    update(run_state)
+    var registry = newInitUpdatesRegistry()
+    registry.registerInitUpdates()
+    update(registry, runState)
   elif args["check"]:
-    run_state.registerChecks()
-    check(run_state)
+    var registry = newChecksRegistry()
+    registry.registerChecks()
+    check(registry, runState)
 
 when isMainModule:
   cli()

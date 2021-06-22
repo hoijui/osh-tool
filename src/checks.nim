@@ -6,9 +6,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import strformat
-import options
 import ./check
-import ./state
 
 from checks/readme_exists import nil
 from checks/license_exists import nil
@@ -20,18 +18,19 @@ from checks/okh_file_exists import nil
 #proc checkFailed(msg: string) =
 #  stderr.writeLine(msg)
 
-proc registerChecks*(state: var State) =
-  readme_exists.register(state)
-  license_exists.register(state)
-  okh_file_exists.register(state)
+type
+  ChecksRegistry* = object
+    checks*: seq[Check]
 
+method register*(this: var ChecksRegistry, check: Check) {.base.} =
+  this.checks.add(check)
 
-proc check*(state: State) =
-  echo "Checking OSH project directory ..."
+method registerChecks*(this: var ChecksRegistry) {.base.} =
+  this.register(readme_exists.createDefault())
+  this.register(license_exists.createDefault())
+  this.register(okh_file_exists.createDefault())
 
-  for check in state.checks:
-    let res = check.run(state.config)
-    if res.error.isNone():
-      stdout.writeLine(fmt"Check - {check.name()}? - Succeeded")
-    else:
-      stderr.writeLine(fmt"Check - {check.name()}? - Failed ({res.error.get()})")
+proc newChecksRegistry*(): ChecksRegistry =
+  return ChecksRegistry(
+    checks: @[],
+    )

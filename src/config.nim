@@ -20,7 +20,7 @@
 
 type
   RunConfig* = object
-    proj_root*: string
+    projRoot*: string
     force*: bool
     readme*: bool
     license*: bool

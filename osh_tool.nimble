@@ -15,3 +15,4 @@ namedBin["src/main"] = "osh"
 
 requires "nim >= 0.10.0"
 requires "docopt"
+requires "shell"

@@ -6,33 +6,23 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import strformat
-import options
 import ./init_update
-import ./state
 
 from init_update/readme import nil
 from init_update/license import nil
 
-proc registerInitUpdates*(state: var State) =
-  readme.register(state)
-  license.register(state)
+type
+  InitUpdatesRegistry* = object
+    initUpdates*: seq[InitUpdate]
 
-proc init*(state: State) =
-  echo "Initializing OSH project directory ..."
+method register*(this: var InitUpdatesRegistry, initUpdate: InitUpdate) {.base.} =
+  this.initUpdates.add(initUpdate)
 
-  for iu in state.init_updates:
-    let res = iu.init(state.config)
-    if res.error.isNone():
-      stdout.writeLine(fmt"Init - {iu.name()}? - Succeeded")
-    else:
-      stderr.writeLine(fmt"Init - {iu.name()}? - Failed ({res.error.get()})")
+method registerInitUpdates*(this: var InitUpdatesRegistry) {.base.} =
+  this.register(readme.createDefault())
+  this.register(license.createDefault())
 
-proc update*(state: State) =
-  echo "Updating OSH project directory to the latest guidelines ..."
-
-  for iu in state.init_updates:
-    let res = iu.update(state.config)
-    if res.error.isNone():
-      stdout.writeLine(fmt"Update - {iu.name()}? - Succeeded")
-    else:
-      stderr.writeLine(fmt"Update - {iu.name()}? - Failed ({res.error.get()})")
+proc newInitUpdatesRegistry*(): InitUpdatesRegistry =
+  return InitUpdatesRegistry(
+    initUpdates: @[],
+    )

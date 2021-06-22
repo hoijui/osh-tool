@@ -9,24 +9,23 @@ import strformat
 import re
 import options
 import ../tools
-import ../config
 import ../check
 import ../state
 
-let R_README = re".*README.*"
+let R_README = re"^.*README.*$"
 
 type ReadmeExistsCheck = ref object of Check
 
 method name(this: ReadmeExistsCheck): string =
   return "README exists"
 
-method run(this: ReadmeExistsCheck, config: RunConfig): CheckResult =
-  let error = (if containsFiles(config.proj_root, R_README):
-      none(string)
-    else:
-      some(fmt"No README file found in the root directory. Please consider adding a README.md. You might want to generate a template by issuing `osh init --readme`, or manually reating it.")
-    )
+method run(this: ReadmeExistsCheck, state: var State): CheckResult =
+  let error = (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
+    none(string)
+  else:
+    some(fmt"No README file found in the root directory. Please consider adding a README.md. You might want to generate a template by issuing `osh init --readme`, or manually reating it.")
+  )
   return CheckResult(error: error)
 
-proc register*(state: var State) =
-  state.registerCheck(ReadmeExistsCheck())
+proc createDefault*(): Check =
+  ReadmeExistsCheck()

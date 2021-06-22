@@ -6,7 +6,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from strutils import join
-import sequtils
 import os
 import options
 import re
@@ -23,20 +22,21 @@ type ReadmeInitUpdate = ref object of InitUpdate
 method name(this: ReadmeInitUpdate): string =
   return "README"
 
-method init(this: ReadmeInitUpdate, config: RunConfig): InitResult =
-  if not config.readme and containsFiles(config.proj_root, R_README):
-    result = InitResult(error: some("Not generating README.md, because README(s) are already present: " & toSeq(listFiles(config.proj_root, R_README)).join(", ")))
-  else :
-    let readme_md = os.joinPath(config.proj_root, "README.md")
-    if os.fileExists(readme_md) and not config.force:
+method init(this: ReadmeInitUpdate, state: var State): InitResult =
+  if not state.config.readme and filterPathsMatchingFileName(state.listFilesL1(), R_README).len() > 0:
+    result = InitResult(error: some("Not generating README.md, because README(s) are already present: " &
+        filterPathsMatchingFileName(state.listFilesL1(), R_README).join(", ")))
+  else:
+    let readmeMd = os.joinPath(state.config.projRoot, "README.md")
+    if os.fileExists(readmeMd) and not state.config.force:
       result = InitResult(error: some("Not generating README.md, because the file already exists."))
     else:
-      downloadTemplate(config, "README.md", README_TEMPLATE_URL) # TODO Have multiple file options, and a way to choose from them, maybe?
+      downloadTemplate(state.config, "README.md", README_TEMPLATE_URL) # TODO Have multiple file options, and a way to choose from them, maybe?
       result = InitResult(error: none(string))
   return result
 
-method update(this: ReadmeInitUpdate, config: RunConfig): UpdateResult =
+method update(this: ReadmeInitUpdate, state: var State): UpdateResult =
   return UpdateResult(error: some("Not yet implemented!"))
 
-proc register*(state: var State) =
-  state.registerInitUpdate(ReadmeInitUpdate())
+proc createDefault*(): InitUpdate =
+  ReadmeInitUpdate()
