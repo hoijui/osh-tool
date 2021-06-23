@@ -57,32 +57,6 @@ proc filterPathsMatchingFileName*(filePaths: seq[string], regex: Regex): seq[str
   ## are equal in function.
   return toSeq(filePaths.filterIt(matchFileName(it, regex)))
 
-# TODO DEPRECATED Optimize the next two procs with an answer from SO: https://stackoverflow.com/questions/67833490/how-to-modularize-abstract-away-os-walkdir-and-os-walkdirrec-nim/67838118#67838118
-# TODO Remove the next two procs! :D
-proc containsFiles(dir: string, regex: Regex, recursive: bool = false): bool =
-  ## Checks whether ``dir`` contains any files matching ``regex``,
-  if recursive:
-    for file in os.walkDirRec(dir):
-      if file.find(regex) != -1:
-        return true
-  else:
-    for file in os.walkDir(dir):
-      if file.path.find(regex) != -1:
-        return true
-  return false
-
-iterator listFilesFS(dir: string, regex: Regex,
-    recursive: bool = false): string =
-  ## Iterates over files in ``dir`` that match a regex.
-  if recursive:
-    for file in os.walkDirRec(dir, relative = true):
-      if file.find(regex) != -1:
-        yield file
-  else:
-    for file in os.walkDir(dir, relative = true):
-      if file.path.find(regex) != -1:
-        yield file.path
-
 proc listFilesFS(dir: string): seq[string] =
   ## returns a recursive list of file names in ``dir``.
   return toSeq(os.walkDirRec(dir, relative = true))
