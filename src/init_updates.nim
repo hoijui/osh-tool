@@ -7,9 +7,9 @@
 
 import strformat
 import ./init_update
+import ./tools
 
-from init_update/readme import nil
-from init_update/license import nil
+importAll("init_update")
 
 type
   InitUpdatesRegistry* = object
@@ -19,8 +19,7 @@ method register*(this: var InitUpdatesRegistry, initUpdate: InitUpdate) {.base.}
   this.initUpdates.add(initUpdate)
 
 method registerInitUpdates*(this: var InitUpdatesRegistry) {.base.} =
-  this.register(readme.createDefault())
-  this.register(license.createDefault())
+  registerAll("init_update")
 
 proc newInitUpdatesRegistry*(): InitUpdatesRegistry =
   return InitUpdatesRegistry(

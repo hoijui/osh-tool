@@ -7,12 +7,9 @@
 
 import strformat
 import ./check
+import ./tools
 
-from checks/readme_exists import nil
-from checks/license_exists import nil
-from checks/okh_file_exists import nil
-from checks/no_space_in_file_names import nil
-from checks/unwanted_files_exist_not import nil
+importAll("checks")
 
 #proc logChecking(msg: string) =
 #  stdout.writeLine(fmt"Checking {msg} ...")
@@ -28,11 +25,7 @@ method register*(this: var ChecksRegistry, check: Check) {.base.} =
   this.checks.add(check)
 
 method registerChecks*(this: var ChecksRegistry) {.base.} =
-  this.register(readme_exists.createDefault())
-  this.register(license_exists.createDefault())
-  this.register(okh_file_exists.createDefault())
-  this.register(no_space_in_file_names.createDefault())
-  this.register(unwanted_files_exist_not.createDefault())
+  registerAll("checks")
 
 proc newChecksRegistry*(): ChecksRegistry =
   return ChecksRegistry(

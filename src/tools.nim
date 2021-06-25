@@ -18,7 +18,51 @@ import httpclient
 import shell
 import os
 import re
+import macros
 import ./config
+
+macro importAll*(dir: static[string]): untyped =
+  var bracket = newNimNode(nnkBracket)
+  # let dir = "checks"
+  for x in walkDir("./src/" & dir, true):
+    if(x.kind == pcFile):
+      let split = x.path.splitFile()
+      if(split.ext == ".nim"):
+        bracket.add ident(split.name)
+  newStmtList(
+    newNimNode(nnkImportStmt).add(
+      newNimNode(nnkInfix).add(
+        ident("/"),
+        newNimNode(nnkPrefix).add(
+          ident("/"),
+          ident(dir)
+    ),
+    bracket
+  )
+    )
+  )
+
+macro registerAll*(dir: static[string]): untyped =
+  var commands = newStmtList()
+  for x in walkDir("./src/" & dir, true):
+    if(x.kind == pcFile):
+      let split = x.path.splitFile()
+      if(split.ext == ".nim"):
+        commands.add(
+          newNimNode(nnkCall).add(
+            newNimNode(nnkDotExpr).add(
+              ident("this"),
+              ident("register"),
+            ),
+            newNimNode(nnkCall).add(
+              newNimNode(nnkDotExpr).add(
+                ident(split.name),
+                ident("createDefault")
+              )
+            )
+          )
+        )
+  commands
 
 proc downloadTemplate*(config: RunConfig, file: string, link: string) =
   if os.fileExists(file) and not config.force:
