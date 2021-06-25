@@ -11,12 +11,6 @@ import ./tools
 
 importAll("checks")
 
-#proc logChecking(msg: string) =
-#  stdout.writeLine(fmt"Checking {msg} ...")
-
-#proc checkFailed(msg: string) =
-#  stderr.writeLine(msg)
-
 type
   ChecksRegistry* = object
     checks*: seq[Check]
