@@ -104,6 +104,35 @@ proc filterPathsMatchingFileName*(filePaths: seq[string], regex: Regex): seq[str
   ## are equal in function.
   return toSeq(filePaths.filterIt(matchFileName(it, regex)))
 
+proc extractFileExts(filePath: string, maxParts: int) : seq[string] =
+  let fileName = os.splitPath(filePath)[1]
+  var exts: seq[string] = @[]
+  var acum = ""
+  var i = 0
+  let parts = fileName.split('.')
+  for pi in countdown(high(parts), 0):
+    let part = parts[pi]
+    if i >= maxParts:
+      break;
+    acum = part & acum
+    exts.add(acum)
+    acum = '.' & acum
+    i = i + 1
+  exts
+
+proc containsAny(big: seq[string], small: seq[string]): bool =
+  for sEnt in small:
+    if big.contains(sEnt):
+      return true
+  return false
+
+proc filterByExtensions*(filePaths: seq[string], extensions: seq[string], maxParts: int): seq[string] =
+  ## Returns a list of of only the entries from ``filePaths``
+  ## of which the file extension ('.' separated) matches any in ``extensions``.
+  ## ``maxParts`` should be set to the max number of parts of any of the file extensions in ``extensions``.
+  ## "zip" is one part, "tar.gz" are two parts.
+  return toSeq(filePaths.filterIt(containsAny(extensions, extractFileExts(it, maxParts))))
+
 proc listFilesFS(dir: string): seq[string] =
   ## returns a recursive list of file names in ``dir``.
   return toSeq(os.walkDirRec(dir, relative = true))
