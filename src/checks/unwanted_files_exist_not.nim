@@ -12,7 +12,6 @@ import ../tools
 import ../check
 import ../state
 
-## Check: Remove OS & Application generated backup and cache files
 let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trashes|ehthumbs\.db|Thumbs\.db|.*~|.*\.orig|.*\.swp|.*\.kate-swp|.*\.fcstd1)$"
 
 type UnwantedFilesExistNotCheck = ref object of Check
