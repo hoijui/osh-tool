@@ -64,18 +64,21 @@ macro registerAll*(dir: static[string]): untyped =
         )
   commands
 
-proc downloadTemplate*(config: RunConfig, file: string, link: string) =
-  if os.fileExists(file) and not config.force:
-    stderr.writeLine("File '{file}' already exists, leaving it as is. Use --force to overwrite.")
+proc download*(file: string, link: string, overwrite: bool = false) =
+  if os.fileExists(file) and not overwrite:
+    stderr.writeLine(fmt"Not downloading '{link}'; File '{file}' already exists; leaving it as is. Use --force to overwrite.")
     return
   var client = newHttpClient()
   try:
     var file_h = open(file, fmWrite)
     defer: file_h.close()
     file_h.write(client.getContent(link))
-    echo(fmt"Success - downloaded template to '{file}'.")
+    echo(fmt"Success - downloaded '{link}' to '{file}'.")
   except IOError as err:
-    stderr.writeLine("Failed to download template to '{file}': " & err.msg)
+    stderr.writeLine(fmt"Failed to download '{link}' to '{file}': " & err.msg)
+
+proc downloadTemplate*(config: RunConfig, file: string, link: string) =
+  download(file, link, config.force)
 
 proc matchFileName(filePath: string, regex: Regex): bool =
   let fileName = filePath.extractFilename()
