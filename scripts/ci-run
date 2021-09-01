@@ -60,8 +60,9 @@ function install_requirements() {
 	if ! which nimble > /dev/null
 	then
 		echo "Install nim and nimble ..."
-		curl "https://nim-lang.org/choosenim/init.sh" -sSf
-		mv init.sh choosenim_init.sh
+		curl "https://nim-lang.org/choosenim/init.sh" \
+			--output "choosenim_init.sh" \
+			-sSf
 		$sudo sh choosenim_init.sh
 	fi
 
