@@ -63,7 +63,7 @@ function install_requirements() {
 		curl "https://nim-lang.org/choosenim/init.sh" \
 			--output "choosenim_init.sh" \
 			-sSf
-		$sudo sh choosenim_init.sh
+		$sudo sh choosenim_init.sh -y
 	fi
 
 	# Fetch cross-compile requirements
