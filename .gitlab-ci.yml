@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+build:
+  before_script:
+  - scripts/ci-run --install-requirements
+  - git submodule update --init --recursive
+  script:
+  - scripts/ci-run
+  only:
+    - master
+  artifacts:
+    paths:
+    - public
+

@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+# Exit immediately on each error and unset variable;
+# see: https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+#set -Eeu
+
+script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+proj_dir="$(cd "$script_dir"/..; pwd)"
+build_dir="$proj_dir/build"
+package_dir="$proj_dir/public"
+nim_win_version="1.4.8"
+nim_win_dir="$build_dir/nim-${nim_win_version}"
+sudo=$(which sudo && echo "sudo" || echo "")
+
+if [ -z "$(find "$proj_dir" -name '*.nimble')" ]
+then
+	echo "ERROR: please run this script from the project root directory (containing the .nimble file)!"
+	exit 1
+fi
+
+function version() {
+	git describe \
+		--tags \
+		--dirty \
+		--broken \
+		--always \
+		--long \
+		--candidates=99 \
+		--first-parent
+}
+
+function print_help() {
+
+	echo "Run all we want to be done in our CI."
+	echo
+	echo "Usage:"
+	echo "         $(basename "$0") [OPTIONS]"
+	echo "Options:"
+	echo "          -h, --help                  Show this help message"=
+	echo "          -s, --install-requirements  Install whatever this script needs to run (works only on Debian/Ubuntu)"
+}
+
+function install_requirements() {
+
+	if ! which git > /dev/null || ! which x86_64-w64-mingw32-gcc > /dev/null
+	then
+		echo "Install pre-requisites ..."
+		$sudo apt-get update
+		$sudo apt-get install -y -qq curl git # > /dev/null
+	fi
+
+	mkdir -p "$build_dir"
+	cd "$build_dir"
+
+	if ! which nimble > /dev/null
+	then
+		echo "Install nim and nimble ..."
+		curl "https://nim-lang.org/choosenim/init.sh" -sSf
+		mv init.sh choosenim_init.sh
+		$sudo sh choosenim_init.sh
+	fi
+
+	# Fetch cross-compile requirements
+	if ! which x86_64-w64-mingw32-gcc > /dev/null
+	then
+		echo "Install the win64 cross-compiler ..."
+		$sudo apt-get install -y -qq mingw-w64 # > /dev/null
+	fi
+	if ! [ -d "$nim_win_dir" ] > /dev/null
+	then
+		echo "Download and extract the nim-win64 package (required for the contained libraries) ..."
+		nim_win_arch="nim-${nim_win_version}_x64.zip"
+		curl "https://nim-lang.org/download/$nim_win_arch" \
+			--output "$nim_win_arch" \
+			-sSf
+		unzip "$nim_win_arch"
+	fi
+
+	cd "$proj_dir"
+
+	echo "Checkout all project sub-modules ..."
+	git submodule update --init --recursive
+
+	echo "done."
+}
+
+# read command-line args
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+	arg="$1"
+	shift # past argument
+
+	case "$arg" in
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		-s|--install-requirements)
+			install_requirements
+			exit 0
+			;;
+		*) # non-/unknown option
+			POSITIONAL+=("$arg") # save it in an array for later
+			;;
+	esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+# Compile the software for Linux
+nimble build
+
+# Cross-compile the software for Windows 64
+nimble build \
+	--os:windows \
+	--cpu:amd64 \
+	--gcc.exe:/usr/bin/x86_64-w64-mingw32-gcc \
+	--gcc.linkerexe:/usr/bin/x86_64-w64-mingw32-gcc \
+	-d:release \
+	--app:console \
+	--opt:size \
+	--passL:-static \
+	--opt:speed \
+	--embedsrc \
+	--threads:on \
+	--checks:on
+
+bin_win="$(find "$build_dir" -maxdepth 1 -type f -name '*.exe' -printf '%P\n')"
+bin_lin="${bin_win%.exe}"
+
+# Move the binaries to the package dir
+rm -Rf "$package_dir"
+mkdir "$package_dir"
+mkdir "$package_dir/linux64"
+mkdir "$package_dir/win64"
+mv "$build_dir/$bin_lin" "$package_dir/linux64/"
+mv "$build_dir/$bin_win" "$package_dir/win64/"
+mv "$nim_win_dir/bin/"{libcrypto-1_1,libcrypto-1_1-x64,libssl-1_1,libssl-1_1-x64,pcre64}.dll "$package_dir/win64/"
+
+cd "$package_dir"
+
+# Create the binary packages
+version="$(version)"
+pkg_lin="${bin_lin}-${version}-x86_64-linux"
+pkg_win="${bin_lin}-${version}-x86_64-windows"
+mv linux64 "$pkg_lin"
+mv win64 "$pkg_win"
+zip "$pkg_lin".zip "$pkg_lin"
+zip "$pkg_win".zip "$pkg_win"
+
+# Create HTML that links to all the files generated above
+{
+	echo "<html>"
+	echo "<body>"
+	echo "<ul>"
+	# Create HTML links to all the files
+	for file in *.zip
+	do
+		echo "<li><a href=\"$file\">$file</a></li>"
+	done
+	echo "</ul>"
+	echo "</body>"
+	echo "</html>"
+} >> index.html
+
+cd "$proj_dir"
