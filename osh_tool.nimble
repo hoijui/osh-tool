@@ -10,6 +10,7 @@ description = "A Tool for managing Open Source Hardware projects, taking care of
 license     = "GPL3"
 
 namedBin["src/main"] = "osh"
+binDir = "build"
 
 # Deps
 
