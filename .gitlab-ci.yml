@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Unlicense
 
+default:
+  image: ubuntu:21.10
+
 build:
   before_script:
   - scripts/ci-run --install-requirements
@@ -13,4 +16,3 @@ build:
   artifacts:
     paths:
     - public
-
