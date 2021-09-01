@@ -23,7 +23,7 @@ Usage:
 
 Options:
   -h --help          Show this screen.
-  -V --version       Show version.
+  -V --version       Show this tools version.
   --force            Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
