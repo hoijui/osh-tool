@@ -14,7 +14,8 @@ proj_dir="$(cd "$script_dir"/..; pwd)"
 build_dir="$proj_dir/build"
 package_dir="$proj_dir/public"
 nim_win_version="1.4.8"
-nim_win_dir="$build_dir/nim-${nim_win_version}"
+# NOTE: NIM_WIN_DIR should be set by the CI container (hoijui/ci-nim:latest)
+nim_win_dir="${NIM_WIN_DIR:-$build_dir/nim-${nim_win_version}}"
 sudo=$(which sudo && echo "sudo" || echo "")
 
 if [ -z "$(find "$proj_dir" -name '*.nimble')" ]

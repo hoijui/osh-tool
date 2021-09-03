@@ -3,11 +3,10 @@
 # SPDX-License-Identifier: Unlicense
 
 default:
-  image: ubuntu:21.10
+  image: hoijui/nim-ci:latest
 
 build:
   before_script:
-  - scripts/ci-run --install-requirements
   - git submodule update --init --recursive
   script:
   - scripts/ci-run
