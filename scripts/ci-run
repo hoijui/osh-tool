@@ -115,10 +115,10 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 # Compile the software for Linux
-nimble build
+nimble -y build
 
 # Cross-compile the software for Windows 64
-nimble build \
+nimble -y build \
 	--os:windows \
 	--cpu:amd64 \
 	--gcc.exe:/usr/bin/x86_64-w64-mingw32-gcc \
