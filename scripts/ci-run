@@ -114,10 +114,12 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-# Compile the software for Linux
+echo
+echo "Compiling the software for Linux ..."
 nimble -y build
 
-# Cross-compile the software for Windows 64
+echo
+echo "Cross-compiling the software for Windows 64 ..."
 nimble -y build \
 	--os:windows \
 	--cpu:amd64 \
@@ -135,7 +137,8 @@ nimble -y build \
 bin_win="$(find "$build_dir" -maxdepth 1 -type f -name '*.exe' -printf '%P\n')"
 bin_lin="${bin_win%.exe}"
 
-# Move the binaries to the package dir
+echo
+echo "Moving the binaries to the package dir '$package_dir' ..."
 rm -Rf "$package_dir"
 mkdir -p "$package_dir"
 mkdir "$package_dir/linux64"
@@ -146,7 +149,8 @@ mv "$nim_win_dir/bin/"{libcrypto-1_1,libcrypto-1_1-x64,libssl-1_1,libssl-1_1-x64
 
 cd "$package_dir"
 
-# Create the binary packages
+echo
+echo "Creating the binary archives ..."
 version="$(version)"
 pkg_lin="${bin_lin}-${version}-x86_64-linux"
 pkg_win="${bin_lin}-${version}-x86_64-windows"
@@ -155,7 +159,8 @@ mv win64 "$pkg_win"
 zip "$pkg_lin".zip "$pkg_lin"
 zip "$pkg_win".zip "$pkg_win"
 
-# Create HTML that links to all the files generated above
+echo
+echo "Creating HTML ('index.html') that links to all the files generated above ..."
 {
 	echo "<html>"
 	echo "<body>"
@@ -171,3 +176,4 @@ zip "$pkg_win".zip "$pkg_win"
 } >> index.html
 
 cd "$proj_dir"
+echo "done."
