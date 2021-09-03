@@ -5,7 +5,7 @@
 default:
   image: hoijui/nim-ci:latest
 
-build:
+pages:
   before_script:
   - git submodule update --init --recursive
   script:
