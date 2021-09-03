@@ -9,7 +9,13 @@ build:
   before_script:
   - git submodule update --init --recursive
   script:
-  - scripts/ci-run
+  - echo "PATH:"
+  - echo "$PATH"
+  - echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  - echo "$PATH" | grep nimble
+  - echo BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+  - ls "$HOME/.nimble/bin/"
+  - bash -x scripts/ci-run
   only:
     - master
   artifacts:
