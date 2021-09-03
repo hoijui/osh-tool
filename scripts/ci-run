@@ -137,7 +137,7 @@ bin_lin="${bin_win%.exe}"
 
 # Move the binaries to the package dir
 rm -Rf "$package_dir"
-mkdir "$package_dir"
+mkdir -p "$package_dir"
 mkdir "$package_dir/linux64"
 mkdir "$package_dir/win64"
 mv "$build_dir/$bin_lin" "$package_dir/linux64/"
