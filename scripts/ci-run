@@ -159,6 +159,10 @@ mv win64 "$pkg_win"
 zip "$pkg_lin".zip "$pkg_lin"
 zip "$pkg_win".zip "$pkg_win"
 
+img_src_linux="https://icons.iconarchive.com/icons/dakirby309/simply-styled/128/OS-Linux-icon.png"
+img_src_windows="https://icons.iconarchive.com/icons/tatice/operating-systems/256/Windows-icon.png"
+img_src_archive="https://icons.iconarchive.com/icons/zerode/plump/128/Folder-Archive-zip-icon.png"
+
 echo
 echo "Creating HTML ('index.html') that links to all the files generated above ..."
 {
@@ -168,7 +172,17 @@ echo "Creating HTML ('index.html') that links to all the files generated above .
 	# Create HTML links to all the files
 	for file in *.zip
 	do
-		echo "<li><a href=\"$file\">$file</a></li>"
+		img_src=''
+		if [ "$file" = "${pkg_lin}.zip" ]
+		then
+			img_src="$img_src_linux"
+		elif [ "$file" = "${pkg_win}.zip" ]
+		then
+			img_src="$img_src_windows"
+		else
+			img_src="$img_src_archive"
+		fi
+		echo "<li><img alt=\"os_icon\" width="64" src=\"$img_src\"/><a href=\"$file\">$file</a></li>"
 	done
 	echo "</ul>"
 	echo "</body>"
