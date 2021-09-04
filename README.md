@@ -13,7 +13,7 @@ SPDX-License-Identifier: CC0-1.0
 
 # `osh`-tool
 
-A command line tool for Open Source Hardware (OSH) technical project management.
+A command line tool for Open Source Hardware (OSH) technical project linting (quality assessment).
 
 What it can do:
 
@@ -39,7 +39,7 @@ What it can do:
 ```sh
 # Latest released version
 nimble install osh
-# Latest developmental state inside Github repository
+# Latest developmental state inside git repository
 nimble install osh@#head
 ```
 
