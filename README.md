@@ -25,7 +25,8 @@ What it can do:
 
 * Generate/Check README
 * Generate/Check LICENSE
-* Generate/Check okh.toml (Open Know-How OSH meta-data file)
+* Generate/Check [okh.toml](https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/OKH-LOSH.ttl)
+  ([Open Know-How](https://openknowhow.org) OSH meta-data file)
 
 ## Requires
 
