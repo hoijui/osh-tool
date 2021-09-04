@@ -15,6 +15,9 @@ SPDX-License-Identifier: CC0-1.0
 
 A command line tool for Open Source Hardware (OSH) technical project linting (quality assessment).
 
+[Download binaries](https://osegermany.gitlab.io/osh-tool/)
+(latest build, Linux & Windows, 64bit)
+
 What it can do:
 
 * Initialize a project repository
