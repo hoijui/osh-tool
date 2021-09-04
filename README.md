@@ -63,7 +63,7 @@ Ask anything, as an issue!
 ## Similar Projects
 
 We are not just standing on the shoulders of giants,
-but also shoulder on shoulder wiht them!
+but also shoulder on shoulder with them!
 
 These are two of our big sister projects.
 They are similar both in spirit
