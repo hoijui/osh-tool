@@ -4,8 +4,12 @@ SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![REUSE status](https://api.reuse.software/badge/gitlab.opensourceecology.de/hoijui/osh-tool)](https://api.reuse.software/info/gitlab.opensourceecology.de/hoijui/osh-tool)
+[![License: GPL v3](
+	https://img.shields.io/badge/License-GPLv3-blue.svg)](
+	https://www.gnu.org/licenses/gpl-3.0)
+[![REUSE status](
+	https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
+	https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
 
 # osh
 
