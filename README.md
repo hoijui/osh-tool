@@ -11,7 +11,7 @@ SPDX-License-Identifier: CC0-1.0
 	https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
 	https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
 
-# osh
+# `osh`-tool
 
 A command line tool for Open Source Hardware (OSH) technical project management.
 
