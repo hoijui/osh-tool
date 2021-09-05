@@ -57,7 +57,7 @@ macro registerAll*(dir: static[string]): untyped =
             newNimNode(nnkCall).add(
               newNimNode(nnkDotExpr).add(
                 ident(split.name),
-                ident("createDefault")
+                ident("createDefault"),
               )
             )
           )
