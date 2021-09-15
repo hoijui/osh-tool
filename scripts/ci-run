@@ -20,7 +20,7 @@ sudo=$(which sudo && echo "sudo" || echo "")
 
 if [ -z "$(find "$proj_dir" -name '*.nimble')" ]
 then
-	echo "ERROR: please run this script from the project root directory (containing the .nimble file)!"
+	>&2 echo "ERROR: please run this script from the project root directory (containing the .nimble file)!"
 	exit 1
 fi
 
