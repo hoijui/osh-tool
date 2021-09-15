@@ -144,6 +144,10 @@ bin_win="$(find "$build_dir" -maxdepth 1 -type f -name '*.exe' -printf '%P\n')"
 bin_lin="${bin_win%.exe}"
 
 echo
+echo "State after building:"
+find "$build_dir"
+
+echo
 echo "Moving the binaries to the package dir '$package_dir' ..."
 rm -Rf "$package_dir"
 mkdir -p "$package_dir"
@@ -152,6 +156,10 @@ mkdir "$package_dir/win64"
 mv "$build_dir/$bin_lin" "$package_dir/linux64/"
 mv "$build_dir/$bin_win" "$package_dir/win64/"
 mv "$nim_win_dir/bin/"{libcrypto-1_1,libcrypto-1_1-x64,libssl-1_1,libssl-1_1-x64,pcre64}.dll "$package_dir/win64/"
+
+echo
+echo "State after package preparation:"
+find "$package_dir"
 
 cd "$package_dir"
 
