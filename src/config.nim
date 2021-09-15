@@ -24,5 +24,6 @@ type
     force*: bool
     readme*: bool
     license*: bool
+    offline*: bool
     electronics*: bool
     mechanics*: bool

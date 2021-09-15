@@ -15,15 +15,16 @@ and allows to verify which stadnards are met or not.
 TODO Anderst benennen, nicht proj management tool sondern standardisierung fuer techinsche doku
 
 Usage:
-  osh [-C <path>] init   [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--force] [--readme] [--license]
-  osh [-C <path>] update [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--force] [--readme] [--license]
+  osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
   osh (-h | --help)
   osh (-V | --version)
 
 Options:
   -h --help          Show this screen.
   -V --version       Show this tools version.
+  --offline          Not not access the network/internet.
   --force            Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
@@ -103,6 +104,7 @@ proc cli() =
     force: args["--force"],
     readme: args["--readme"],
     license: args["--license"],
+    offline: args["--offline"],
     electronics: electronics,
     mechanics: mechanics,
     )
