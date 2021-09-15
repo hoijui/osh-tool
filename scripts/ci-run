@@ -114,6 +114,12 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
+if ! [ -f "$nim_win_dir/bin/libcrypto-1_1.dll" ]
+then
+	>&2 echo "ERROR: Missing windows nim. Please download it (to the build directory) with '$0 --install-requirements'."
+	exit 1
+fi
+
 echo
 echo "Compiling the software for Linux ..."
 nimble -y build
