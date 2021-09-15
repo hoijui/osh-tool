@@ -25,5 +25,6 @@ type
     readme*: bool
     license*: bool
     offline*: bool
+    markdown*: bool
     electronics*: bool
     mechanics*: bool

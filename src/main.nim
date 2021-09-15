@@ -17,7 +17,7 @@ TODO Anderst benennen, nicht proj management tool sondern standardisierung fuer 
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--force] [--readme] [--license]
   osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--markdown]
   osh (-h | --help)
   osh (-V | --version)
 
@@ -28,6 +28,7 @@ Options:
   --force            Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
+  --markdown         Generates the reporting output in markdow, suitable to render as HTML or cop&paste into an issue report.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
@@ -39,6 +40,7 @@ import docopt
 import os
 import options
 import strformat
+import strutils
 import ./config
 import ./tools
 import ./check
@@ -48,13 +50,23 @@ import ./init_updates
 import ./state
 
 proc check(registry: ChecksRegistry, state: var State) =
-  echo "Checking OSH project directory ..."
+  if state.config.markdown:
+    stdout.writeLine(fmt"| Passed | Check | Error |")
+    # NOTE In some renderers, number of dashes are used to determine relative column width
+    stdout.writeLine(fmt"| - | --- | ----- |")
+  else:
+    echo "Checking OSH project directory ..."
   for check in registry.checks:
     let res = check.run(state)
-    if res.error.isNone():
-      stdout.writeLine(fmt"Check - {check.name()}? - Succeeded")
+    if state.config.markdown:
+      let passed = if res.error.isNone(): "x" else: " "
+      let error = res.error.get("-").replace("\n", " -- ")
+      stdout.writeLine(fmt"| [{passed}] | {check.name()} | {error} |")
     else:
-      stderr.writeLine(fmt"Check - {check.name()}? - Failed: {res.error.get()}")
+      if res.error.isNone():
+        stdout.writeLine(fmt"Check - {check.name()}? - Succeeded")
+      else:
+        stderr.writeLine(fmt"Check - {check.name()}? - Failed: {res.error.get()}")
 
 proc init*(registry: InitUpdatesRegistry, state: var State) =
   echo "Initializing OSH project directory ..."
@@ -105,6 +117,7 @@ proc cli() =
     readme: args["--readme"],
     license: args["--license"],
     offline: args["--offline"],
+    markdown: args["--markdown"],
     electronics: electronics,
     mechanics: mechanics,
     )
