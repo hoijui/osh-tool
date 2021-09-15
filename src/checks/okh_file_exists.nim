@@ -12,7 +12,7 @@ import ../config
 import ../check
 import ../state
 
-const OKH_FILE = "^okh.toml$"
+const OKH_FILE = "okh.toml"
 const OKH_URL = "TODO-OKHv2-URL"
 
 proc okhFile(config: RunConfig): string =
