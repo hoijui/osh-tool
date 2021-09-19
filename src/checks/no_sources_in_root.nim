@@ -42,7 +42,7 @@ proc prepare(state: var State): CheckResult =
 type NoSourceFilesInRootCheck = ref object of Check
 
 method name*(this: NoSourceFilesInRootCheck): string =
-  return "No sources in the root directory"
+  return "No sources in root"
 
 method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   let prep_state = prepare(state)

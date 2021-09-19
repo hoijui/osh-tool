@@ -17,7 +17,7 @@ let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trash
 type UnwantedFilesExistNotCheck = ref object of Check
 
 method name*(this: UnwantedFilesExistNotCheck): string =
-  return "Unwanted (generated, backup, cache, ...) files do not exist"
+  return "No unwanted files"
 
 method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   let unwantedFiles = filterPathsMatchingFileName(state.listFiles(), R_UNWANTED_FILES)

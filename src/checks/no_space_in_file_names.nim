@@ -18,7 +18,7 @@ let R_SPACE = re".*\s.*"
 type NoSpaceInFileNamesCheck = ref object of Check
 
 method name*(this: NoSpaceInFileNamesCheck): string =
-  return "File names with spaces"
+  return "No space in file names"
 
 method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
   let spacedFiles = filterPathsMatching(state.listFiles(), R_SPACE)
