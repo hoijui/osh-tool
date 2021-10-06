@@ -5,7 +5,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-let version = "0.0.1"
 let doc = """
 Open Source Hardware (OSH) project management tool.
 It helps in initially setting up an OSH project according certain standards,
@@ -48,6 +47,8 @@ import ./checks
 import ./init_update
 import ./init_updates
 import ./state
+
+include ./version
 
 proc check(registry: ChecksRegistry, state: var State) =
   if state.config.markdown:
