@@ -65,9 +65,9 @@ proc check(registry: ChecksRegistry, state: var State) =
       stdout.writeLine(fmt"| [{passed}] | {check.name()} | {error} |")
     else:
       if res.error.isNone():
-        stdout.writeLine(fmt"- [x] - {check.name()}")
+        stdout.writeLine(fmt"- [x] {check.name()}")
       else:
-        stderr.writeLine(fmt"- [ ] - {check.name()} -- Error: {res.error.get()}")
+        stderr.writeLine(fmt"- [ ] {check.name()} -- Error: {res.error.get()}")
 
 proc init*(registry: InitUpdatesRegistry, state: var State) =
   echo "Initializing OSH project directory ..."
