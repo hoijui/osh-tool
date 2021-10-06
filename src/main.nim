@@ -5,13 +5,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# TODO Anderst benennen, nicht "project management tool", sondern standardisierung fuer techinsche doku/linter
 let doc = """
 Open Source Hardware (OSH) project management tool.
 It helps in initially setting up an OSH project according certain standards,
 updating a project to the latest standards,
 and allows to verify which stadnards are met or not.
-
-TODO Anderst benennen, nicht proj management tool sondern standardisierung fuer techinsche doku
 
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--force] [--readme] [--license]
