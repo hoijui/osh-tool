@@ -13,7 +13,7 @@ import ../check
 import ../state
 
 const OKH_FILE = "okh.toml"
-const OKH_URL = "TODO-OKHv2-URL"
+const OKH_URL = "TODO-OKHv2-URL" # TODO Insert OKH docu URL here
 
 proc okhFile(config: RunConfig): string =
   return os.joinPath(config.proj_root, OKH_FILE)
