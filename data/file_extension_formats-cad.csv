@@ -2,16 +2,20 @@ File extension,open / proprietary format,binary / plain text / both,considered s
 3dm,open,binary,source
 3dxml,Unknown,plain,export
 3KO,Unknown,Unknown,export
+3mf,open,plain,export
+amf,open,plain,export
 asab,open,binary,export
 asat,open,plain,export
 asm,proprietary,binary,source
 CATPart,proprietary,binary,source
 CATProduct,proprietary,binary,source
 CGR,proprietary,binary,source
+csg,open,plain,export
 dae,open,plain,export
 dgn,open,binary,source
 dwg,proprietary,binary,source
 dxf,open,both,source
+FCStd,open,both,source
 html,open,plain,export
 iam,Unknown,binary,source
 iges,open,plain,export
@@ -23,6 +27,7 @@ jt,open,binary,export
 j_t,open,binary,export
 model,proprietary,Unknown,source
 obj,open,plain,export
+off,open,plain,export
 par,Unknown,plain,source
 pdf,open,binary,export
 ply,Unknown,Unknown,export
@@ -32,6 +37,7 @@ prt,proprietary,binary,source
 psm,Unknown,Unknown,source
 sab,open,binary,export
 sat,open,plain,export
+scad,open,binary,source
 sldasm,proprietary,binary,source
 sldprt,proprietary,binary,source
 sms,Unknown,binary,export
