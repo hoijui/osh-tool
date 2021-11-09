@@ -5,7 +5,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import strformat
 import ./check
 import ./tools
 
