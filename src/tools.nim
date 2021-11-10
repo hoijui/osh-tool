@@ -104,7 +104,7 @@ proc filterPathsMatchingFileName*(filePaths: seq[string], regex: Regex): seq[str
   ## are equal in function.
   return toSeq(filePaths.filterIt(matchFileName(it, regex)))
 
-proc extractFileExts(filePath: string, maxParts: int) : seq[string] =
+proc extractFileExts(filePath: string, maxParts: int, toLower: bool = true) : seq[string] =
   let fileName = os.splitPath(filePath)[1]
   var exts: seq[string] = @[]
   var acum = ""
@@ -115,6 +115,8 @@ proc extractFileExts(filePath: string, maxParts: int) : seq[string] =
     if i >= maxParts:
       break;
     acum = part & acum
+    if toLower:
+      acum = acum.toLower()
     exts.add(acum)
     acum = '.' & acum
     i = i + 1
