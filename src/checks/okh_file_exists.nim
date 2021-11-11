@@ -27,7 +27,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
   let error = (if os.fileExists(okhFile(state.config)):
     none(string)
   else:
-    some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for more a template.") # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
+    some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.") # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
   )
   return CheckResult(error: error)
 
