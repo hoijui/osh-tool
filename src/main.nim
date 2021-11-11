@@ -22,6 +22,7 @@ Usage:
 Options:
   -h --help          Show this screen.
   -V --version       Show this tools version.
+  -C <path>          Run as if osh was started in <path> instead of the current working directory.
   --offline          Not not access the network/internet.
   --force            Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
@@ -31,7 +32,6 @@ Options:
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
   -no-mechanics      Indicate that the project does not contain mechanical parts (FreeCAD)
-  -C <path>          Run as if osh was started in <path> instead of the current working directory.
 """
 
 import docopt
