@@ -35,6 +35,7 @@ Options:
 """
 
 import docopt
+import chronicles
 import os
 import options
 import strformat
@@ -69,7 +70,7 @@ proc check(registry: ChecksRegistry, state: var State) =
         stderr.writeLine(fmt"- [ ] {check.name()} -- Error: {res.error.get()}")
 
 proc init*(registry: InitUpdatesRegistry, state: var State) =
-  echo "Initializing OSH project directory ..."
+  info "Initializing OSH project directory ..."
 
   for iu in registry.initUpdates:
     let res = iu.init(state)
@@ -79,7 +80,7 @@ proc init*(registry: InitUpdatesRegistry, state: var State) =
       stderr.writeLine(fmt"Init - {iu.name()}? - Failed: {res.error.get()}")
 
 proc update*(registry: InitUpdatesRegistry, state: var State) =
-  echo "Updating OSH project directory to the latest guidelines ..."
+  info "Updating OSH project directory to the latest guidelines ..."
 
   for iu in registry.initUpdates:
     let res = iu.update(state)
@@ -89,6 +90,7 @@ proc update*(registry: InitUpdatesRegistry, state: var State) =
       stderr.writeLine(fmt"Update - {iu.name()}? - Failed: {res.error.get()}")
 
 proc cli() =
+  trace "Initializing ..."
   let args = docopt(doc, version = version)
 
   let proj_root =
@@ -96,6 +98,7 @@ proc cli() =
       $args["-C"]
     else:
       os.getCurrentDir()
+  trace "Create config value 'electronics' ..."
   let electronics =
     if args["--electronics"]:
       true
@@ -104,6 +107,7 @@ proc cli() =
     else:
       containsFilesWithSuffix(proj_root, ".kicad_pcb") or
           containsFilesWithSuffix(proj_root, ".sch")
+  trace "Create config value 'mechanics' ..."
   let mechanics =
     if args["--mechanics"]:
       true
@@ -111,6 +115,7 @@ proc cli() =
       false
     else:
       containsFilesWithSuffix(proj_root, ".fcstd")
+  trace "Create configuration ..."
   let config = RunConfig(
     proj_root: proj_root,
     force: args["--force"],
@@ -122,6 +127,7 @@ proc cli() =
     mechanics: mechanics,
     )
 
+  trace "Creating the state ..."
   var runState = newState(config)
   if args["init"]:
     var registry = newInitUpdatesRegistry()
@@ -132,8 +138,11 @@ proc cli() =
     registry.registerInitUpdates()
     update(registry, runState)
   elif args["check"]:
+    trace "Creating the checks registry ..."
     var registry = newChecksRegistry()
+    trace "Register checks ..."
     registry.registerChecks()
+    trace "Running checks ..."
     check(registry, runState)
 
 when isMainModule:
