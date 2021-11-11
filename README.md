@@ -4,16 +4,17 @@ SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-[![License: GPL v3](
-	https://img.shields.io/badge/License-GPLv3-blue.svg)](
-	https://www.gnu.org/licenses/gpl-3.0)
+[![License: AGPL v3+](
+    https://img.shields.io/badge/License-AGPL%20v3+-blue.svg)](
+    https://www.gnu.org/licenses/agpl-3.0)
 [![REUSE status](
-	https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
-	https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
+    https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
+    https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
 
 # `osh`-tool
 
-A command line tool for Open Source Hardware (OSH) technical project linting (quality assessment).
+A command line tool for Open Source Hardware (OSH)
+technical project linting (quality assessment).
 
 [Download binaries](https://osegermany.gitlab.io/osh-tool/)
 (latest build, Linux & Windows, 64bit)

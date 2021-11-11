@@ -7,7 +7,7 @@
 include ./src/version
 author      = "Robin Vobruba <hoijui.quaero@gmail.com>"
 description = "A Tool for managing Open Source Hardware projects, taking care of meta-data and keeping the structure clean"
-license     = "GPL3"
+license     = "AGPL3"
 
 namedBin["src/main"] = "osh"
 binDir = "build"

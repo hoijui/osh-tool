@@ -3,7 +3,7 @@
 #
 # SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 # TODO Anderst benennen, nicht "project management tool", sondern standardisierung fuer techinsche doku/linter
 let doc = """

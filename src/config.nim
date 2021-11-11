@@ -3,7 +3,7 @@
 #
 # SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
 #
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # osh-tool is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
