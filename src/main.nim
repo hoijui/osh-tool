@@ -93,7 +93,7 @@ proc cli() =
   trace "Initializing ..."
   let args = docopt(doc, version = version)
 
-  let proj_root =
+  let projRoot =
     if args["-C"]:
       $args["-C"]
     else:
@@ -117,7 +117,7 @@ proc cli() =
       containsFilesWithSuffix(proj_root, ".fcstd")
   trace "Create configuration ..."
   let config = RunConfig(
-    proj_root: proj_root,
+    projRoot: projRoot,
     force: args["--force"],
     readme: args["--readme"],
     license: args["--license"],
