@@ -18,9 +18,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Foobar. If not, see <https://www.gnu.org/licenses/>.
 
+import std/options
+
 type
   RunConfig* = object
     projRoot*: string
+    # Where evaluation output gets written to.
+    # Stdout if None, else a file.
+    reportTarget*: Option[string]
     force*: bool
     readme*: bool
     license*: bool

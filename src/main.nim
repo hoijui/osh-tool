@@ -15,7 +15,7 @@ and allows to verify which stadnards are met or not.
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--force] [--readme] [--license]
   osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--markdown]
+  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--markdown] [-r <path>] [--report <path>]
   osh (-h | --help)
   osh (-V | --version)
 
@@ -28,6 +28,7 @@ Options:
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
   --markdown         Generates the reporting output in markdow, suitable to render as HTML or cop&paste into an issue report.
+  -r --report <path> File-path the check-report (Markdown) gets written to; by default, it gets written to stdout.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
@@ -40,6 +41,7 @@ import os
 import options
 import strformat
 import strutils
+import system/io
 import ./config
 import ./tools
 import ./check
@@ -51,23 +53,31 @@ import ./state
 include ./version
 
 proc check(registry: ChecksRegistry, state: var State) =
+  let (reportStream, reportStreamErr) =
+    if state.config.reportTarget.isSome():
+      let reportFileName = state.config.reportTarget.get()
+      let file = io.open(reportFileName, fmWrite)
+      (file, file)
+    else:
+      (stdout, stderr)
   if state.config.markdown:
-    stdout.writeLine(fmt"| Passed | Check | Error |")
+    reportStream.writeLine(fmt"| Passed | Check | Error |")
     # NOTE In some renderers, number of dashes are used to determine relative column width
-    stdout.writeLine(fmt"| - | --- | ----- |")
+    reportStream.writeLine(fmt"| - | --- | ----- |")
   else:
-    echo "Checking OSH project directory ..."
+    info "Checking OSH project directory ..."
   for check in registry.checks:
     let res = check.run(state)
     if state.config.markdown:
       let passed = if res.error.isNone(): "x" else: " "
       let error = res.error.get("-").replace("\n", " -- ")
-      stdout.writeLine(fmt"| [{passed}] | {check.name()} | {error} |")
+      reportStream.writeLine(fmt"| [{passed}] | {check.name()} | {error} |")
     else:
       if res.error.isNone():
-        stdout.writeLine(fmt"- [x] {check.name()}")
+        reportStream.writeLine(fmt"- [x] {check.name()}")
       else:
-        stderr.writeLine(fmt"- [ ] {check.name()} -- Error: {res.error.get()}")
+        reportStreamErr.writeLine(fmt"- [ ] {check.name()} -- Error: {res.error.get()}")
+  reportStream.close()
 
 proc init*(registry: InitUpdatesRegistry, state: var State) =
   info "Initializing OSH project directory ..."
@@ -98,6 +108,11 @@ proc cli() =
       $args["-C"]
     else:
       os.getCurrentDir()
+  let reportTarget: Option[string] =
+    if args["--report"]:
+      some($args["--report"])
+    else:
+      none(string)
   trace "Create config value 'electronics' ..."
   let electronics =
     if args["--electronics"]:
@@ -118,6 +133,7 @@ proc cli() =
   trace "Create configuration ..."
   let config = RunConfig(
     projRoot: projRoot,
+    reportTarget: reportTarget,
     force: args["--force"],
     readme: args["--readme"],
     license: args["--license"],
