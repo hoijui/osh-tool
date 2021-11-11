@@ -21,6 +21,12 @@
 import std/options
 
 type
+  YesNoAuto* = enum
+    Yes,
+    No,
+    Auto,
+
+type
   RunConfig* = object
     projRoot*: string
     # Where evaluation output gets written to.
@@ -33,5 +39,5 @@ type
     license*: bool
     offline*: bool
     markdown*: bool
-    electronics*: bool
-    mechanics*: bool
+    electronics*: YesNoAuto
+    mechanics*: YesNoAuto

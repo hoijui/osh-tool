@@ -117,22 +117,21 @@ proc cli() =
     else:
       none(string)
   trace "Create config value 'electronics' ..."
-  let electronics =
+  let electronics: YesNoAuto =
     if args["--electronics"]:
-      true
+      Yes
     elif args["--no-electronics"]:
-      false
+      No
     else:
-      containsFilesWithSuffix(proj_root, ".kicad_pcb") or
-          containsFilesWithSuffix(proj_root, ".sch")
+      Auto
   trace "Create config value 'mechanics' ..."
   let mechanics =
     if args["--mechanics"]:
-      true
+      Yes
     elif args["--no-mechanics"]:
-      false
+      No
     else:
-      containsFilesWithSuffix(proj_root, ".fcstd")
+      Auto
   trace "Create configuration ..."
   let config = RunConfig(
     projRoot: projRoot,
