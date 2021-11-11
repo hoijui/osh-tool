@@ -13,7 +13,7 @@ updating a project to the latest standards,
 and allows to verify which stadnards are met or not.
 
 Usage:
-  osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--force] [--readme] [--license]
+  osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
   osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--markdown] [-r <path>] [--report <path>]
   osh (-h | --help)
@@ -24,7 +24,7 @@ Options:
   -V --version       Show this tools version.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
   --offline          Not not access the network/internet.
-  --force            Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
+  -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
   --markdown         Generates the reporting output in markdow, suitable to render as HTML or cop&paste into an issue report.
