@@ -15,7 +15,7 @@ and allows to verify which stadnards are met or not.
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [--markdown] [-r <path>] [--report <path>]
+  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown] [-r <path>] [--report <path>]
   osh (-h | --help)
   osh (-V | --version)
 
@@ -56,6 +56,9 @@ proc check(registry: ChecksRegistry, state: var State) =
   let (reportStream, reportStreamErr) =
     if state.config.reportTarget.isSome():
       let reportFileName = state.config.reportTarget.get()
+      if not state.config.force and fileExists(reportFileName):
+        error "Report file exists, and --force was not specified; aborting.", reportFile = reportFileName
+        quit 1
       let file = io.open(reportFileName, fmWrite)
       (file, file)
     else:
