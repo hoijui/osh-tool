@@ -1,7 +1,7 @@
 File extension,open / proprietary format,binary / plain text / both,considered source/export format
 3dm,open,binary,source
-3dxml,Unknown,plain,export
-3KO,Unknown,Unknown,export
+3dxml,proprietary,plain,export
+3KO,proprietary,binary,export
 3mf,open,plain,export
 amf,open,plain,export
 asab,open,binary,export
