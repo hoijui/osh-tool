@@ -24,7 +24,7 @@ const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 # The `const SOURCE_EXTENSIONS_MAX_PARTS` is an integer,
 # indicating the max number of parts in the above list,
 # when splitting each extension with '.'.
-macro staticDlAndParseExtsListFile(): untyped =
+macro parseInjectExts(): untyped =
   var sourceExts: seq[string] = @[]
   var maxParts = 0
 
@@ -64,7 +64,7 @@ macro staticDlAndParseExtsListFile(): untyped =
   )
   # echo toStrLit(result)
 
-staticDlAndParseExtsListFile()
+parseInjectExts()
 
 type NoSourceFilesInRootCheck = ref object of Check
 
