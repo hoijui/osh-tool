@@ -1,4 +1,4 @@
-File extension,open / proprietary format,binary / plain text / both,considered source/export format
+File extension,File format [open|proprietary|Unknown],Encoding [binary|text|Unknown],Category [source|export]
 3dm,open,binary,source
 3dxml,proprietary,text,export
 3KO,proprietary,binary,export
