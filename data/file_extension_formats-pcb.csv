@@ -1,4 +1,4 @@
 File extension,open / proprietary format,binary / plain text / both,considered source/export format
-brd,open,plain,source
-pro,open,plain,source
-sch,open,plain,source
+brd,open,text,source
+pro,open,text,source
+sch,open,text,source
