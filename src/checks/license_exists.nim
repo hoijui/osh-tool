@@ -20,12 +20,11 @@ method name*(this: LicenseExistsCheck): string =
   return "LICENSE exists"
 
 method run*(this: LicenseExistsCheck, state: var State): CheckResult =
-  let error = (if filterPathsMatching(state.listFilesL1(), R_LICENSE).len > 0:
-    none(string)
+  return (if filterPathsMatching(state.listFilesL1(), R_LICENSE).len > 0:
+    newCheckResult(CheckResultKind.Perfect)
   else:
-    some(fmt"No LICENSE (or COPYING) file found in the root directory. Please consider adding a LICENSE(.md). You might want to choose one from a list by issuing `osh init --license`.")
+    CheckResult(kind: CheckResultKind.Insufficient, error: some(fmt"No LICENSE (or COPYING) file found in the root directory. Please consider adding a LICENSE(.md). You might want to choose one from a list by issuing `osh init --license`."))
   )
-  return CheckResult(error: error)
 
 proc createDefault*(): Check =
   LicenseExistsCheck()

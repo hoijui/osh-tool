@@ -21,13 +21,12 @@ method name*(this: UnwantedFilesExistNotCheck): string =
 
 method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   let unwantedFiles = filterPathsMatchingFileName(state.listFiles(), R_UNWANTED_FILES)
-  let error = (if unwantedFiles.len == 0:
-    none(string)
+  return (if unwantedFiles.len == 0:
+    newCheckResult(CheckResultKind.Perfect)
   else:
-    some("Unwanted files found. Please consider removing them:\n\t" &
-        unwantedFiles.join("\n\t"))
+    CheckResult(kind: CheckResultKind.Insufficient, error: some("Unwanted files found. Please consider removing them:\n\t" &
+        unwantedFiles.join("\n\t")))
   )
-  return CheckResult(error: error)
 
 proc createDefault*(): Check =
   UnwantedFilesExistNotCheck()

@@ -20,12 +20,11 @@ method name(this: ReadmeExistsCheck): string =
   return "README exists"
 
 method run(this: ReadmeExistsCheck, state: var State): CheckResult =
-  let error = (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
-    none(string)
+  return (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
+    newCheckResult(CheckResultKind.Perfect)
   else:
-    some(fmt"No README file found in the root directory. Please consider adding a README.md. You might want to generate a template by issuing `osh init --readme`, or manually reating it.")
+    CheckResult(kind: CheckResultKind.Insufficient, error: some(fmt"No README file found in the root directory. Please consider adding a README.md. You might want to generate a template by issuing `osh init --readme`, or manually reating it."))
   )
-  return CheckResult(error: error)
 
 proc createDefault*(): Check =
   ReadmeExistsCheck()

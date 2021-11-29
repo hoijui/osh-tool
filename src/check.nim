@@ -11,10 +11,23 @@ import options
 import ./state
 
 type
+  CheckResultKind* {.pure.} = enum
+    Perfect, Ok, Acceptable, Insufficient, Bad, Inapplicable
+
   CheckResult* = object
+    kind*: CheckResultKind
     error*: Option[string]
 
+proc newCheckResult*(kind: CheckResultKind): CheckResult =
+  return CheckResult(kind: kind, error: none(string))
+
 type Check* = ref object of RootObj
+
+proc isApplicable*(res: CheckResult): bool =
+  return res.kind != Inapplicable
+
+proc isGood*(res: CheckResult): bool =
+  return res.kind in [Perfect, Ok, Acceptable]
 
 method name*(this: Check): string {.base.} =
   return "TODO Override!"

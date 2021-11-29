@@ -74,13 +74,13 @@ method name*(this: NoSourceFilesInRootCheck): string =
 method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   let rootSourceFiles = filterByExtensions(state.listFilesL1(), SOURCE_EXTENSIONS, SOURCE_EXTENSIONS_MAX_PARTS)
   # TODO Only fail if more then 2 files with the same extension are found
-  let error = (if rootSourceFiles.len == 0:
-    none(string)
+  return (if rootSourceFiles.len == 0:
+    newCheckResult(CheckResultKind.Perfect)
   else:
-    some("Source files found in root. Please consider moving them into a sub directory:\n\t" &
-        rootSourceFiles.join("\n\t"))
+    CheckResult(kind: CheckResultKind.Insufficient, error: some(
+        "Source files found in root. Please consider moving them into a sub directory:\n\t" &
+        rootSourceFiles.join("\n\t")))
   )
-  return CheckResult(error: error)
 
 proc createDefault*(): Check =
   NoSourceFilesInRootCheck()

@@ -17,17 +17,17 @@ let R_GENERATABLE= re"^.*(jpg|jpeg|gif|png|bmp|pdf|stl)$" # TODO Add much more (
 type MightBeGeneratedCheck = ref object of Check
 
 method name*(this: MightBeGeneratedCheck): string =
-  return "Might be generated"
+  return "Might be generated" # TODO Rename this, to be something that is good if the tst passes, e.g. "No possibly generatable files"
 
 method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
   let foundFiles = filterPathsMatchingFileName(state.listFiles(), R_GENERATABLE)
-  let error = (if foundFiles.len == 0:
-    none(string)
+  return (if foundFiles.len == 0:
+    newCheckResult(CheckResultKind.Perfect)
   else:
-    some("Possibly generatable files found. Please consider removing them:\n\t" &
-        foundFiles.join("\n\t"))
+    CheckResult(kind: CheckResultKind.Insufficient, error: some(
+        "Possibly generatable files found. Please consider removing them:\n\t" &
+        foundFiles.join("\n\t")))
   )
-  return CheckResult(error: error)
 
 proc createDefault*(): Check =
   MightBeGeneratedCheck()

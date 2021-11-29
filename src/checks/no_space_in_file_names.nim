@@ -22,13 +22,12 @@ method name*(this: NoSpaceInFileNamesCheck): string =
 
 method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
   let spacedFiles = filterPathsMatching(state.listFiles(), R_SPACE)
-  let error = (if spacedFiles.len == 0:
-    none(string)
+  return (if spacedFiles.len == 0:
+    newCheckResult(CheckResultKind.Perfect)
   else:
-    some("Files with spaces in their names (Please consider renaming them):\n\t" &
-        spacedFiles.join("\n\t"))
+    CheckResult(kind: CheckResultKind.Insufficient, error: some("Files with spaces in their names (Please consider renaming them):\n\t" &
+        spacedFiles.join("\n\t")))
   )
-  return CheckResult(error: error)
 
 proc createDefault*(): Check =
   NoSpaceInFileNamesCheck()

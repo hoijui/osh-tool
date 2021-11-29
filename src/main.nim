@@ -71,12 +71,16 @@ proc check(registry: ChecksRegistry, state: var State) =
     info "Checking OSH project directory ..."
   for check in registry.checks:
     let res = check.run(state)
+    if not isApplicable(res):
+      debug "Skip reporting check because it is inapplicable to this project (in its current state)", checkName = check.name()
+      continue
+    let passed = isGood(res)
     if state.config.markdown:
-      let passed = if res.error.isNone(): "x" else: " "
+      let passedStr = if passed: "x" else: " "
       let error = res.error.get("-").replace("\n", " -- ")
-      reportStream.writeLine(fmt"| [{passed}] | {check.name()} | {error} |")
+      reportStream.writeLine(fmt"| [{passedStr}] | {check.name()} | {error} |")
     else:
-      if res.error.isNone():
+      if passed:
         reportStream.writeLine(fmt"- [x] {check.name()}")
       else:
         reportStreamErr.writeLine(fmt"- [ ] {check.name()} -- Error: {res.error.get()}")
