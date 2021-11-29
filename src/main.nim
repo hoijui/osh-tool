@@ -43,7 +43,6 @@ import strformat
 import strutils
 import system/io
 import ./config
-import ./tools
 import ./check
 import ./checks
 import ./init_update
