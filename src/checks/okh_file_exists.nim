@@ -6,13 +6,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import strformat
+from strutils import join
 import os
 import options
+import re
 import ../config
 import ../check
 import ../state
+import ../tools
 
 const OKH_FILE = "okh.toml"
+let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
+let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
 const OKH_TEMPLATE_TOML_URL = "https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/sample_data/okh-TEMPLATE.toml"
 
 proc okhFile(config: RunConfig): string =
@@ -24,11 +29,29 @@ method name*(this: OkhFileExistsCheck): string =
   return "OKH file exists"
 
 method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
-  return (if os.fileExists(okhFile(state.config)):
-    newCheckResult(CheckResultKind.Perfect)
+  if os.fileExists(okhFile(state.config)):
+    return newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, msg: some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
-  )
+    let nonDefaultTomls = filterPathsMatchingFileName(state.listFilesL1(), R_OKH_FILE_LOSH)
+    if nonDefaultTomls.len() > 0:
+      let presentTomls = nonDefaultTomls.join(", ")
+      return CheckResult(
+          kind: CheckResultKind.Ok,
+          msg: some(fmt"While you have an OKH meta-data file ({presentTomls}), it is prefferable to use the specific file name '{OKH_FILE}'.")
+        )
+    else:
+      let nonDefaultYamls = filterPathsMatchingFileName(state.listFilesL1(), R_OKH_FILE_V1)
+      if nonDefaultYamls.len() > 0:
+        let presentYamls = nonDefaultYamls.join(", ")
+        return CheckResult(
+          kind: CheckResultKind.Acceptable,
+          msg: some(fmt"While you have an OKH v1 meta-data file ({presentYamls}), it is prefferable to use the new OKH LOSH standard, which would result in having an '{OKH_FILE}'.")
+        )
+      else:
+        return CheckResult(
+          kind: CheckResultKind.Insufficient,
+          msg: some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.") # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
+        )
 
 proc createDefault*(): Check =
   OkhFileExistsCheck()
