@@ -18,8 +18,59 @@ import ./state
 
 include ./version
 
-proc check*(registry: ChecksRegistry, state: var State) =
-  let (reportStream, reportStreamErr) =
+type
+  CheckFmt = ref object of RootObj
+    repStream: File
+    repStreamErr: File
+  MdListCheckFmt = ref object of CheckFmt
+  MdTableCheckFmt = ref object of CheckFmt
+
+method init(self: CheckFmt) {.base.} =
+  quit "to override!"
+
+method init(self: MdListCheckFmt) =
+  info "Checking OSH project directory ..."
+
+method init(self: MdTableCheckFmt) =
+  self.repStream.writeLine(fmt"| Passed | Check | Error |")
+  # NOTE In some renderers, number of dashes are used to determine relative column width
+  self.repStream.writeLine(fmt"| - | --- | ----- |")
+
+proc getStream(self: CheckFmt, res: CheckResult): File =
+# method getStream(self: CheckFmt, res: CheckResult): File {.base.} =
+  if isGood(res):
+    self.repStream
+  else:
+    self.repStreamErr
+
+proc msgFmt(msg: string): string =
+  return fmt" -- Msg: {msg}"
+
+method report(self: CheckFmt, check: Check, res: CheckResult) {.base, locks: "unknown".} =
+  quit "to override!"
+
+method report(self: MdListCheckFmt, check: Check, res: CheckResult) =
+  let passed = isGood(res)
+  let passedStr = if passed: "x" else: " "
+  let msg = res.error.map(msgFmt).get("").replace("\n", " -- ")
+  self.getStream(res).writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
+
+method report(self: MdTableCheckFmt, check: Check, res: CheckResult) {.locks: "unknown".} =
+  let passed = isGood(res)
+  let passedStr = if passed: "x" else: " "
+  let error = res.error.get("-").replace("\n", " -- ")
+  self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {error} |")
+
+method finalize(self: CheckFmt) {.base.} =
+  self.repStream.close()
+  # This isnot required,
+  # because stderr does not need to be closed,
+  # and if it is a file, it is the same like repStream,
+  # which was already closed in the line above
+  #repStreamErr.close()
+
+proc initRepStreams(state: State): (File, File) =
+  return
     if state.config.reportTarget.isSome():
       let reportFileName = state.config.reportTarget.get()
       if not state.config.force and fileExists(reportFileName):
@@ -29,25 +80,20 @@ proc check*(registry: ChecksRegistry, state: var State) =
       (file, file)
     else:
       (stdout, stderr)
+
+proc initCheckFmt(state: State, repStream, repStreamErr: File): CheckFmt =
   if state.config.markdown:
-    reportStream.writeLine(fmt"| Passed | Check | Error |")
-    # NOTE In some renderers, number of dashes are used to determine relative column width
-    reportStream.writeLine(fmt"| - | --- | ----- |")
+    return MdTableCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
   else:
-    info "Checking OSH project directory ..."
+    return MdListCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
+
+proc check*(registry: ChecksRegistry, state: var State) =
+  let (repStream, repStreamErr) = initRepStreams(state)
+  let checkFmt: CheckFmt = initCheckFmt(state, repStream, repStreamErr)
   for check in registry.checks:
     let res = check.run(state)
     if not isApplicable(res):
       debug "Skip reporting check because it is inapplicable to this project (in its current state)", checkName = check.name()
       continue
-    let passed = isGood(res)
-    if state.config.markdown:
-      let passedStr = if passed: "x" else: " "
-      let error = res.error.get("-").replace("\n", " -- ")
-      reportStream.writeLine(fmt"| [{passedStr}] | {check.name()} | {error} |")
-    else:
-      if passed:
-        reportStream.writeLine(fmt"- [x] {check.name()}")
-      else:
-        reportStreamErr.writeLine(fmt"- [ ] {check.name()} -- Error: {res.error.get()}")
-  reportStream.close()
+    checkFmt.report(check, res)
+  checkFmt.finalize()
