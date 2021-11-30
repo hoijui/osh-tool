@@ -32,7 +32,7 @@ method init(self: MdListCheckFmt) =
   info "Checking OSH project directory ..."
 
 method init(self: MdTableCheckFmt) =
-  self.repStream.writeLine(fmt"| Passed | Check | Error |")
+  self.repStream.writeLine(fmt"| Passed | Check | Message |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
   self.repStream.writeLine(fmt"| - | --- | ----- |")
 
@@ -52,14 +52,14 @@ method report(self: CheckFmt, check: Check, res: CheckResult) {.base, locks: "un
 method report(self: MdListCheckFmt, check: Check, res: CheckResult) =
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
-  let msg = res.error.map(msgFmt).get("").replace("\n", " -- ")
+  let msg = res.msg.map(msgFmt).get("").replace("\n", " -- ")
   self.getStream(res).writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult) {.locks: "unknown".} =
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
-  let error = res.error.get("-").replace("\n", " -- ")
-  self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {error} |")
+  let msg = res.msg.get("-").replace("\n", " -- ")
+  self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
 
 method finalize(self: CheckFmt) {.base.} =
   self.repStream.close()

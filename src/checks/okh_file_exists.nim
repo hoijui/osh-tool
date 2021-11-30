@@ -27,7 +27,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
   return (if os.fileExists(okhFile(state.config)):
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, error: some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
+    CheckResult(kind: CheckResultKind.Insufficient, msg: some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
   )
 
 proc createDefault*(): Check =

@@ -77,7 +77,7 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   return (if rootSourceFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, error: some(
+    CheckResult(kind: CheckResultKind.Insufficient, msg: some(
         "Source files found in root. Please consider moving them into a sub directory:\n\t" &
         rootSourceFiles.join("\n\t")))
   )

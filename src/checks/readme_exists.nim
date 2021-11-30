@@ -23,7 +23,7 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
   return (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, error: some(fmt"No README file found in the root directory. Please consider adding a README.md. You might want to generate a template by issuing `osh init --readme`, or manually reating it."))
+    CheckResult(kind: CheckResultKind.Insufficient, msg: some(fmt"No README file found in the root directory. Please consider adding a README.md. You might want to generate a template by issuing `osh init --readme`, or manually reating it."))
   )
 
 proc createDefault*(): Check =

@@ -16,10 +16,10 @@ type
 
   CheckResult* = object
     kind*: CheckResultKind
-    error*: Option[string]
+    msg*: Option[string]
 
 proc newCheckResult*(kind: CheckResultKind): CheckResult =
-  return CheckResult(kind: kind, error: none(string))
+  return CheckResult(kind: kind, msg: none(string))
 
 type Check* = ref object of RootObj
 
@@ -34,4 +34,4 @@ method name*(this: Check): string {.base.} =
 
 method run*(this: Check, state: var State): CheckResult {.base,
     locks: "unknown".} =
-  return CheckResult(error: some("Not implemented for specific check!"))
+  return CheckResult(kind: CheckResultKind.Bad, msg: some("Not implemented for this specific check!"))

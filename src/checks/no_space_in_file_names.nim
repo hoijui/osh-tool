@@ -25,7 +25,7 @@ method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
   return (if spacedFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, error: some("Files with spaces in their names (Please consider renaming them):\n\t" &
+    CheckResult(kind: CheckResultKind.Insufficient, msg: some("Files with spaces in their names (Please consider renaming them):\n\t" &
         spacedFiles.join("\n\t")))
   )
 

@@ -24,7 +24,7 @@ method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   return (if unwantedFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, error: some("Unwanted files found. Please consider removing them:\n\t" &
+    CheckResult(kind: CheckResultKind.Insufficient, msg: some("Unwanted files found. Please consider removing them:\n\t" &
         unwantedFiles.join("\n\t")))
   )
 
