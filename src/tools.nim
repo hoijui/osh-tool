@@ -85,7 +85,7 @@ proc matchFileName(filePath: string, regex: Regex): bool =
   return match(fileName, regex)
 
 proc filterPathsMatching*(filePaths: seq[string], regex: Regex): seq[string] =
-  ## Returns a list of of only the entries from ``filePaths``
+  ## Returns a list of only the entries from ``filePaths``
   ## that match ``regex``.
   ## NOTE
   ## re"^.*README.*$"
@@ -95,7 +95,7 @@ proc filterPathsMatching*(filePaths: seq[string], regex: Regex): seq[string] =
   return toSeq(filePaths.filterIt(match(it, regex)))
 
 proc filterPathsMatchingFileName*(filePaths: seq[string], regex: Regex): seq[string] =
-  ## Returns a list of of only the entries from ``filePaths``
+  ## Returns a list of only the entries from ``filePaths``
   ## of which the file name (last path segment) matches ``regex``.
   ## NOTE
   ## re"^.*README.*$"
@@ -129,7 +129,7 @@ proc containsAny(big: seq[string], small: seq[string]): bool =
   return false
 
 proc filterByExtensions*(filePaths: seq[string], extensions: seq[string], maxParts: int): seq[string] =
-  ## Returns a list of of only the entries from ``filePaths``
+  ## Returns a list of only the entries from ``filePaths``
   ## of which the file extension ('.' separated) matches any in ``extensions``.
   ## ``maxParts`` should be set to the max number of parts of any of the file extensions in ``extensions``.
   ## "zip" is one part, "tar.gz" are two parts.
