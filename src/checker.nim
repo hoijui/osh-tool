@@ -8,6 +8,7 @@
 import chronicles
 import os
 import options
+import sequtils
 import strformat
 import strutils
 import system/io
@@ -43,8 +44,12 @@ proc getStream(self: CheckFmt, res: CheckResult): File =
   else:
     self.repStreamErr
 
-proc msgFmt(msg: string): string =
-  return fmt" -- Msg: {msg}"
+proc msgFmt(msg: Option[string]): string =
+  return (if msg.isSome:
+      fmt" - {msg.get()}"
+    else:
+      ""
+  )
 
 method report(self: CheckFmt, check: Check, res: CheckResult) {.base, locks: "unknown".} =
   quit "to override!"
@@ -52,13 +57,23 @@ method report(self: CheckFmt, check: Check, res: CheckResult) {.base, locks: "un
 method report(self: MdListCheckFmt, check: Check, res: CheckResult) =
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
-  let msg = res.msg.map(msgFmt).get("").replace("\n", " -- ")
+  let msg = res.issues
+    .map(proc (issue: CheckIssue): string =
+      let weightStr = fmt"{issue.weight}"
+      fmt("\n  - {weightStr.toUpper()}{msgFmt(issue.msg)}")
+    )
+    .join("")
   self.getStream(res).writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult) {.locks: "unknown".} =
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
-  let msg = res.msg.get("-").replace("\n", " -- ")
+  let msg = res.issues
+    .map(proc (issue: CheckIssue): string =
+      fmt"\[{issue.weight}{msgFmt(issue.msg)}\]"
+    )
+    .join(", <br>")
+    .replace("\n", " <br>-- ")
   self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
 
 method finalize(self: CheckFmt) {.base.} =

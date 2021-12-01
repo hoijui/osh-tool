@@ -12,14 +12,36 @@ import ./state
 
 type
   CheckResultKind* {.pure.} = enum
-    Perfect, Ok, Acceptable, Insufficient, Bad, Inapplicable
+    Perfect, Ok, Acceptable, Bad, Inapplicable
+
+  CheckIssueWeight* {.pure.} = enum
+    DeveloperFailure, Heavy, Middle, Light
+
+  CheckIssue* = object
+    weight*: CheckIssueWeight
+    msg*: Option[string]
 
   CheckResult* = object
     kind*: CheckResultKind
-    msg*: Option[string]
+    # Zero or more issues
+    issues*: seq[CheckIssue]
+    # msg*: Option[string]
 
+# Creates a check-result without an issue
 proc newCheckResult*(kind: CheckResultKind): CheckResult =
-  return CheckResult(kind: kind, msg: none(string))
+  return CheckResult(kind: kind, issues: @[])
+
+# Creates a check-result with a single issue
+proc newCheckResult*(kind: CheckResultKind, weight: CheckIssueWeight, msg: Option[string]): CheckResult =
+  return CheckResult(
+    kind: kind,
+    issues: @[
+      CheckIssue(
+        weight: weight,
+        msg: msg
+      )
+    ]
+  )
 
 type Check* = ref object of RootObj
 
@@ -34,4 +56,12 @@ method name*(this: Check): string {.base.} =
 
 method run*(this: Check, state: var State): CheckResult {.base,
     locks: "unknown".} =
-  return CheckResult(kind: CheckResultKind.Bad, msg: some("Not implemented for this specific check!"))
+  return CheckResult(
+    kind: CheckResultKind.Bad,
+    issues: @[
+      CheckIssue(
+        weight: CheckIssueWeight.DeveloperFailure,
+        msg: some("Not implemented for this specific check!")
+      )
+    ]
+  )

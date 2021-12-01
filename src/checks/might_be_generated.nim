@@ -24,9 +24,14 @@ method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
   return (if foundFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, msg: some(
+    newCheckResult(
+      CheckResultKind.Bad,
+      CheckIssueWeight.Light,
+      some(
         "Possibly generatable files found. Please consider removing them:\n\t" &
-        foundFiles.join("\n\t")))
+        foundFiles.join("\n\t")
+      )
+    )
   )
 
 proc createDefault*(): Check =

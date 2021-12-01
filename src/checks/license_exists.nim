@@ -23,7 +23,11 @@ method run*(this: LicenseExistsCheck, state: var State): CheckResult =
   return (if filterPathsMatching(state.listFilesL1(), R_LICENSE).len > 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, msg: some(fmt"No LICENSE (or COPYING) file found in the root directory. Please consider adding a LICENSE(.md). You might want to choose one from a list by issuing `osh init --license`."))
+    newCheckResult(
+      CheckResultKind.Bad,
+      CheckIssueWeight.Heavy,
+      some(fmt"No LICENSE (or COPYING) file found in the root directory. Please consider adding a LICENSE(.md). You might want to choose one from a list by issuing `osh init --license`.")
+    )
   )
 
 proc createDefault*(): Check =

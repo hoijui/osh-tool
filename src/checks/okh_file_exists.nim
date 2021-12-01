@@ -35,22 +35,25 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
     let nonDefaultTomls = filterPathsMatchingFileName(state.listFilesL1(), R_OKH_FILE_LOSH)
     if nonDefaultTomls.len() > 0:
       let presentTomls = nonDefaultTomls.join(", ")
-      return CheckResult(
-          kind: CheckResultKind.Ok,
-          msg: some(fmt"While you have an OKH meta-data file ({presentTomls}), it is prefferable to use the specific file name '{OKH_FILE}'.")
+      return newCheckResult(
+          CheckResultKind.Bad,
+          CheckIssueWeight.Light,
+          some(fmt"While you have an OKH meta-data file ({presentTomls}), it is prefferable to use the specific file name '{OKH_FILE}'.")
         )
     else:
       let nonDefaultYamls = filterPathsMatchingFileName(state.listFilesL1(), R_OKH_FILE_V1)
       if nonDefaultYamls.len() > 0:
         let presentYamls = nonDefaultYamls.join(", ")
-        return CheckResult(
-          kind: CheckResultKind.Acceptable,
-          msg: some(fmt"While you have an OKH v1 meta-data file ({presentYamls}), it is prefferable to use the new OKH LOSH standard, which would result in having an '{OKH_FILE}'.")
+        return newCheckResult(
+          CheckResultKind.Bad,
+          CheckIssueWeight.Middle,
+          some(fmt"While you have an OKH v1 meta-data file ({presentYamls}), it is prefferable to use the new OKH LOSH standard, which would result in having an '{OKH_FILE}'.")
         )
       else:
-        return CheckResult(
-          kind: CheckResultKind.Insufficient,
-          msg: some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider manually creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.") # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
+        return newCheckResult(
+          CheckResultKind.Bad,
+          CheckIssueWeight.Heavy,
+          some(fmt"Open Know-How meta-data file ({OKH_FILE}) not found. Please consider creating it. See <{OKH_TEMPLATE_TOML_URL}> for a template.") # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
         )
 
 proc createDefault*(): Check =

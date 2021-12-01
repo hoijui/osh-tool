@@ -77,9 +77,14 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   return (if rootSourceFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
-    CheckResult(kind: CheckResultKind.Insufficient, msg: some(
+    newCheckResult(
+      CheckResultKind.Bad,
+      CheckIssueWeight.Light,
+      some(
         "Source files found in root. Please consider moving them into a sub directory:\n\t" &
-        rootSourceFiles.join("\n\t")))
+        rootSourceFiles.join("\n\t")
+      )
+    )
   )
 
 proc createDefault*(): Check =
