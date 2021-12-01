@@ -20,6 +20,7 @@ method name*(this: LicenseExistsCheck): string =
   return "LICENSE exists"
 
 method run*(this: LicenseExistsCheck, state: var State): CheckResult =
+  # TODO Add checks for REUSE bom, or check the output of `reuse --lint`
   return (if filterPathsMatching(state.listFilesL1(), R_LICENSE).len > 0:
     newCheckResult(CheckResultKind.Perfect)
   else:
