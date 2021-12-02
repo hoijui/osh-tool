@@ -154,14 +154,13 @@ proc canTreatAsGitRepo(dir: string): bool =
 proc listFilesGit(dir: string): seq[string] =
   ## Returns a list of ((git tracked) + (untracked && un-git-ignored)) file names.
   ## which is the same as this BASH code:
-  ## ( git status --short| grep '^?' | cut -d\  -f2- && git ls-files ) | sort -u
+  ## ( git -C "$dir" status --short| grep '^?' | cut -d\  -f2- && git -C "$dir" ls-files ) | sort -u
   var res = ""
   shellAssign:
     res = pipe:
-      cd ($dir)
-      "("git status --short
+      "(" git -C ($dir) status --short
       grep "^?"
-      cut -d"\ " -f"2-" && git "ls-files"")"
+      cut -d"\ " -f"2-" && git -C ($dir) "ls-files" ")"
       sort -u
   return toSeq(res.splitLines())
 
