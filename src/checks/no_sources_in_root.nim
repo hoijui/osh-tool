@@ -86,8 +86,8 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
       CheckResultKind.Bad,
       CheckIssueWeight.Light,
       some(
-        "Source files found in root. Please consider moving them into a sub directory:\n\n* " &
-        rootSourceFiles.join("\n* ")
+        "Source files found in root. Please consider moving them into a sub directory:\n\n- " &
+        rootSourceFiles.join("\n- ")
       )
     )
   )
