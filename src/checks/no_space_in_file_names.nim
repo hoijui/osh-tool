@@ -28,8 +28,8 @@ method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
     newCheckResult(
       CheckResultKind.Bad,
       CheckIssueWeight.Light,
-      some("Files with spaces in their names (Please consider renaming them):\n\t" &
-        spacedFiles.join("\n\t")
+      some("Files with spaces in their names (Please consider renaming them):\n\n* " &
+        spacedFiles.join("\n* ")
       )
     )
   )

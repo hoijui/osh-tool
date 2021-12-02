@@ -46,7 +46,7 @@ proc getStream(self: CheckFmt, res: CheckResult): File =
 
 proc msgFmt(msg: Option[string]): string =
   return (if msg.isSome:
-      fmt" - {msg.get()}"
+      fmt(" - {msg.get()}").replace("\n", "\n    ")
     else:
       ""
   )
