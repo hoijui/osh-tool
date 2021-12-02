@@ -2,3 +2,4 @@ File extension,File format [open|proprietary|Unknown],Encoding [binary|text|Unkn
 brd,open,text,source
 pro,open,text,source
 sch,open,text,source
+kicad_pcb,open,text,source
