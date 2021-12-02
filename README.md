@@ -27,9 +27,16 @@ What it can do:
 
 ## Features
 
-* Generate/Check README
-* Generate/Check LICENSE
-* Generate/Check [okh.toml](https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/OKH-LOSH.ttl)
+So far, It may only check/lint OSH projects,
+while later it i ssupposed to also initialize them
+wiht all sorts of standard files and tooling.
+
+See [src/checks](src/checks) for the currently supported checks,
+including at least:
+
+* Check README
+* Check LICENSE
+* Check [okh.toml](https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/OKH-LOSH.ttl)
   ([Open Know-How](https://openknowhow.org) OSH meta-data file)
 
 ## Requires
