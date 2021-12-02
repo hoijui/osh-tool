@@ -46,7 +46,7 @@ stl,open,both,export
 stp,open,text,export
 svg,open,text,export
 u3d,Unknown,binary,export
-vda,open,Binary,export
+vda,open,binary,export
 wrl,Unknown,text,export
 x_t,Unknown,text,export
 xcgm,Unknown,Unknown,export
