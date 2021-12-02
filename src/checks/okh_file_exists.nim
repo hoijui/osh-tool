@@ -28,6 +28,11 @@ type OkhFileExistsCheck = ref object of Check
 method name*(this: OkhFileExistsCheck): string =
   return "OKH file exists"
 
+method requirements*(this: Check): CheckReqs =
+  return {
+    CheckReq.FilesListL1,
+  }
+
 method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
   if os.fileExists(okhFile(state.config)):
     return newCheckResult(CheckResultKind.Perfect)

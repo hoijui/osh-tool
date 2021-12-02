@@ -20,6 +20,11 @@ type NoSpaceInFileNamesCheck = ref object of Check
 method name*(this: NoSpaceInFileNamesCheck): string =
   return "No space in file names"
 
+method requirements*(this: Check): CheckReqs =
+  return {
+    CheckReq.FilesListRec,
+  }
+
 method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
   let spacedFiles = filterPathsMatching(state.listFiles(), R_SPACE)
   return (if spacedFiles.len == 0:

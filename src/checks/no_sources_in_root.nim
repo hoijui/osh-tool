@@ -71,6 +71,11 @@ type NoSourceFilesInRootCheck = ref object of Check
 method name*(this: NoSourceFilesInRootCheck): string =
   return "No sources in root"
 
+method requirements*(this: Check): CheckReqs =
+  return {
+    CheckReq.FilesListL1,
+  }
+
 method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   let rootSourceFiles = filterByExtensions(state.listFilesL1(), SOURCE_EXTENSIONS, SOURCE_EXTENSIONS_MAX_PARTS)
   # TODO Only fail if more then 2 files with the same extension are found

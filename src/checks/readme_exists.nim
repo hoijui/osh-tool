@@ -18,6 +18,11 @@ type ReadmeExistsCheck = ref object of Check
 method name(this: ReadmeExistsCheck): string =
   return "README exists"
 
+method requirements*(this: Check): CheckReqs =
+  return {
+    CheckReq.FilesListL1,
+  }
+
 method run(this: ReadmeExistsCheck, state: var State): CheckResult =
   return (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
     newCheckResult(CheckResultKind.Perfect)

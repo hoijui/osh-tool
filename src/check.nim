@@ -27,6 +27,24 @@ type
     issues*: seq[CheckIssue]
     # msg*: Option[string]
 
+  # Requirements of a check at runtime
+  CheckReq* {.size: sizeof(cint).} = enum
+    # Requires a connection to the internet
+    Online
+    # Requires the recursive directory tree of the project files
+    FilesListRec
+    # Requires the list of files in the root of the project
+    FilesListL1
+    # Requires access to the contents of one or more files in the project
+    FileContent
+    # Requires executing an external tool, for example `reuse lint`
+    ExternalTool
+  # CheckReqs* {.size: sizeof(cint).} = set[CheckReq]
+  CheckReqs* = set[CheckReq]
+
+proc toNum*(flags: CheckReqs): int = cast[cint](flags)
+proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)
+
 # Creates a check-result without an issue
 proc newCheckResult*(kind: CheckResultKind): CheckResult =
   return CheckResult(kind: kind, issues: @[])
@@ -53,6 +71,10 @@ proc isGood*(res: CheckResult): bool =
 
 method name*(this: Check): string {.base.} =
   return "TODO Override!"
+
+method requirements*(this: Check): CheckReqs {.base.} =
+  echo "TODO Override!"
+  quit 99
 
 method run*(this: Check, state: var State): CheckResult {.base,
     locks: "unknown".} =

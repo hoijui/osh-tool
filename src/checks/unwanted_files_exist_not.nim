@@ -19,6 +19,11 @@ type UnwantedFilesExistNotCheck = ref object of Check
 method name*(this: UnwantedFilesExistNotCheck): string =
   return "No unwanted files"
 
+method requirements*(this: Check): CheckReqs =
+  return {
+    CheckReq.FilesListRec,
+  }
+
 method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   let unwantedFiles = filterPathsMatchingFileName(state.listFiles(), R_UNWANTED_FILES)
   return (if unwantedFiles.len == 0:
