@@ -152,6 +152,13 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
     return newCheckResult(CheckResultKind.Inapplicable)
 
   var issues: seq[CheckIssue] = @[]
+  if matchingFiles.len() == 0:
+    issues.add(
+      CheckIssue(
+        weight: CheckIssueWeight.Middle,
+        msg: some(fmt"No matching file types found")
+      )
+    )
   for mFile in matchingFiles:
     let exts = extractFileExts(mFile, fileExtsMaxParts)
     for ext in exts:
