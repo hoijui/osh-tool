@@ -14,7 +14,7 @@ import ../tools
 import ../check
 import ../state
 
-const SOURCE_EXT_FILE = "data/file-extension-list/data/categories/code.csv"
+const SOURCE_EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 
 # This macro reads the file SOURCE_EXT_FILE at compile time,

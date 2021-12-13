@@ -12,7 +12,7 @@ import ../state
 import ../file_ext_meta
 import std/tables
 
-const EXT_FILE = "data/file_extension_formats-cad.csv"
+const EXT_FILE = "resources/osh-file-types/file_extension_formats-cad.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 
 parseInjectExtsAndMap(staticRead(FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE))

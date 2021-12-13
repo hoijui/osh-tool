@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: Unlicense
 
-[submodule "data/file-extension-list"]
-	path = data/file-extension-list
+[submodule "resources/file-extension-list"]
+	path = resources/file-extension-list
 	url = https://github.com/hoijui/file-extension-list.git
+
+[submodule "resources/osh-file-types"]
+	path = resources/osh-file-types
+	url = https://gitlab.com/OSEGermany/osh-file-types.git
