@@ -21,25 +21,30 @@ technical project linting (quality assessment).
 
 What it can do:
 
-* Initialize a project repository
 * Check for compliance
+
+What it will additionally do in the future:
+
+* Initialize a project repository
 * Update compliance automatically, as much as possible
 
 ## Features
 
 So far, It may only check/lint OSH projects,
-while later it i ssupposed to also initialize them
-wiht all sorts of standard files and tooling.
+while later it is supposed to also initialize them
+with all sorts of standard files and tooling.
 
 See [src/checks](src/checks) for the currently supported checks,
 including at least:
 
-* Check README
-* Check LICENSE
+* Check README existence
+* Check LICENSE existence
 * Check [okh.toml](https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/OKH-LOSH.ttl)
-  ([Open Know-How](https://openknowhow.org) OSH meta-data file)
+  ([Open Know-How](https://openknowhow.org) OSH meta-data file) existence
 
 ## Requires
+
+To compile:
 
 * Nim and Nimble, version 0.10.0 or higher
 
@@ -88,5 +93,5 @@ They also work well in combination with this tool.
 
 ## License
 
-GNU General Public License version 3
+GNU Affero General Public License version 3
 
