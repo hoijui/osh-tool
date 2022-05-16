@@ -5,12 +5,42 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# TODO Anderst benennen, nicht "project management tool", sondern standardisierung fuer techinsche doku/linter
+# TODO Try to name&//describe this tool in a shorter, slightly more catchy way.
 let doc = """
-Open Source Hardware (OSH) project management tool.
-It helps in initially setting up an OSH project according certain standards,
-updating a project to the latest standards,
-and allows to verify which stadnards are met or not.
+A linter (static analysis tool) for repositories
+which contain technical documentation
+of Open Source Hardware (OSH) projects.
+
+It supports three main commands:
+
+- **check** (beta, please try; only reads, does not write/create/change anything):
+  This checks a given project dir/repo,
+  reporting about what is and is not present and in order
+  of the things we want to see in a project [1].
+- **init** (alpha, do not use!):
+  This initializes a project directory template from scratch,
+  containing as much as possible
+  of the structure and meta-data we want to see [1].
+- **update** (alpha, do not use!):
+  This auto-generates as much as possible
+  of the structure and meta-data we want to see [1]
+  in the given, already existing project directory.
+
+## 1. What we want to see in a project
+
+This is very opinionated. It is our choice of set of rules, and their specific settings. We came to this, through our years of experience in Open Source Software and Hardware. As the later is pretty new and still quite "wild" and unorganized, there is little solid understanding of it all, and these rules are thus partly just guessing.
+We wouls be happy to get feedback through issues or even pull-reqests at:
+<https://gitlab.com/OSEGermany/osh-tool>
+
+The easiest way to understand what this tool does,
+is to just run it in a git repo with some content with:
+
+```
+osh check
+```
+
+This just reads files and writes to stdout.
+It neither deletes, changes nor creates files.
 
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
