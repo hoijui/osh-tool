@@ -6,15 +6,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from strutils import join
-import os
 import options
 import re
+import strformat
 import ../config
 import ../tools
 import ../init_update
 import ../state
 
-const LICENSE_TEMPLATE_URL = "TODO"
+const LICENSE_GUIDE_URL = "TODO-Licensing-Guide-URL" # TODO
+const REUSE_URL = "https://github.com/fsfe/reuse-tool"
 let R_LICENSE = re".*(LICENSE|COPYING).*"
 
 type LicenseInitUpdate = ref object of InitUpdate
@@ -27,16 +28,11 @@ method init(this: LicenseInitUpdate, state: var State): InitResult =
     result = InitResult(error: some("Not generating LICENSE.md, because LICENSE(s) are already present: " &
         filterPathsMatchingFileName(state.listFilesL1(), R_LICENSE).join(", ")))
   else:
-    let license_md = os.joinPath(state.config.proj_root, "LICENSE.md")
-    if os.fileExists(license_md) and not state.config.force:
-      result = InitResult(error: some("Not generating LICENSE.md, because the file already exists."))
-    else:
-      downloadTemplate(state.config, "LICENSE.md", LICENSE_TEMPLATE_URL) # TODO Have multiple file options, and a way to choose from them, maybe?
-      result = InitResult(error: none(string))
+    result = InitResult(error: some(fmt"Please use the REUSE tool (<{REUSE_URL}>) for handling licensing, and choose Licenses using <{LICENSE_GUIDE_URL}>."))
   return result
 
 method update(this: LicenseInitUpdate, state: var State): UpdateResult =
-  return UpdateResult(error: some("Not yet implemented!"))
+  return UpdateResult(error: some(fmt"Licenses need to be updated manually, see the REUSE tools documentation: <{REUSE_URL}>"))
 
 proc createDefault*(): InitUpdate =
   LicenseInitUpdate()
