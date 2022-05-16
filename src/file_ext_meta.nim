@@ -78,9 +78,9 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
       echo("Failed to scan extensions line, should be 'string,string,string,string', but is: '" & line & "', on line:")
       echo lineNum
       quit 66
-    let open = parseTriValue(openStr, "open?", "open", "proprietary", "Unknown", "both", lineNum, 1)
-    let text = parseTriValue(textStr, "text?", "text", "binary", "Unknown", "both", lineNum, 2)
-    let source = parseTriValue(sourceStr, "source?", "source", "export", "Unknown", "both", lineNum, 3)
+    let open = parseTriValue(openStr, "open?", "open", "proprietary", "unknown", "both", lineNum, 1)
+    let text = parseTriValue(textStr, "text?", "text", "binary", "unknown", "both", lineNum, 2)
+    let source = parseTriValue(sourceStr, "source?", "source", "export", "unknown", "both", lineNum, 3)
     maxParts = max(maxParts, ext.count('.') + 1)
     if not ext.isEmptyOrWhitespace():
       exts.add((ext.toLower(), open, text, source))
