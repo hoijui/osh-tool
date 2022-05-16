@@ -5,12 +5,12 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import chronicles
 import os
 import options
 import sequtils
 import strformat
 import strutils
+import std/logging
 import system/io
 import ./config
 import ./check
@@ -89,7 +89,7 @@ proc initRepStreams(state: State): (File, File) =
     if state.config.reportTarget.isSome():
       let reportFileName = state.config.reportTarget.get()
       if not state.config.force and fileExists(reportFileName):
-        error "Report file exists, and --force was not specified; aborting.", reportFile = reportFileName
+        error fmt"Report file '{reportFileName}' exists, and --force was not specified; aborting."
         quit 1
       let file = io.open(reportFileName, fmWrite)
       (file, file)
@@ -108,7 +108,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   for check in registry.checks:
     let res = check.run(state)
     if not isApplicable(res):
-      debug "Skip reporting check because it is inapplicable to this project (in its current state)", checkName = check.name()
+      debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state)"
       continue
     checkFmt.report(check, res)
   checkFmt.finalize()

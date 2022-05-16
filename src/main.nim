@@ -36,11 +36,11 @@ Options:
 """
 
 import docopt
-import chronicles
 import os
 import options
 import strformat
 import system/io
+import std/logging
 import ./config
 import ./checks
 import ./checker
@@ -71,7 +71,9 @@ proc update*(registry: InitUpdatesRegistry, state: var State) =
       stderr.writeLine(fmt"Update - {iu.name()}? - Failed: {res.error.get()}")
 
 proc cli() =
-  trace "Initializing ..."
+  addHandler(newConsoleLogger())
+
+  debug "Initializing ..."
   let args = docopt(doc, version = version)
 
   let projRoot =
@@ -84,7 +86,7 @@ proc cli() =
       some($args["--report"])
     else:
       none(string)
-  trace "Create config value 'electronics' ..."
+  debug "Creating config value 'electronics' ..."
   let electronics: YesNoAuto =
     if args["--electronics"]:
       Yes
@@ -92,7 +94,7 @@ proc cli() =
       No
     else:
       Auto
-  trace "Create config value 'mechanics' ..."
+  debug "Creating config value 'mechanics' ..."
   let mechanics =
     if args["--mechanics"]:
       Yes
@@ -100,7 +102,7 @@ proc cli() =
       No
     else:
       Auto
-  trace "Create configuration ..."
+  debug "Creating configuration ..."
   let config = RunConfig(
     projRoot: projRoot,
     reportTarget: reportTarget,
@@ -113,7 +115,7 @@ proc cli() =
     mechanics: mechanics,
     )
 
-  trace "Creating the state ..."
+  debug "Creating the state ..."
   var runState = newState(config)
   if args["init"]:
     var registry = newInitUpdatesRegistry()
@@ -124,11 +126,11 @@ proc cli() =
     registry.registerInitUpdates()
     update(registry, runState)
   elif args["check"]:
-    trace "Creating the checks registry ..."
+    debug "Creating the checks registry ..."
     var registry = newChecksRegistry()
-    trace "Register checks ..."
+    debug "Registering checks ..."
     registry.registerChecks()
-    trace "Running checks ..."
+    debug "Running checks ..."
     checker.check(registry, runState)
 
 when isMainModule:
