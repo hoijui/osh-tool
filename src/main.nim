@@ -39,7 +39,6 @@ import docopt
 import os
 import options
 import strformat
-import system/io
 import std/logging
 import ./config
 import ./checks
@@ -55,20 +54,20 @@ proc init*(registry: InitUpdatesRegistry, state: var State) =
 
   for iu in registry.initUpdates:
     let res = iu.init(state)
-    if res.error.isNone():
-      stdout.writeLine(fmt"Init - {iu.name()}? - Succeeded")
+    if res.msg.isNone():
+      log(res.kind.logLevel(), fmt"Init - {iu.name()}? - {res.kind}")
     else:
-      stderr.writeLine(fmt"Init - {iu.name()}? - Failed: {res.error.get()}")
+      log(res.kind.logLevel(), fmt"Init - {iu.name()}? - {res.kind}: {res.msg.get()}")
 
 proc update*(registry: InitUpdatesRegistry, state: var State) =
   info "Updating OSH project directory to the latest guidelines ..."
 
   for iu in registry.initUpdates:
     let res = iu.update(state)
-    if res.error.isNone():
-      stdout.writeLine(fmt"Update - {iu.name()}? - Succeeded")
+    if res.msg.isNone():
+      log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}")
     else:
-      stderr.writeLine(fmt"Update - {iu.name()}? - Failed: {res.error.get()}")
+      log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}: {res.msg.get()}")
 
 proc cli() =
   addHandler(newConsoleLogger())

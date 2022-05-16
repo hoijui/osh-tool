@@ -25,14 +25,14 @@ method name(this: LicenseInitUpdate): string =
 
 method init(this: LicenseInitUpdate, state: var State): InitResult =
   if not state.config.license and filterPathsMatchingFileName(state.listFilesL1(), R_LICENSE).len() > 0:
-    result = InitResult(error: some("Not generating LICENSE.md, because LICENSE(s) are already present: " &
+    result = InitResult(kind: Note, msg: some("Not generating LICENSE.txt, because LICENSE(s) are already present: " &
         filterPathsMatchingFileName(state.listFilesL1(), R_LICENSE).join(", ")))
   else:
-    result = InitResult(error: some(fmt"Please use the REUSE tool (<{REUSE_URL}>) for handling licensing, and choose Licenses using <{LICENSE_GUIDE_URL}>."))
+    result = InitResult(kind: Warning, msg: some(fmt"Please use the REUSE tool (<{REUSE_URL}>) for handling licensing, and choose Licenses using <{LICENSE_GUIDE_URL}>."))
   return result
 
 method update(this: LicenseInitUpdate, state: var State): UpdateResult =
-  return UpdateResult(error: some(fmt"Licenses need to be updated manually, see the REUSE tools documentation: <{REUSE_URL}>"))
+  return UpdateResult(kind: Note, msg: some(fmt"Licenses need to be updated manually, see the REUSE tools documentation: <{REUSE_URL}>"))
 
 proc createDefault*(): InitUpdate =
   LicenseInitUpdate()
