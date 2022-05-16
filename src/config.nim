@@ -25,9 +25,14 @@ type
     Yes,
     No,
     Auto,
+  Command* = enum
+    Check,
+    Init,
+    Update,
 
 type
   RunConfig* = object
+    command*: Command
     projRoot*: string
     # Where evaluation output gets written to.
     # Stdout if None, else a file.

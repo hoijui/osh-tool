@@ -69,6 +69,43 @@ proc update*(registry: InitUpdatesRegistry, state: var State) =
     else:
       log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}: {res.msg.get()}")
 
+proc run(config: RunConfig) =
+  debug "Creating the state ..."
+  var runState = newState(config)
+  case config.command:
+    of Init:
+      debug "Creating the init&update registry ..."
+      var registry = newInitUpdatesRegistry()
+      debug "Registering init handlers ..."
+      registry.registerInitUpdates()
+      debug "Running inits ..."
+      init(registry, runState)
+    of Update:
+      debug "Creating the init&update registry ..."
+      var registry = newInitUpdatesRegistry()
+      debug "Registering update handlers ..."
+      registry.registerInitUpdates()
+      debug "Running updates ..."
+      update(registry, runState)
+    of Check:
+      debug "Creating the checks registry ..."
+      var registry = newChecksRegistry()
+      debug "Registering checks ..."
+      registry.registerChecks()
+      debug "Running checks ..."
+      checker.check(registry, runState)
+
+proc extract_command(args: Table[string, Value]): Command =
+  if args["init"]:
+    return Command.Init
+  elif args["update"]:
+    return Command.Init
+  elif args["check"]:
+    return Command.Check
+  else:
+    error "No valid command given, see --help"
+    raise newException(Defect, "No valid command given, see --help")
+
 proc cli() =
   addHandler(newConsoleLogger())
 
@@ -101,8 +138,12 @@ proc cli() =
       No
     else:
       Auto
+  debug "Creating config value 'command' ..."
+  let command = extract_command(args)
+
   debug "Creating configuration ..."
   let config = RunConfig(
+    command: command,
     projRoot: projRoot,
     reportTarget: reportTarget,
     force: args["--force"],
@@ -114,23 +155,8 @@ proc cli() =
     mechanics: mechanics,
     )
 
-  debug "Creating the state ..."
-  var runState = newState(config)
-  if args["init"]:
-    var registry = newInitUpdatesRegistry()
-    registry.registerInitUpdates()
-    init(registry, runState)
-  elif args["update"]:
-    var registry = newInitUpdatesRegistry()
-    registry.registerInitUpdates()
-    update(registry, runState)
-  elif args["check"]:
-    debug "Creating the checks registry ..."
-    var registry = newChecksRegistry()
-    debug "Registering checks ..."
-    registry.registerChecks()
-    debug "Running checks ..."
-    checker.check(registry, runState)
+  run(config)
+
 
 when isMainModule:
   cli()
