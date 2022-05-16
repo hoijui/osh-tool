@@ -11,7 +11,9 @@ import ../tools
 import ../check
 import ../state
 
-let R_LICENSE = re"^.*(LICENSE|COPYING).*$"
+# Requires "LICENSE" or "COPYING" (case-insensitive)
+# to appear somewhere in the file name.
+let R_LICENSE = re"(?i)^.*(LICENSE|COPYING).*$"
 
 type LicenseExistsCheck = ref object of Check
 
