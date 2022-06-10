@@ -78,7 +78,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult) {.locks: "u
 
 method finalize(self: CheckFmt) {.base.} =
   self.repStream.close()
-  # This isnot required,
+  # This is not required,
   # because stderr does not need to be closed,
   # and if it is a file, it is the same like repStream,
   # which was already closed in the line above
