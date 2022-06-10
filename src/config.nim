@@ -29,6 +29,10 @@ type
     Check,
     Init,
     Update,
+  OutputFormat* = enum
+    MdList,
+    MdTable,
+    Json,
 
 type
   RunConfig* = object
@@ -43,6 +47,6 @@ type
     readme*: bool
     license*: bool
     offline*: bool
-    markdown*: bool
+    outputFormat*: OutputFormat
     electronics*: YesNoAuto
     mechanics*: YesNoAuto

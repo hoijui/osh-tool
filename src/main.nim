@@ -49,7 +49,7 @@ It neither deletes, changes nor creates files.
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown] [-r <path>] [--report <path>]
+  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown] [--json] [-r <path>] [--report <path>]
   osh (-h | --help)
   osh (-V | --version)
 
@@ -61,8 +61,9 @@ Options:
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
-  --markdown         Generates the reporting output in markdow, suitable to render as HTML or cop&paste into an issue report.
-  -r --report <path> File-path the check-report (Markdown) gets written to; by default, it gets written to stdout.
+  --markdown         Generates the reporting output as a markdown table, suitable to render as HTML or cop&paste into an issue report (default output format: markdown list).
+  --json             Generates the reporting output in JSON, a machine-readable format (default output format: markdown list).
+  -r --report <path> File-path the check-report (Markdown or JSON) gets written to; by default, it gets written to stdout.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
@@ -156,6 +157,14 @@ proc cli() =
       some($args["--report"])
     else:
       none(string)
+  debug "Creating config value 'outputFormat' ..."
+  let outputFormat =
+    if args["--markdown"]:
+      OutputFormat.MdTable
+    elif args["--json"]:
+      OutputFormat.Json
+    else:
+      OutputFormat.MdList
   debug "Creating config value 'electronics' ..."
   let electronics: YesNoAuto =
     if args["--electronics"]:
@@ -184,7 +193,7 @@ proc cli() =
     readme: args["--readme"],
     license: args["--license"],
     offline: args["--offline"],
-    markdown: args["--markdown"],
+    outputFormat: outputFormat,
     electronics: electronics,
     mechanics: mechanics,
     )
