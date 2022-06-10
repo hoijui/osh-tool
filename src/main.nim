@@ -28,7 +28,11 @@ It supports three main commands:
 
 ## 1. What we want to see in a project
 
-This is very opinionated. It is our choice of set of rules, and their specific settings. We came to this, through our years of experience in Open Source Software and Hardware. As the later is pretty new and still quite "wild" and unorganized, there is little solid understanding of it all, and these rules are thus partly just guessing.
+This is very opinionated. It is our choice of set of rules, and their specific settings.
+We came to this, through our years of experience in Open Source Software and Hardware.
+As the later is pretty new and still quite "wild" and unorganized,
+there is little solid understanding of it all,
+and these rules are thus partly just guessing.
 We would be happy to get feedback through issues or even pull-reqests at:
 <https://gitlab.com/OSEGermany/osh-tool>
 
