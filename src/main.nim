@@ -57,7 +57,7 @@ Options:
   -h --help          Show this screen.
   -V --version       Show this tools version.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
-  --offline          Not not access the network/internet.
+  --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
