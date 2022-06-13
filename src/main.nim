@@ -71,6 +71,7 @@ Options:
 """
 
 import docopt
+import results
 import os
 import options
 import strformat
@@ -141,7 +142,9 @@ proc extract_command(args: Table[string, Value]): Command =
     error "No valid command given, see --help"
     raise newException(Defect, "No valid command given, see --help")
 
-proc cli() =
+type CliRes = Result[void, string]
+
+proc cli(): CliRes =
   addHandler(newConsoleLogger())
 
   debug "Initializing ..."
@@ -158,10 +161,14 @@ proc cli() =
     else:
       none(string)
   debug "Creating config value 'outputFormat' ..."
+  let ofMarkdown = args["--markdown"]
+  let ofJson = args["--json"]
+  if ofMarkdown and ofJson:
+    return err("You may at most use one of --markdown and --json")
   let outputFormat =
-    if args["--markdown"]:
+    if ofMarkdown:
       OutputFormat.MdTable
-    elif args["--json"]:
+    elif ofJson:
       OutputFormat.Json
     else:
       OutputFormat.MdList
@@ -200,6 +207,10 @@ proc cli() =
 
   run(config)
 
+  return ok()
 
 when isMainModule:
-  cli()
+  let res = cli()
+  if res.isErr:
+    fatal res.error()
+    quit(1)
