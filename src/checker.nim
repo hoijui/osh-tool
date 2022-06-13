@@ -96,7 +96,7 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, to
       self.repStream.writeLine("      {")
       self.repStream.writeLine(fmt"""        "weight": "{issue.weight}",""")
       if issue.msg.isSome:
-        self.repStream.writeLine(fmt"""        "msg": "{issue.msg.get().replace('\n', ' ')}" """)
+        self.repStream.writeLine(fmt"""        "msg": "{issue.msg.get().replace("\n", "\\n")}" """)
       indIssue += 1
       if indIssue == numIssues:
         potComma = ""
