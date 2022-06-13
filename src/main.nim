@@ -68,6 +68,11 @@ Options:
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
   -no-mechanics      Indicate that the project does not contain mechanical parts (FreeCAD)
+
+Examples:
+  osh check
+  osh check --force --markdown --report report.md
+  osh check --force --json --report report.json
 """
 
 import docopt
