@@ -58,7 +58,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
         return newCheckResult(
           CheckResultKind.Bad,
           CheckIssueWeight.Heavy,
-          some(fmt("Open Know-How meta-data file ({OKH_FILE}) not found.\nPlease consider creating it.\nSee <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
+          some(fmt("Open Know-How meta-data file ({OKH_FILE}) not found.\nPlease consider creating it, if this is an OSH project.\nSee <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
         )
 
 proc createDefault*(): Check =
