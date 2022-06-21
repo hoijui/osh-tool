@@ -31,7 +31,7 @@ method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
   else:
     newCheckResult(
       CheckResultKind.Bad,
-      CheckIssueWeight.Light,
+      CheckIssueImportance.Light,
       some(
         "Possibly generatable files found. Please consider removing them:\n\n- " &
         foundFiles.join("\n- ")

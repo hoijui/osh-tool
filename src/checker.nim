@@ -63,8 +63,8 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      let weightStr = fmt"{issue.weight}"
-      fmt("\n  - {weightStr.toUpper()}{msgFmt(issue.msg)}")
+      let importanceStr = fmt"{issue.importance}"
+      fmt("\n  - {importanceStr.toUpper()}{msgFmt(issue.msg)}")
     )
     .join("")
   self.getStream(res).writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
@@ -74,7 +74,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      fmt"\[{issue.weight}{msgFmt(issue.msg)}\]"
+      fmt"\[{issue.importance}{msgFmt(issue.msg)}\]"
     )
     .join(", <br>")
     .replace("\n", " <br>-- ")
@@ -94,7 +94,7 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, to
     var potComma = ","
     for issue in res.issues:
       self.repStream.writeLine("      {")
-      self.repStream.writeLine(fmt"""        "weight": "{issue.weight}",""")
+      self.repStream.writeLine(fmt"""        "importance": "{issue.importance}",""")
       if issue.msg.isSome:
         self.repStream.writeLine(fmt"""        "msg": "{issue.msg.get().replace("\n", "\\n")}" """)
       indIssue += 1

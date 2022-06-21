@@ -155,7 +155,7 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
   if matchingFiles.len() == 0:
     issues.add(
       CheckIssue(
-        weight: CheckIssueWeight.Middle,
+        importance: CheckIssueImportance.Middle,
         msg: some(fmt"No matching file types found")
       )
     )
@@ -174,7 +174,7 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
         if fileIssues.len() > 0:
           issues.add(
             CheckIssue(
-              weight: CheckIssueWeight.Light,
+              importance: CheckIssueImportance.Light,
               msg: some(fmt"File-format issue(s) with '{mFile}': " & fileIssues.join(", "))
             )
           )

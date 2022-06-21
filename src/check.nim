@@ -14,11 +14,11 @@ type
   CheckResultKind* {.pure.} = enum
     Perfect, Ok, Acceptable, Bad, Inapplicable
 
-  CheckIssueWeight* {.pure.} = enum
-    DeveloperFailure, Heavy, Middle, Light
+  CheckIssueImportance* {.pure.} = enum
+    DeveloperFailure, Severe, Middle, Light
 
   CheckIssue* = object
-    weight*: CheckIssueWeight
+    importance*: CheckIssueImportance
     msg*: Option[string]
 
   CheckResult* = object
@@ -50,12 +50,12 @@ proc newCheckResult*(kind: CheckResultKind): CheckResult =
   return CheckResult(kind: kind, issues: @[])
 
 # Creates a check-result with a single issue
-proc newCheckResult*(kind: CheckResultKind, weight: CheckIssueWeight, msg: Option[string]): CheckResult =
+proc newCheckResult*(kind: CheckResultKind, importance: CheckIssueImportance, msg: Option[string]): CheckResult =
   return CheckResult(
     kind: kind,
     issues: @[
       CheckIssue(
-        weight: weight,
+        importance: importance,
         msg: msg
       )
     ]
@@ -82,7 +82,7 @@ method run*(this: Check, state: var State): CheckResult {.base,
     kind: CheckResultKind.Bad,
     issues: @[
       CheckIssue(
-        weight: CheckIssueWeight.DeveloperFailure,
+        importance: CheckIssueImportance.DeveloperFailure,
         msg: some("Not implemented for this specific check!")
       )
     ]

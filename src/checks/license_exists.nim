@@ -32,7 +32,7 @@ method run*(this: LicenseExistsCheck, state: var State): CheckResult =
   else:
     newCheckResult(
       CheckResultKind.Bad,
-      CheckIssueWeight.Heavy,
+      CheckIssueImportance.Severe,
       some("No LICENSE (or COPYING) file found in the root directory.\nPlease consider adding a LICENSE(.md).\nYou might want to choose one from a list by issuing `osh init --license`.")
     )
   )

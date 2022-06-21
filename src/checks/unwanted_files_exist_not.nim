@@ -31,7 +31,7 @@ method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   else:
     newCheckResult(
       CheckResultKind.Bad,
-      CheckIssueWeight.Middle,
+      CheckIssueImportance.Middle,
       some("Unwanted files found. Please consider removing them:\n\n- " & unwantedFiles.join("\n- "))
     )
   )
