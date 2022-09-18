@@ -49,7 +49,7 @@ It neither deletes, changes nor creates files.
 Usage:
   osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown] [--json] [-r <path>] [--report <path>]
+  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown-table] [--json] [-r <path>] [--report <path>]
   osh (-h | --help)
   osh (-V | --version)
 
@@ -61,9 +61,9 @@ Options:
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
-  --markdown         Generates the reporting output as a markdown table, suitable to render as HTML or cop&paste into an issue report (default output format: markdown list).
+  --markdown-table   Generates the reporting output as a markdown table, suitable to render as HTML or cop&paste into an issue report (default output format: markdown list).
   --json             Generates the reporting output in JSON, a machine-readable format (default output format: markdown list).
-  -r --report <path> File-path the check-report (Markdown or JSON) gets written to; by default, it gets written to stdout.
+  -r --report <path> File-path the check-report gets written to; by default, it gets written to stdout.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
@@ -71,7 +71,8 @@ Options:
 
 Examples:
   osh check
-  osh check --force --markdown --report report.md
+  osh check --force --report report.md
+  osh check --force --markdown-table --report report.md
   osh check --force --json --report report.json
 """
 
@@ -166,10 +167,10 @@ proc cli(): CliRes =
     else:
       none(string)
   debug "Creating config value 'outputFormat' ..."
-  let ofMarkdown = args["--markdown"]
+  let ofMarkdown = args["--markdown-table"]
   let ofJson = args["--json"]
   if ofMarkdown and ofJson:
-    return err("You may at most use one of --markdown and --json")
+    return err("You may at most use one of --markdown-table and --json")
   let outputFormat =
     if ofMarkdown:
       OutputFormat.MdTable
