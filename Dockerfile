@@ -5,22 +5,22 @@
 #
 # SPDX-License-Identifier: Unlicense
 
-FROM ubuntu:22.04
+#FROM ubuntu:22.04
+FROM nimlang/nim
 
-RUN apt-get update
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y wget
+#RUN apt-get update
+#RUN apt-get install -y libssl-dev
+#RUN apt-get install -y wget
 # NOTE Solution from:
 # https://www.mail-archive.com/nim-general@lists.nim-lang.org/msg19329.html
-RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-RUN dpkg -i libssl1.1_*.deb
+#RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+#RUN dpkg -i libssl1.1_*.deb
 
 RUN mkdir /osh-tool
+RUN mkdir /osh-tool/sources
 WORKDIR /osh-tool
 
-COPY build/osh /osh-tool/
 
-ENV PATH="${PATH}:/osh-tool"
 
 # Set this parameter like so:
 # docker build --build-arg okh_tool_release="0.3.1" .
@@ -31,26 +31,43 @@ ENV OKH_TOOL_PKG="okh-tool-$okh_tool_release-x86_64-unknown-linux-musl"
 RUN wget https://github.com/OPEN-NEXT/LOSH-OKH-tool/releases/download/$okh_tool_release/$OKH_TOOL_PKG.tar.gz
 RUN tar xf $OKH_TOOL_PKG.tar.gz
 RUN mv $OKH_TOOL_PKG/okh-tool ./
+#COPY /home/hoijui/Projects/OSEG/repos/LOSH-OKH-tool/target/x86_64-unknown-linux-musl/release/okh-tool ./
+#COPY build/okh-tool ./
+
+
+RUN apt-get update
 
 RUN apt-get install -y git mercurial
+
+
+
 
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
 #      to pass non-interactively; see:
 #      https://stackoverflow.com/a/58264927/586229
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get -y install -y --no-install-recommends reuse
-#RUN apt-get install -y python3-pip
-#RUN pip3 install --user reuse
+#RUN apt-get -y install -y --no-install-recommends reuse
+
+RUN apt-get install -y python3-pip
+RUN pip3 install --user reuse
 
 
-#RUN apt-get install -y pipx
-#RUN pipx install reuse
-#ENV PATH="${PATH}:~/.local/bin"
+WORKDIR /osh-tool/sources
 
-RUN rm -Rf $OKH_TOOL_PKG
-RUN rm $OKH_TOOL_PKG.tar.gz
-RUN rm /libssl1.1_*.deb
-#RUN rm -rf /var/lib/apt/lists/*
+COPY . /osh-tool/sources/
+
+RUN nimble -y build && cp build/osh ../
+
+WORKDIR /osh-tool
+
+ENV PATH="${PATH}:/osh-tool"
+
+
+
+#RUN rm -Rf $OKH_TOOL_PKG
+#RUN rm $OKH_TOOL_PKG.tar.gz
+#RUN rm /libssl1.1_*.deb
+RUN rm -rf /var/lib/apt/lists/*
 
 #LABEL com.example.version="0.0.1-beta"
 
