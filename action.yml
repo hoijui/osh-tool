@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2022 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+# Defines a GitHub (GH) Action, to be used in GH CI pipelines
+
+name: 'OSH Linter/Analyzer'
+description: 'Runs "osh check", which analyzes an Open Source Hardware repository, indicating how well it adheres to a set of rules.'
+inputs:
+  repo-path:  # id of input
+    description: 'Path to the repo that should be analyzed (default: ".")'
+    required: true
+    default: '.'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.repo-path }}
