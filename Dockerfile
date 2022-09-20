@@ -52,25 +52,25 @@ RUN rm $OKH_TOOL_PKG.tar.gz
 RUN rm /libssl1.1_*.deb
 #RUN rm -rf /var/lib/apt/lists/*
 
-LABEL com.example.version="0.0.1-beta"
+#LABEL com.example.version="0.0.1-beta"
 
 
 
-    org.opencontainers.artifact.created date and time on which the artifact was built, conforming to RFC 3339.
-    org.opencontainers.artifact.description: human readable description for the artifact (string)
-    org.opencontainers.image.created date and time on which the image was built, conforming to RFC 3339.
-    org.opencontainers.image.authors contact details of the people or organization responsible for the image (freeform string)
-    org.opencontainers.image.url URL to find more information on the image (string)
-    org.opencontainers.image.documentation URL to get documentation on the image (string)
-    org.opencontainers.image.source URL to get source code for building the image (string)
-    org.opencontainers.image.version version of the packaged software
-        The version MAY match a label or tag in the source code repository
-        version MAY be Semantic versioning-compatible
-    org.opencontainers.image.revision Source control revision identifier for the packaged software.
-    org.opencontainers.image.vendor Name of the distributing entity, organization or individual.
-    org.opencontainers.image.licenses License(s) under which contained software is distributed as an SPDX License Expression.
-    org.opencontainers.image.title Human-readable title of the image (string)
-    org.opencontainers.image.description Human-readable description of the software packaged in the image (string)
+#    org.opencontainers.artifact.created date and time on which the artifact was built, conforming to RFC 3339.
+#    org.opencontainers.artifact.description: human readable description for the artifact (string)
+#    org.opencontainers.image.created date and time on which the image was built, conforming to RFC 3339.
+#    org.opencontainers.image.authors contact details of the people or organization responsible for the image (freeform string)
+#    org.opencontainers.image.url URL to find more information on the image (string)
+#    org.opencontainers.image.documentation URL to get documentation on the image (string)
+#    org.opencontainers.image.source URL to get source code for building the image (string)
+#    org.opencontainers.image.version version of the packaged software
+#        The version MAY match a label or tag in the source code repository
+#        version MAY be Semantic versioning-compatible
+#    org.opencontainers.image.revision Source control revision identifier for the packaged software.
+#    org.opencontainers.image.vendor Name of the distributing entity, organization or individual.
+#    org.opencontainers.image.licenses License(s) under which contained software is distributed as an SPDX License Expression.
+#    org.opencontainers.image.title Human-readable title of the image (string)
+#    org.opencontainers.image.description Human-readable description of the software packaged in the image (string)
 
 
 
