@@ -13,7 +13,7 @@ FROM nimlang/nim
 #RUN apt-get install -y wget
 # NOTE Solution from:
 # https://www.mail-archive.com/nim-general@lists.nim-lang.org/msg19329.html
-#RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+#RUN wget --quiet http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
 #RUN dpkg -i libssl1.1_*.deb
 
 RUN mkdir /osh-tool
@@ -28,10 +28,9 @@ ARG okh_tool_release=0.3.1
 
 ENV OKH_TOOL_PKG="okh-tool-$okh_tool_release-x86_64-unknown-linux-musl"
 
-RUN wget https://github.com/OPEN-NEXT/LOSH-OKH-tool/releases/download/$okh_tool_release/$OKH_TOOL_PKG.tar.gz
+RUN wget --quiet https://github.com/OPEN-NEXT/LOSH-OKH-tool/releases/download/$okh_tool_release/$OKH_TOOL_PKG.tar.gz
 RUN tar xf $OKH_TOOL_PKG.tar.gz
 RUN mv $OKH_TOOL_PKG/okh-tool ./
-#COPY /home/hoijui/Projects/OSEG/repos/LOSH-OKH-tool/target/x86_64-unknown-linux-musl/release/okh-tool ./
 #COPY build/okh-tool ./
 
 
