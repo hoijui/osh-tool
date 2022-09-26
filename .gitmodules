@@ -4,7 +4,7 @@
 
 [submodule "resources/file-extension-list"]
 	path = resources/file-extension-list
-	url = https://github.com/hoijui/file-extension-list.git
+	url = https://github.com/dyne/file-extension-list.git
 
 [submodule "resources/osh-file-types"]
 	path = resources/osh-file-types
