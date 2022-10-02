@@ -1,0 +1,10 @@
+th {
+    border-top: 2px solid #1a1a1a;
+    border-bottom: 2px solid #1a1a1a;
+}
+td {
+    border-top: 1px solid #1a1a1a;
+}
+    body {
+      max-width: 360em;
+    }

@@ -14,14 +14,16 @@ FROM nimlang/nim:1.6.4
 #     .
 ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.3.1
+ARG projvar_release=0.11.0
 
 RUN \
     apt-get update ; \
     apt-get install -y --no-install-recommends \
         git \
         mercurial \
-        wget \
+        pandoc \
         python3-pip \
+        wget \
         ; \
     rm -rf /var/lib/apt/lists/*
 #        libssl-dev \
@@ -65,6 +67,14 @@ RUN rm config.nims ; \
         rm -Rf $OKH_TOOL_PKG ; \
     fi
 
+ENV PROJVAR_PKG="projvar-${projvar_release}-x86_64-unknown-linux-musl"
+ENV PROJVAR_DL="https://github.com/hoijui/projvar/releases/download/$projvar_release/$PROJVAR_PKG.tar.gz"
+RUN wget --quiet "$PROJVAR_DL" ; \
+    tar xf $PROJVAR_PKG.tar.gz ; \
+    mv $PROJVAR_PKG/projvar ./ ; \
+    rm $PROJVAR_PKG.tar.gz ; \
+    rm -Rf $PROJVAR_PKG
+
 # Ensures the `osh` tool is in PATH
 ENV OSH_TOOL_CLONE_URL="https://github.com/hoijui/osh-tool.git"
 RUN \
@@ -75,6 +85,8 @@ RUN \
     # Builds the `osh` tool
     nimble -y build && cp build/osh ../ ; \
     cd ..
+
+COPY report_gen* /osh-tool/
 
 ENV PATH="${PATH}:/osh-tool"
 
@@ -92,4 +104,4 @@ LABEL org.opencontainers.image.description="Contains the OSH Check/Linter CLI to
 
 WORKDIR /data
 
-CMD ["osh", "check", "--json"]
+CMD ["report_gen"]

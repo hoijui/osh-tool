@@ -15,8 +15,6 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - 'osh'
+    - 'report_gen'
     - '-C'
     - ${{ inputs.repo-path }}
-    - 'check'
-    - '--json'
