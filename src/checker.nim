@@ -74,10 +74,10 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      fmt"\[{issue.importance}{msgFmt(issue.msg)}\]"
+      fmt"__{issue.importance}__{msgFmt(issue.msg)}"
     )
-    .join(", <br>")
-    .replace("\n", " <br>-- ")
+    .join("<br><hline/><br>")
+    .replace("\n", " <br>&nbsp;")
   self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
 
 method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, total: int) {.locks: "unknown".} =
