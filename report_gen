@@ -166,3 +166,20 @@ pandoc \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
 	"$output_md"
+
+# Generate an index.html if none exists yet
+index_file="$(dirname "$output_html")/index.html"
+if ! [ -f "$index_file" ]
+then
+	echo '<!DOCTYPE html>
+<html>
+   <head>
+      <title>Redirecting to OSH report ...</title>
+      <meta http-equiv="refresh" content="1; url = osh-report.html" />
+   </head>
+   <body>
+      <p>If you are not redirected automatically,
+      click on <a href="osh-report.html">osh-report.html</a>.</p>
+   </body>
+</html>' > "$index_file"
+fi
