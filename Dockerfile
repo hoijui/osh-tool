@@ -86,6 +86,10 @@ RUN \
     nimble -y build && cp build/osh ../ ; \
     cd ..
 
+# NOTE This fixes a bug; see:
+#      https://github.com/actions/runner/issues/2033
+RUN git config --global --add safe.directory /github/workspace
+
 COPY report_gen* /osh-tool/
 
 ENV PATH="${PATH}:/osh-tool"
