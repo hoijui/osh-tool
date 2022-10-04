@@ -16,17 +16,15 @@ import std/osproc
 
 const REUSE_CMD = "reuse"
 
-type CleanCadFilesCheck = ref object of Check
+type ReuseLintCheck = ref object of Check
 
-method name*(this: CleanCadFilesCheck): string =
+method name*(this: ReuseLintCheck): string =
   return "REUSE/SPDX Licensing info"
 
 method requirements*(this: Check): CheckReqs =
-  return {
-    CheckReq.FilesListRec,
-  }
+  return {}
 
-method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
+method run*(this: ReuseLintCheck, state: var State): CheckResult =
   try:
     let reuseProc = osproc.startProcess(
       command = REUSE_CMD,
@@ -54,7 +52,7 @@ method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
       newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Middle, msg)
   except OSError as err:
     let msg = fmt("ERROR Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
-    newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Middle, some(msg))
+    newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe, some(msg))
 
 proc createDefault*(): Check =
-  CleanCadFilesCheck()
+  ReuseLintCheck()
