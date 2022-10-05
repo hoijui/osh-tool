@@ -133,6 +133,8 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "subtitle: '$subtitle'"
 	echo "---"
 	echo
+	echo "## Project meta-data"
+	echo
 	echo "| | |"
 	echo "| --- | -------- |"
 	echo "| _version_ | ${PROJECT_VERSION:-"N/A"} |"
@@ -140,6 +142,8 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "| _branch_ | ${PROJECT_BUILD_BRANCH:-"N/A"} |"
 	echo "| _report build date_ | ${PROJECT_BUILD_DATE:-"N/A"} |"
 	echo "| _licenses_ | ${PROJECT_LICENSES:-"N/A"} |"
+	echo
+	echo "## Report"
 	echo
 } >> "$prefix_file"
 cat "$prefix_file" "$output_md" > "$tmp_file"
@@ -150,6 +154,8 @@ rm "$prefix_file"
 if $echo_projvar
 then
 	{
+		echo
+		echo "## Project meta-data (by projvar)"
 		echo
 		echo '```'
 		cat "$output_projvar"
