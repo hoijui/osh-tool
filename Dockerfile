@@ -16,12 +16,19 @@ ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.3.1
 ARG projvar_release=0.11.0
 
+# Installs the FSF REUSE CLI tool
+# NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
+#      to pass non-interactively; see:
+#      https://stackoverflow.com/a/58264927/586229
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN \
     apt-get update ; \
     apt-get install -y --no-install-recommends \
         git \
         mercurial \
         pandoc \
+        python3.9 \
         python3-pip \
         wget \
         ; \
@@ -29,12 +36,14 @@ RUN \
 #        libssl-dev \
 #        reuse \
 
-# Installs the FSF REUSE CLI tool
-# NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
-#      to pass non-interactively; see:
-#      https://stackoverflow.com/a/58264927/586229
-ENV DEBIAN_FRONTEND=noninteractive
-RUN pip3 install --user reuse==$reuse_tool_release
+# We need to use Python 3.9 (default is 3.8) because of this REUSE bug:
+# https://github.com/fsfe/reuse-tool/issues/587
+RUN \
+    rm -Rf /usr/bin/python3 /usr/bin/python ; \
+    ln -sf /usr/bin/python3.9 /usr/bin/python3 ; \
+    ln -sf /usr/bin/python3 /usr/bin/python
+
+RUN python3.9 -m pip install --user reuse==$reuse_tool_release
 ENV HOME="/root"
 ENV PATH="${PATH}:${HOME}/.local/bin"
 
