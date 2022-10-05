@@ -47,15 +47,16 @@ This just reads files and writes to stdout.
 It neither deletes, changes nor creates files.
 
 Usage:
-  osh [-C <path>] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
-  osh [-C <path>] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown-table] [--json] [-r <path>] [--report <path>]
+  osh [-C <path>] [--quiet] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
+  osh [-C <path>] [--quiet] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C <path>] [--quiet] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown-table] [--json] [-r <path>] [--report <path>]
   osh (-h | --help)
-  osh (-V | --version)
+  osh (-V | --version) [--quiet]
 
 Options:
   -h --help          Show this screen.
   -V --version       Show this tools version.
+  -q --quiet         Prevents all logging output.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
   --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
@@ -151,10 +152,12 @@ proc extract_command(args: Table[string, Value]): Command =
 type CliRes = Result[void, string]
 
 proc cli(): CliRes =
-  addHandler(newConsoleLogger())
 
   debug "Initializing ..."
   let args = docopt(doc, version = version)
+
+  let logLevel = if args["--quiet"]: lvlNone else: lvlAll
+  addHandler(newConsoleLogger(levelThreshold = logLevel))
 
   let projRoot =
     if args["-C"]:
