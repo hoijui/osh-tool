@@ -35,6 +35,8 @@ RUN \
 #      https://stackoverflow.com/a/58264927/586229
 ENV DEBIAN_FRONTEND=noninteractive
 RUN pip3 install --user reuse==$reuse_tool_release
+ENV HOME="/root"
+ENV PATH="${PATH}:${HOME}/.local/bin"
 
 # NOTE Solution from:
 # https://www.mail-archive.com/nim-general@lists.nim-lang.org/msg19329.html
