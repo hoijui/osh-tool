@@ -24,4 +24,4 @@
 # ```
 # The value of this const gets replaced by nimble when compiling.
 
-const version = "0.1.0"
+const version = "0.2.0"
