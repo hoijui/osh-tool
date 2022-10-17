@@ -31,6 +31,7 @@ function print_help() {
 	echo -e "$APP_NAME - Executes the OSH CLI tool"
 	echo -e "on a local (git) repo, and generates an HTML report"
 	echo -e "from the results."
+	echo -e "By default, all output goes into a single folder: 'public'"
 	echo -e ""
 	echo -e "Usage:"
 	echo -e "\t$SCRIPT_NAME [OPTION...]"
