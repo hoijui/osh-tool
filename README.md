@@ -28,6 +28,24 @@ What it will additionally do in the future:
 * Initialize a project repository
 * Update compliance automatically, as much as possible
 
+## Example Projects
+
+Two sample hardware projects,
+using this tool to check their own Open Source'ness
+with the help of this tool,
+executed in [CI](https://en.wikipedia.org/wiki/Continuous_integration).
+The generated report is linked to form the README in a badge
+(image after the title) with the text "OSH Report".
+
+* GitLab CI
+  * <https://gitlab.com/OSEGermany/ohloom>
+  * [Generated Report](https://osegermany.gitlab.io/ohloom/osh-report.html)
+  * [CI script](https://gitlab.com/OSEGermany/ohloom/-/blob/master/.gitlab-ci.yml)
+* GitHub Actions
+  * <https://github.com/hoijui/MeditationBench>
+  * [Generated Report](https://hoijui.github.io/MeditationBench/osh-report.html)
+  * [CI script](https://github.com/hoijui/MeditationBench/blob/master/.github/workflows/check.yml)
+
 ## Features
 
 So far, It may only check/lint OSH projects,
