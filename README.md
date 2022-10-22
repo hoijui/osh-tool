@@ -4,14 +4,14 @@ SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
 SPDX-License-Identifier: CC0-1.0
 -->
 
+# `osh`-tool
+
 [![License: AGPL v3+](
     https://img.shields.io/badge/License-AGPL%20v3+-blue.svg)](
     https://www.gnu.org/licenses/agpl-3.0)
 [![REUSE status](
     https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
     https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
-
-# `osh`-tool
 
 A command line tool for Open Source Hardware (OSH)
 technical project linting (quality assessment).
@@ -74,7 +74,7 @@ Simply run `osh -h` to see usage information.
 
 ## Community
 
-Ask anything, as an issue!
+Ask anything as an issue!
 
 ## Similar Projects
 
@@ -94,4 +94,3 @@ They also work well in combination with this tool.
 ## License
 
 GNU Affero General Public License version 3
-
