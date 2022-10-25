@@ -34,12 +34,16 @@ method init(self: MdListCheckFmt) =
   discard
 
 method init(self: MdTableCheckFmt) =
-  self.repStream.writeLine(fmt"| Passed | Check | Message |")
+  let strm = self.repStream
+  strm.writeLine(fmt"| Passed | Check | Message |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
-  self.repStream.writeLine(fmt"| - | --- | ----- |")
+  strm.writeLine(fmt"| - | --- | ----- |")
 
 method init(self: JsonCheckFmt) =
-  self.repStream.writeLine("[")
+  let strm = self.repStream
+  strm.writeLine("{")
+  strm.writeLine("""  "checks": """)
+  strm.writeLine("  [")
 
 proc getStream(self: CheckFmt, res: CheckResult): File =
 # method getStream(self: CheckFmt, res: CheckResult): File {.base.} =
@@ -59,6 +63,7 @@ method report(self: CheckFmt, check: Check, res: CheckResult, index: int, indexA
   quit "to override!"
 
 method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
+  let strm = self.getStream(res)
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
@@ -67,9 +72,10 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
       fmt("\n  - {importanceStr.toUpper()}{msgFmt(issue.msg)}")
     )
     .join("")
-  self.getStream(res).writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
+  strm.writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
+  let strm = self.getStream(res)
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
@@ -78,45 +84,49 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
-  self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
 
 method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
-  self.repStream.writeLine("  {")
-  self.repStream.writeLine(fmt"""    "name": "{check.name()}",""")
+  let strm = self.getStream(res)
+  strm.writeLine("    {")
+  strm.writeLine(fmt"""      "name": "{check.name()}",""")
   let passed = isGood(res)
-  self.repStream.writeLine(fmt"""    "passed": "{passed}",""")
-  self.repStream.write(fmt"""    "state": "{res.kind}" """)
+  strm.writeLine(fmt"""      "passed": "{passed}",""")
+  strm.write(fmt"""      "state": "{res.kind}" """)
   let numIssues = len(res.issues)
   if numIssues > 0:
-    self.repStream.writeLine(",")
-    self.repStream.writeLine(fmt"""    "issues": [""")
+    strm.writeLine("  ,")
+    strm.writeLine(fmt"""      "issues": [""")
     var indIssue = 0
     var potComma = ","
     for issue in res.issues:
-      self.repStream.writeLine("      {")
-      self.repStream.writeLine(fmt"""        "importance": "{issue.importance}",""")
+      strm.writeLine("        {")
+      strm.writeLine(fmt"""          "importance": "{issue.importance}",""")
       if issue.msg.isSome:
-        self.repStream.writeLine(fmt"""        "msg": "{issue.msg.get().replace("\n", "\\n")}" """)
+        strm.writeLine(fmt"""          "msg": "{issue.msg.get().replace("\n", "\\n")}" """)
       indIssue += 1
       if indIssue == numIssues:
         potComma = ""
-      self.repStream.writeLine(fmt"      }}{potComma}") # Add comma if not last
-    self.repStream.write("    ]")
-  self.repStream.writeLine("")
+      strm.writeLine(fmt"        }}{potComma}") # Add comma if not last
+    strm.write("      ]")
+  strm.writeLine("")
 
   let potComma = if indexAll + 1 < total: "," else: ""
-  self.repStream.writeLine(fmt"  }}{potComma}") # Add comma if not last
+  strm.writeLine(fmt"    }}{potComma}") # Add comma if not last
 
 method finalize(self: CheckFmt)  {.base, locks: "unknown".} =
   self.repStream.close()
-  # This is not required,
+  # NOTE This is not required,
   # because stderr does not need to be closed,
   # and if it is a file, it is the same like repStream,
   # which was already closed in the line above
   #repStreamErr.close()
 
 method finalize(self: JsonCheckFmt) {.locks: "unknown".} =
-  self.repStream.writeLine("]")
+  let strm = self.repStream
+  strm.writeLine("  ],")
+  strm.writeLine("}")
+  # See NOTE in CheckFmt.finalize
   self.repStream.close()
 
 proc initRepStreams(state: State): (File, File) =
