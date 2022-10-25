@@ -42,6 +42,11 @@ type
   # CheckReqs* {.size: sizeof(cint).} = set[CheckReq]
   CheckReqs* = set[CheckReq]
 
+  ReportStats* = object
+    # How well the project adheres to this tools criteria,
+    # from 0.0 for not at all, to 1.0 for compleetely.
+    openness*: float32
+
 proc toNum*(flags: CheckReqs): int = cast[cint](flags)
 proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)
 

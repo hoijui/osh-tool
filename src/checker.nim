@@ -114,7 +114,7 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, in
   let potComma = if indexAll + 1 < total: "," else: ""
   strm.writeLine(fmt"    }}{potComma}") # Add comma if not last
 
-method finalize(self: CheckFmt)  {.base, locks: "unknown".} =
+method finalize(self: CheckFmt, stats: ReportStats)  {.base, locks: "unknown".} =
   self.repStream.close()
   # NOTE This is not required,
   # because stderr does not need to be closed,
@@ -122,9 +122,34 @@ method finalize(self: CheckFmt)  {.base, locks: "unknown".} =
   # which was already closed in the line above
   #repStreamErr.close()
 
-method finalize(self: JsonCheckFmt) {.locks: "unknown".} =
+method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
+  let strm = self.repStream
+  strm.writeLine("")
+  strm.writeLine("## Project Statistics")
+  strm.writeLine("")
+  strm.writeLine(fmt"* Openness: {stats.openness}")
+  # See NOTE in CheckFmt.finalize
+  self.repStream.close()
+
+method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
+  let strm = self.repStream
+  strm.writeLine("")
+  strm.writeLine("## Project Statistics")
+  strm.writeLine("")
+  strm.writeLine("| Property | Value |")
+  # NOTE In some renderers, number of dashes are used to determine relative column width
+  strm.writeLine("| --- | -- |")
+  strm.writeLine(fmt"| Openness | {stats.openness} |")
+  # See NOTE in CheckFmt.finalize
+  self.repStream.close()
+
+method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
   strm.writeLine("  ],")
+  strm.writeLine("""  "stats":""")
+  strm.writeLine("  {")
+  strm.writeLine(fmt"""    "openness": "{stats.openness}" """)
+  strm.writeLine("  }")
   strm.writeLine("}")
   # See NOTE in CheckFmt.finalize
   self.repStream.close()
@@ -150,6 +175,36 @@ proc initCheckFmt(state: State, repStream, repStreamErr: File): CheckFmt =
     of OutputFormat.MdList:
       return MdListCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
 
+proc calcOpenness*(res: CheckResult): float32 =
+  let oKind = case res.kind:
+    of Perfect:
+      0.5
+    of Ok:
+      0.4
+    of Acceptable:
+      0.3
+    of Bad:
+      0.0
+    of Inapplicable:
+      error "Programmer error: Code should never try to calculate openness of an 'Inapplicable' check!"
+      raise newException(Defect, "Code should never try to calculate openness of an 'Inapplicable' check!")
+  var oIssues = 0.5
+  for issue in res.issues:
+    let severity = case issue.importance:
+      of Light:
+        0.02
+      of Middle:
+        0.05
+      of Severe:
+        0.1
+      of DeveloperFailure:
+        0.0
+    oIssues -= severity
+    if oIssues <= 0.0:
+      oIssues = 0.0
+      break
+  return oKind + oIssues
+
 proc check*(registry: ChecksRegistry, state: var State) =
   let (repStream, repStreamErr) = initRepStreams(state)
   let checkFmt: CheckFmt = initCheckFmt(state, repStream, repStreamErr)
@@ -158,6 +213,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var idx = 0
   # including skipped checks
   var idxAll = 0
+  var opennessSum = 0.0
   checkFmt.init()
   for check in registry.checks:
     let res = check.run(state)
@@ -166,6 +222,9 @@ proc check*(registry: ChecksRegistry, state: var State) =
       idxAll += 1
       continue
     checkFmt.report(check, res, idx, idxAll, numChecks)
+    opennessSum += calcOpenness(res)
     idx += 1
     idxAll += 1
-  checkFmt.finalize()
+  let openness = opennessSum / float32(idx)
+  let stats = ReportStats(openness: openness)
+  checkFmt.finalize(stats)
