@@ -24,6 +24,7 @@ echo_projvar=false
 output_md="$OUTPUT_FILE_MD_DEFAULT"
 output_html="$OUTPUT_FILE_HTML_DEFAULT"
 output_projvar="$OUTPUT_FILE_PROJVAR_DEFAULT"
+force=false
 
 function print_help() {
 
@@ -43,6 +44,8 @@ function print_help() {
 	echo -e "\t\t(default: '$OUTPUT_FILE_HTML_DEFAULT')"
 	echo -e "\t    --output-md"
 	echo -e "\t\tWhere to write the resulting Markdown report to, in CSV format"
+	echo -e "\t-f, --force"
+	echo -e "\t\tForces overwriting index.html"
 	echo -e "\t\t(default: '$OUTPUT_FILE_MD_DEFAULT')"
 	echo -e "\t-p, --projvar"
 	echo -e "\t\tAppends the raw projvar output to the generated report"
@@ -70,6 +73,9 @@ do
 		--output-md)
 			output_md="$1"
 			shift
+			;;
+		-f|--force)
+			force=true
 			;;
 		-p|--projvar)
 			echo_projvar=true
@@ -192,7 +198,7 @@ echo "INFO Written HTML report file '$output_html'."
 
 # Generate an index.html if none exists yet
 index_file="$(dirname "$output_html")/index.html"
-if ! [ -f "$index_file" ]
+if ! [ -f "$index_file" ] || $force
 then
 	echo '<!DOCTYPE html>
 <html>
