@@ -55,10 +55,10 @@ proc msgFmt(msg: Option[string]): string =
       ""
   )
 
-method report(self: CheckFmt, check: Check, res: CheckResult, index: int, total: int) {.base, locks: "unknown".} =
+method report(self: CheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.base, locks: "unknown".} =
   quit "to override!"
 
-method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, total: int) =
+method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
@@ -69,7 +69,7 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
     .join("")
   self.getStream(res).writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
 
-method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, total: int) {.locks: "unknown".} =
+method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
@@ -80,7 +80,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     .replace("\n", " <br>&nbsp;")
   self.getStream(res).writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
 
-method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, total: int) {.locks: "unknown".} =
+method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   self.repStream.writeLine("  {")
   self.repStream.writeLine(fmt"""    "name": "{check.name()}",""")
   let passed = isGood(res)
@@ -104,10 +104,8 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, to
     self.repStream.write("    ]")
   self.repStream.writeLine("")
 
-  self.repStream.write("  }")
-  if index + 1 < total:
-    self.repStream.write(",") # Add comma if not last
-  self.repStream.writeLine("")
+  let potComma = if indexAll + 1 < total: "," else: ""
+  self.repStream.writeLine(fmt"  }}{potComma}") # Add comma if not last
 
 method finalize(self: CheckFmt)  {.base, locks: "unknown".} =
   self.repStream.close()
@@ -146,13 +144,18 @@ proc check*(registry: ChecksRegistry, state: var State) =
   let (repStream, repStreamErr) = initRepStreams(state)
   let checkFmt: CheckFmt = initCheckFmt(state, repStream, repStreamErr)
   let numChecks = len(registry.checks)
+  # Disregarding skipped checks
   var idx = 0
+  # including skipped checks
+  var idxAll = 0
   checkFmt.init()
   for check in registry.checks:
     let res = check.run(state)
     if not isApplicable(res):
       debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state)"
+      idxAll += 1
       continue
-    checkFmt.report(check, res, idx, numChecks)
+    checkFmt.report(check, res, idx, idxAll, numChecks)
     idx += 1
+    idxAll += 1
   checkFmt.finalize()
