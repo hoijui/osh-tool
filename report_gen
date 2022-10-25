@@ -163,6 +163,7 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 } >> "$prefix_file"
 cat "$prefix_file" "$output_md" > "$tmp_file"
 mv "$tmp_file" "$output_md"
+echo "INFO Written Markdown report file '$output_md'."
 rm "$prefix_file"
 
 # Appends raw projvar output to Markdown report
@@ -187,6 +188,7 @@ pandoc \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
 	"$output_md"
+echo "INFO Written HTML report file '$output_html'."
 
 # Generate an index.html if none exists yet
 index_file="$(dirname "$output_html")/index.html"
@@ -203,4 +205,9 @@ then
       click on <a href="osh-report.html">osh-report.html</a>.</p>
    </body>
 </html>' > "$index_file"
+	echo "INFO Written index file '$index_file'."
+else
+	>&2 printf 'WARN Skipped writing index file "%s",\n' \
+		'      because it already exists and --force was not given.\n' \
+		"$index_file"
 fi
