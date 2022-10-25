@@ -31,7 +31,7 @@ method init(self: CheckFmt) {.base.} =
   quit "to override!"
 
 method init(self: MdListCheckFmt) =
-  info "Checking OSH project directory ..."
+  discard
 
 method init(self: MdTableCheckFmt) =
   self.repStream.writeLine(fmt"| Passed | Check | Message |")
