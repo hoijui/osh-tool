@@ -36,8 +36,8 @@ function print_help() {
 	echo -e "Usage:"
 	echo -e "\t$SCRIPT_NAME [OPTION...]"
 	echo -e "Options:"
-	echo -e "\t\tPrints the CSV header row and exits."
 	echo -e "\t-C, --repo [PATH]"
+	echo -e "\t\tDefines the path to the repo to check (default: '.')"
 	echo -e "\t-o, --output-html"
 	echo -e "\t\tWhere to write the resulting HTML report to, in CSV format"
 	echo -e "\t\t(default: '$OUTPUT_FILE_HTML_DEFAULT')"
@@ -79,7 +79,7 @@ do
 			exit 0
 			;;
 		*) # non-/unknown option
-			echoerr "Unknown flag: '$arg'"
+			>&2 echo "Unknown flag: '$arg'"
 			exit 1
 			;;
 	esac
