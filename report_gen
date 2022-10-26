@@ -14,10 +14,10 @@ APP_NAME="OSH-Tool HTML Report Creator"
 SCRIPT_NAME="$(basename "$0")"
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 OUT_DIR_DEFAULT="public"
-OUTPUT_FILE_MD_DEFAULT="$OUT_DIR_DEFAULT/osh-report.md"
-OUTPUT_FILE_JSON_DEFAULT="$OUT_DIR_DEFAULT/osh-report.json"
-OUTPUT_FILE_HTML_DEFAULT="$OUT_DIR_DEFAULT/osh-report.html"
-OUTPUT_FILE_PROJVAR_DEFAULT="$OUT_DIR_DEFAULT/projvar.env"
+OUT_FILE_NAME_MD="osh-report.md"
+OUT_FILE_NAME_JSON="osh-report.json"
+OUT_FILE_NAME_HTML="osh-report.html"
+OUT_FILE_NAME_PROJVAR="projvar.env"
 BADGE_FILE_NAME_REPORT="osh-badge-report.svg"
 BADGE_FILE_NAME_OPENNESS="osh-badge-openness.svg"
 
@@ -25,11 +25,7 @@ BADGE_FILE_NAME_OPENNESS="osh-badge-openness.svg"
 repo="$(pwd)"
 title="${TODO:-}"
 echo_projvar=false
-output_md="$OUTPUT_FILE_MD_DEFAULT"
-output_json="$OUTPUT_FILE_JSON_DEFAULT"
-output_html="$OUTPUT_FILE_HTML_DEFAULT"
-output_projvar="$OUTPUT_FILE_PROJVAR_DEFAULT"
-
+output_dir="$OUT_DIR_DEFAULT"
 force=false
 
 function print_help() {
@@ -45,15 +41,9 @@ function print_help() {
 	echo -e "Options:"
 	echo -e "\t-C, --repo [PATH]"
 	echo -e "\t\tDefines the path to the repo to check (default: '.')"
-	echo -e "\t-o, --output-html"
-	echo -e "\t\tWhere to write the resulting HTML report to"
-	echo -e "\t\t(default: '$OUTPUT_FILE_HTML_DEFAULT')"
-	echo -e "\t    --output-md"
-	echo -e "\t\tWhere to write the resulting Markdown report to"
-	echo -e "\t\t(default: '$OUTPUT_FILE_MD_DEFAULT')"
-	echo -e "\t    --output-json"
-	echo -e "\t\tWhere to write the resulting JSON report to"
-	echo -e "\t\t(default: '$OUTPUT_FILE_JSON_DEFAULT')"
+	echo -e "\t-o, --output-dir [PATH]"
+	echo -e "\t\tWhere to write the resulting HTML, Markdown and JSON reports to"
+	echo -e "\t\t(default: '$OUT_DIR_DEFAULT')"
 	echo -e "\t-f, --force"
 	echo -e "\t\tForces overwriting index.html"
 	echo -e "\t-p, --projvar"
@@ -62,7 +52,6 @@ function print_help() {
 	echo -e "\t\tPrint this usage help and exit"
 	echo -e ""
 }
-
 
 # Process command line arguments
 while [[ $# -gt 0 ]]
@@ -75,16 +64,8 @@ do
 			repo="$1"
 			shift
 			;;
-		-o|--output-html)
-			output_html="$1"
-			shift
-			;;
-		--output-md)
-			output_md="$1"
-			shift
-			;;
-		--output-json)
-			output_json="$1"
+		-o|--output-dir)
+			output_dir="$1"
 			shift
 			;;
 		-f|--force)
@@ -104,8 +85,12 @@ do
 	esac
 done
 
-badge_file_report="$(dirname "$output_md")/$BADGE_FILE_NAME_REPORT"
-badge_file_openness="$(dirname "$output_md")/$BADGE_FILE_NAME_OPENNESS"
+output_md="$output_dir/$OUT_FILE_NAME_MD"
+output_json="$output_dir/$OUT_FILE_NAME_JSON"
+output_html="$output_dir/$OUT_FILE_NAME_HTML"
+output_projvar="$output_dir/$OUT_FILE_NAME_PROJVAR"
+badge_file_report="$output_dir/$BADGE_FILE_NAME_REPORT"
+badge_file_openness="$output_dir/$BADGE_FILE_NAME_OPENNESS"
 
 if ! [ -d "$repo" ]
 then
@@ -113,10 +98,7 @@ then
 	exit 1
 fi
 
-mkdir -p "$(dirname "$output_md")"
-mkdir -p "$(dirname "$output_json")"
-mkdir -p "$(dirname "$output_projvar")"
-mkdir -p "$(dirname "$output_html")"
+mkdir -p "$output_dir"
 
 # Creates the OSH report as Markdown table
 osh \
@@ -233,21 +215,20 @@ fi
 
 # Generates HTML report
 cwd="$PWD"
-output_html_abs="$(cd "$(dirname "$output_html")"; pwd)/$(basename "$output_html")"
-cd "$(dirname "$output_md")"
+cd "$output_dir"
 pandoc \
 	-t html \
-	-o "$output_html_abs" \
+	-o "$OUT_FILE_NAME_HTML" \
 	--standalone \
 	--self-contained \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
-	"$(basename "$output_md")"
+	"$OUT_FILE_NAME_MD"
 cd "$cwd"
 echo "INFO Written HTML report file '$output_html'."
 
 # Generate an index.html if none exists yet
-index_file="$(dirname "$output_html")/index.html"
+index_file="$output_dir/index.html"
 if ! [ -f "$index_file" ] || $force
 then
 	echo '<!DOCTYPE html>
