@@ -13,10 +13,11 @@ set -Eeuo pipefail
 APP_NAME="OSH-Tool HTML Report Creator"
 SCRIPT_NAME="$(basename "$0")"
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-OUTPUT_FILE_MD_DEFAULT=public/osh-report.md
-OUTPUT_FILE_JSON_DEFAULT=public/osh-report.json
-OUTPUT_FILE_HTML_DEFAULT=public/osh-report.html
-OUTPUT_FILE_PROJVAR_DEFAULT=public/projvar.env
+OUT_DIR_DEFAULT="public"
+OUTPUT_FILE_MD_DEFAULT="$OUT_DIR_DEFAULT/osh-report.md"
+OUTPUT_FILE_JSON_DEFAULT="$OUT_DIR_DEFAULT/osh-report.json"
+OUTPUT_FILE_HTML_DEFAULT="$OUT_DIR_DEFAULT/osh-report.html"
+OUTPUT_FILE_PROJVAR_DEFAULT="$OUT_DIR_DEFAULT/projvar.env"
 
 # parameters
 repo="$(pwd)"
@@ -26,6 +27,9 @@ output_md="$OUTPUT_FILE_MD_DEFAULT"
 output_json="$OUTPUT_FILE_JSON_DEFAULT"
 output_html="$OUTPUT_FILE_HTML_DEFAULT"
 output_projvar="$OUTPUT_FILE_PROJVAR_DEFAULT"
+badge_file_report="$OUT_DIR_DEFAULT/osh-badge-report.svg"
+badge_file_openness="$OUT_DIR_DEFAULT/osh-badge-openness.svg"
+
 force=false
 
 function print_help() {
@@ -120,6 +124,27 @@ osh \
 	--report-json "$output_json"
 
 jq -r '.stats."openness"' < "$output_json" > OPENNESS.txt
+OPENNESS_PERCENT="$(bc <<< "scale=2; $(cat OPENNESS.txt)*100/1")"
+OPENNESS_PERCENT_FULL="$(bc <<< "scale=0; $OPENNESS_PERCENT/1")"
+echo "$OPENNESS_PERCENT" > OPENNESS_PERCENT.txt
+
+if [ "$OPENNESS_PERCENT_FULL" -gt 90 ]
+then
+	openness_color=green
+elif [ "$OPENNESS_PERCENT_FULL" -gt 50 ]
+then
+	openness_color=yellow
+else
+	openness_color=red
+fi
+
+rm -f "$badge_file_report" "$badge_file_openness"
+wget "https://img.shields.io/badge/OSH-Report-$openness_color" \
+	--quiet \
+	-O "$badge_file_report"
+wget "https://img.shields.io/badge/OSH%20Openness-$OPENNESS_PERCENT%-$openness_color" \
+	--quiet \
+	-O "$badge_file_openness"
 
 # Adds colors to the report
 sed -i \
@@ -156,6 +181,9 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "title: '$title'"
 	echo "subtitle: '$subtitle'"
 	echo "---"
+	echo
+	echo "![OSH Report]($(basename "$badge_file_report"))"
+	echo "![OSH Report]($(basename "$badge_file_openness"))"
 	echo
 	echo "## Project meta-data"
 	echo
