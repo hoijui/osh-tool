@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Foobar. If not, see <https://www.gnu.org/licenses/>.
 
-import std/options
+import options
 
 type
   YesNoAuto* = enum
@@ -33,6 +33,9 @@ type
     MdList,
     MdTable,
     Json,
+  Report* = ref object of RootObj
+    path*: Option[string]
+    outputFormat*: OutputFormat
 
 type
   RunConfig* = object
@@ -40,13 +43,12 @@ type
     projRoot*: string
     # Where evaluation output gets written to.
     # Stdout if None, else a file.
-    reportTarget*: Option[string]
+    reportTargets*: seq[Report]
     # Whether output files get overwritten if they exist,
     # or the application exits with an error.
     force*: bool
     readme*: bool
     license*: bool
     offline*: bool
-    outputFormat*: OutputFormat
     electronics*: YesNoAuto
     mechanics*: YesNoAuto

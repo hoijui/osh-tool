@@ -154,10 +154,10 @@ method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   # See NOTE in CheckFmt.finalize
   self.repStream.close()
 
-proc initRepStreams(state: State): (File, File) =
+proc initStreams(report: Report, state: State): (File, File) =
   return
-    if state.config.reportTarget.isSome():
-      let reportFileName = state.config.reportTarget.get()
+    if report.path.isSome():
+      let reportFileName = report.path.get()
       if not state.config.force and fileExists(reportFileName):
         error fmt"Report file '{reportFileName}' exists, and --force was not specified; aborting."
         quit 1
@@ -166,8 +166,9 @@ proc initRepStreams(state: State): (File, File) =
     else:
       (stdout, stderr)
 
-proc initCheckFmt(state: State, repStream, repStreamErr: File): CheckFmt =
-  case state.config.outputFormat:
+proc initCheckFmt(report: Report, state: State): CheckFmt =
+  let (repStream, repStreamErr) = initStreams(report, state)
+  case report.outputFormat:
     of OutputFormat.Json:
       return JsonCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
     of OutputFormat.MdTable:
@@ -206,25 +207,29 @@ proc calcOpenness*(res: CheckResult): float32 =
   return oKind + oIssues
 
 proc check*(registry: ChecksRegistry, state: var State) =
-  let (repStream, repStreamErr) = initRepStreams(state)
-  let checkFmt: CheckFmt = initCheckFmt(state, repStream, repStreamErr)
+  var reports = newSeq[CheckFmt]()
+  for report in state.config.reportTargets:
+    reports.add(initCheckFmt(report, state))
   let numChecks = len(registry.checks)
   # Disregarding skipped checks
   var idx = 0
   # including skipped checks
   var idxAll = 0
   var opennessSum = 0.0
-  checkFmt.init()
+  for checkFmt in reports:
+    checkFmt.init()
   for check in registry.checks:
     let res = check.run(state)
     if not isApplicable(res):
       debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state)"
       idxAll += 1
       continue
-    checkFmt.report(check, res, idx, idxAll, numChecks)
+    for checkFmt in reports:
+      checkFmt.report(check, res, idx, idxAll, numChecks)
     opennessSum += calcOpenness(res)
     idx += 1
     idxAll += 1
   let openness = opennessSum / float32(idx)
   let stats = ReportStats(openness: openness)
-  checkFmt.finalize(stats)
+  for checkFmt in reports:
+    checkFmt.finalize(stats)

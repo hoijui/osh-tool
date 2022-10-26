@@ -49,7 +49,7 @@ It neither deletes, changes nor creates files.
 Usage:
   osh [-C <path>] [--quiet] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] [--quiet] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] [--quiet] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--markdown-table] [--json] [-r <path>] [--report <path>]
+  osh [-C <path>] [--quiet] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -72,9 +72,9 @@ Options:
 
 Examples:
   osh check
-  osh check --force --report report.md
-  osh check --force --markdown-table --report report.md
-  osh check --force --json --report report.json
+  osh check --force --report-md-list report.md
+  osh check --force --report-md-table report.md
+  osh check --force --report-json report.json
 """
 
 import docopt
@@ -83,6 +83,9 @@ import os
 import options
 import strformat
 import std/logging
+import std/sequtils
+import std/sets
+import std/sugar
 import ./config
 import ./checks
 import ./checker
@@ -164,23 +167,20 @@ proc cli(): CliRes =
       $args["-C"]
     else:
       os.getCurrentDir()
-  let reportTarget: Option[string] =
-    if args["--report"]:
-      some($args["--report"])
-    else:
-      none(string)
-  debug "Creating config value 'outputFormat' ..."
-  let ofMarkdown = args["--markdown-table"]
-  let ofJson = args["--json"]
-  if ofMarkdown and ofJson:
-    return err("You may at most use one of --markdown-table and --json")
-  let outputFormat =
-    if ofMarkdown:
-      OutputFormat.MdTable
-    elif ofJson:
-      OutputFormat.Json
-    else:
-      OutputFormat.MdList
+  debug "Creating config value 'reportTargets' ..."
+  var reportTargets = newSeq[Report]()
+  for rep in args["--report-md-list"]:
+    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.MdList))
+  for rep in  args["--report-md-table"]:
+    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.MdTable))
+  for rep in  args["--report-json"]:
+    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.Json))
+  let reportPaths = reportTargets.map(rep => rep.path).toHashSet()
+  if reportTargets.len() > reportPaths.len():
+    error "Duplicate report paths supplied; Please use each path only once!"
+    raise newException(Defect, "Duplicate report paths supplied")
+  if reportTargets.len() == 0:
+    reportTargets.add(Report(path: none(string), outputFormat: OutputFormat.MdList))
   debug "Creating config value 'electronics' ..."
   let electronics: YesNoAuto =
     if args["--electronics"]:
@@ -204,12 +204,11 @@ proc cli(): CliRes =
   let config = RunConfig(
     command: command,
     projRoot: projRoot,
-    reportTarget: reportTarget,
+    reportTargets: reportTargets,
     force: args["--force"],
     readme: args["--readme"],
     license: args["--license"],
     offline: args["--offline"],
-    outputFormat: outputFormat,
     electronics: electronics,
     mechanics: mechanics,
     )
