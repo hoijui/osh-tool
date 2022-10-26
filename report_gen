@@ -40,13 +40,13 @@ function print_help() {
 	echo -e "\t-C, --repo [PATH]"
 	echo -e "\t\tDefines the path to the repo to check (default: '.')"
 	echo -e "\t-o, --output-html"
-	echo -e "\t\tWhere to write the resulting HTML report to, in CSV format"
+	echo -e "\t\tWhere to write the resulting HTML report to"
 	echo -e "\t\t(default: '$OUTPUT_FILE_HTML_DEFAULT')"
 	echo -e "\t    --output-md"
-	echo -e "\t\tWhere to write the resulting Markdown report to, in CSV format"
+	echo -e "\t\tWhere to write the resulting Markdown report to"
+	echo -e "\t\t(default: '$OUTPUT_FILE_MD_DEFAULT')"
 	echo -e "\t-f, --force"
 	echo -e "\t\tForces overwriting index.html"
-	echo -e "\t\t(default: '$OUTPUT_FILE_MD_DEFAULT')"
 	echo -e "\t-p, --projvar"
 	echo -e "\t\tAppends the raw projvar output to the generated report"
 	echo -e "\t-h, --help"
@@ -105,9 +105,8 @@ mkdir -p "$(dirname "$output_html")"
 osh \
 	-C "$repo" \
 	check \
-	--markdown-table \
 	--force \
-	--report "$output_md"
+	--report-md-table "$output_md"
 
 # Adds colors to the report
 sed -i \
