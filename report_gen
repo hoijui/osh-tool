@@ -225,7 +225,6 @@ then
 </html>' > "$index_file"
 	echo "INFO Written index file '$index_file'."
 else
-	>&2 printf 'WARN Skipped writing index file "%s",\n' \
-		'      because it already exists and --force was not given.\n' \
+	>&2 printf 'WARN Skipped writing index file "%s",\n     because it already exists and --force was not given.\n' \
 		"$index_file"
 fi
