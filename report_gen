@@ -123,6 +123,10 @@ osh \
 	--report-md-table "$output_md" \
 	--report-json "$output_json"
 
+# Prettify JSON
+jq < "$output_json" > "${output_json}_TMP"
+mv "${output_json}_TMP" "$output_json"
+
 jq -r '.stats."openness"' < "$output_json" > OPENNESS.txt
 OPENNESS_PERCENT="$(bc <<< "scale=2; $(cat OPENNESS.txt)*100/1")"
 OPENNESS_PERCENT_FULL="$(bc <<< "scale=0; $OPENNESS_PERCENT/1")"
