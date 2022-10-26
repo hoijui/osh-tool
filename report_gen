@@ -173,6 +173,12 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "![OSH Report]($BADGE_FILE_NAME_REPORT)"
 	echo "![OSH Openness]($BADGE_FILE_NAME_OPENNESS)"
 	echo
+	echo "## This report in different formats"
+	echo
+	echo "* [Markdown]($OUT_FILE_NAME_MD)"
+	echo "* [HTML]($OUT_FILE_NAME_HTML)"
+	echo "* [JSON]($OUT_FILE_NAME_JSON)"
+	echo
 	echo "## Project meta-data"
 	echo
 	echo "| | |"
