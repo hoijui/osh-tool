@@ -8,6 +8,7 @@
 # TODO We may want to introduce a small DSL for reducing checks (and init_updtes) boilerplate code, see https://github.com/GaryM-exkage/GDGW-Maverick-Bot/blob/master/src/nimcordbot/command/command.nim
 
 import options
+import tables
 import ./state
 
 type
@@ -43,6 +44,14 @@ type
   CheckReqs* = set[CheckReq]
 
   ReportStats* = object
+    checks*: tuple[
+      run: int,
+      skipped: int,
+      passed: int,
+      failed: int,
+      available: int
+      ]
+    issues*: Table[string, int]
     # How well the project adheres to this tools criteria,
     # from 0.0 for not at all, to 1.0 for compleetely.
     openness*: float32

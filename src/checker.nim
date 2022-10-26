@@ -14,6 +14,7 @@ import std/json
 import std/jsonutils
 import std/logging
 import system/io
+import tables
 import ./config
 import ./check
 import ./checks
@@ -122,6 +123,15 @@ method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   strm.writeLine("")
   strm.writeLine("## Project Statistics")
   strm.writeLine("")
+  strm.writeLine(fmt"* Checks:")
+  strm.writeLine(fmt"  * Run: {stats.checks.run}")
+  strm.writeLine(fmt"  * Skipped: {stats.checks.skipped}")
+  strm.writeLine(fmt"  * Passed: {stats.checks.passed}")
+  strm.writeLine(fmt"  * Failed: {stats.checks.failed}")
+  strm.writeLine(fmt"  * Available: {stats.checks.available}")
+  strm.writeLine(fmt"* Issues:")
+  for imp in stats.issues.keys:
+    strm.writeLine(fmt"  * {imp}: {stats.issues[imp]}")
   strm.writeLine(fmt"* Openness: {stats.openness}")
   # See NOTE in CheckFmt.finalize
   self.repStream.close()
@@ -134,13 +144,20 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} 
   strm.writeLine("| Property | Value |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
   strm.writeLine("| --- | -- |")
+  strm.writeLine(fmt"| Checks Run | {stats.checks.run} |")
+  strm.writeLine(fmt"| Checks Skipped | {stats.checks.skipped} |")
+  strm.writeLine(fmt"| Checks Passed | {stats.checks.passed} |")
+  strm.writeLine(fmt"| Checks Failed | {stats.checks.failed} |")
+  strm.writeLine(fmt"| Checks Available | {stats.checks.available} |")
+  for imp in stats.issues.keys:
+    strm.writeLine(fmt"| Issues {imp} | {stats.issues[imp]} |")
   strm.writeLine(fmt"| Openness | {stats.openness} |")
   # See NOTE in CheckFmt.finalize
   self.repStream.close()
 
 method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
-  strm.writeLine((checks: self.checks, stats: (openness: stats.openness)).toJson)
+  strm.writeLine((checks: self.checks, stats: stats).toJson)
   self.repStream.close()
 
 proc initStreams(report: Report, state: State): (File, File) =
@@ -204,11 +221,19 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var idx = 0
   # including skipped checks
   var idxAll = 0
+  var passedChecks = 0
+  var issues = initTable[string, int]()
+  for imp in CheckIssueImportance:
+    issues[$imp] = 0
   var opennessSum = 0.0
   for checkFmt in reports:
     checkFmt.init()
   for check in registry.checks:
     let res = check.run(state)
+    if isGood(res):
+      passedChecks += 1
+    for issue in res.issues:
+      issues[$issue.importance] += 1
     if not isApplicable(res):
       debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state)"
       idxAll += 1
@@ -219,6 +244,16 @@ proc check*(registry: ChecksRegistry, state: var State) =
     idx += 1
     idxAll += 1
   let openness = opennessSum / float32(idx)
-  let stats = ReportStats(openness: openness)
+  let stats = ReportStats(
+    checks: (
+      run: idx,
+      skipped: idxAll - idx,
+      passed: passedChecks,
+      failed: idx - passedChecks,
+      available: numChecks
+      ),
+    issues: issues,
+    openness: openness
+    )
   for checkFmt in reports:
     checkFmt.finalize(stats)
