@@ -32,6 +32,7 @@ RUN \
         python3-pip \
         wget \
         jq \
+        bc \
         ; \
     rm -rf /var/lib/apt/lists/*
 #        libssl-dev \
