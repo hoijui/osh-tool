@@ -10,6 +10,8 @@ import options
 import sequtils
 import strformat
 import strutils
+import std/json
+import std/jsonutils
 import std/logging
 import system/io
 import ./config
@@ -26,6 +28,15 @@ type
   MdListCheckFmt = ref object of CheckFmt
   MdTableCheckFmt = ref object of CheckFmt
   JsonCheckFmt = ref object of CheckFmt
+    checks: seq[tuple[
+      name: string,
+      passed: bool,
+      state: string,
+      issues: seq[tuple[
+        importance: string,
+        msg: string
+      ]]
+    ]]
 
 method init(self: CheckFmt) {.base.} =
   quit "to override!"
@@ -40,10 +51,7 @@ method init(self: MdTableCheckFmt) =
   strm.writeLine(fmt"| - | --- | ----- |")
 
 method init(self: JsonCheckFmt) =
-  let strm = self.repStream
-  strm.writeLine("{")
-  strm.writeLine("""  "checks": """)
-  strm.writeLine("  [")
+  discard
 
 proc getStream(self: CheckFmt, res: CheckResult): File =
 # method getStream(self: CheckFmt, res: CheckResult): File {.base.} =
@@ -87,32 +95,19 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   strm.writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
 
 method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
-  let strm = self.getStream(res)
-  strm.writeLine("    {")
-  strm.writeLine(fmt"""      "name": "{check.name()}",""")
   let passed = isGood(res)
-  strm.writeLine(fmt"""      "passed": "{passed}",""")
-  strm.write(fmt"""      "state": "{res.kind}" """)
-  let numIssues = len(res.issues)
-  if numIssues > 0:
-    strm.writeLine("  ,")
-    strm.writeLine(fmt"""      "issues": [""")
-    var indIssue = 0
-    var potComma = ","
-    for issue in res.issues:
-      strm.writeLine("        {")
-      strm.writeLine(fmt"""          "importance": "{issue.importance}",""")
-      if issue.msg.isSome:
-        strm.writeLine(fmt"""          "msg": "{issue.msg.get().replace("\n", "\\n")}" """)
-      indIssue += 1
-      if indIssue == numIssues:
-        potComma = ""
-      strm.writeLine(fmt"        }}{potComma}") # Add comma if not last
-    strm.write("      ]")
-  strm.writeLine("")
-
-  let potComma = if indexAll + 1 < total: "," else: ""
-  strm.writeLine(fmt"    }}{potComma}") # Add comma if not last
+  var issues = newSeq[tuple[importance: string, msg: string]]()
+  for issue in res.issues:
+    issues.add((
+      importance: $issue.importance,
+      msg: issue.msg.get().replace("\n", "\\n"),
+      ))
+  self.checks.add((
+    name: check.name(),
+    passed: passed,
+    state: $res.kind,
+    issues: issues,
+    ))
 
 method finalize(self: CheckFmt, stats: ReportStats)  {.base, locks: "unknown".} =
   self.repStream.close()
@@ -145,13 +140,7 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} 
 
 method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
-  strm.writeLine("  ],")
-  strm.writeLine("""  "stats":""")
-  strm.writeLine("  {")
-  strm.writeLine(fmt"""    "openness": "{stats.openness}" """)
-  strm.writeLine("  }")
-  strm.writeLine("}")
-  # See NOTE in CheckFmt.finalize
+  strm.writeLine((checks: self.checks, stats: (openness: stats.openness)).toJson)
   self.repStream.close()
 
 proc initStreams(report: Report, state: State): (File, File) =
