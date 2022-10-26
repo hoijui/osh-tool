@@ -217,6 +217,8 @@ proc check*(registry: ChecksRegistry, state: var State) =
   for report in state.config.reportTargets:
     reports.add(initCheckFmt(report, state))
   let numChecks = len(registry.checks)
+  for checkFmt in reports:
+    checkFmt.init()
   # Disregarding skipped checks
   var idx = 0
   # including skipped checks
@@ -226,8 +228,6 @@ proc check*(registry: ChecksRegistry, state: var State) =
   for imp in CheckIssueImportance:
     issues[$imp] = 0
   var opennessSum = 0.0
-  for checkFmt in reports:
-    checkFmt.init()
   for check in registry.checks:
     let res = check.run(state)
     if isGood(res):
