@@ -130,15 +130,14 @@ osh \
 jq < "$output_json" > "${output_json}_TMP"
 mv "${output_json}_TMP" "$output_json"
 
-jq -r '.stats."openness"' < "$output_json" > OPENNESS.txt
-OPENNESS_PERCENT="$(bc <<< "scale=2; $(cat OPENNESS.txt)*100/1")"
-OPENNESS_PERCENT_FULL="$(bc <<< "scale=0; $OPENNESS_PERCENT/1")"
-echo "$OPENNESS_PERCENT" > OPENNESS_PERCENT.txt
+stat_openness="$(jq -r '.stats."openness"' < "$output_json")"
+stat_openness_p="$(bc <<< "scale=2; $stat_openness*100/1")"
+stat_openness_p_int="$(bc <<< "scale=0; $stat_openness_p/1")"
 
-if [ "$OPENNESS_PERCENT_FULL" -gt 90 ]
+if [ "$stat_openness_p_int" -gt 90 ]
 then
 	openness_color=green
-elif [ "$OPENNESS_PERCENT_FULL" -gt 50 ]
+elif [ "$stat_openness_p_int" -gt 50 ]
 then
 	openness_color=yellow
 else
@@ -149,7 +148,7 @@ rm -f "$badge_file_report" "$badge_file_openness"
 wget "https://img.shields.io/badge/OSH-Report-$openness_color" \
 	--quiet \
 	-O "$badge_file_report"
-wget "https://img.shields.io/badge/OSH%20Openness-$OPENNESS_PERCENT%-$openness_color" \
+wget "https://img.shields.io/badge/OSH%20Openness-$stat_openness_p%-$openness_color" \
 	--quiet \
 	-O "$badge_file_openness"
 
