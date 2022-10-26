@@ -18,6 +18,8 @@ OUTPUT_FILE_MD_DEFAULT="$OUT_DIR_DEFAULT/osh-report.md"
 OUTPUT_FILE_JSON_DEFAULT="$OUT_DIR_DEFAULT/osh-report.json"
 OUTPUT_FILE_HTML_DEFAULT="$OUT_DIR_DEFAULT/osh-report.html"
 OUTPUT_FILE_PROJVAR_DEFAULT="$OUT_DIR_DEFAULT/projvar.env"
+BADGE_FILE_NAME_REPORT="osh-badge-report.svg"
+BADGE_FILE_NAME_OPENNESS="osh-badge-openness.svg"
 
 # parameters
 repo="$(pwd)"
@@ -27,8 +29,6 @@ output_md="$OUTPUT_FILE_MD_DEFAULT"
 output_json="$OUTPUT_FILE_JSON_DEFAULT"
 output_html="$OUTPUT_FILE_HTML_DEFAULT"
 output_projvar="$OUTPUT_FILE_PROJVAR_DEFAULT"
-badge_file_report="$OUT_DIR_DEFAULT/osh-badge-report.svg"
-badge_file_openness="$OUT_DIR_DEFAULT/osh-badge-openness.svg"
 
 force=false
 
@@ -103,6 +103,9 @@ do
 			;;
 	esac
 done
+
+badge_file_report="$(dirname "$output_md")/$BADGE_FILE_NAME_REPORT"
+badge_file_openness="$(dirname "$output_md")/$BADGE_FILE_NAME_OPENNESS"
 
 if ! [ -d "$repo" ]
 then
@@ -186,8 +189,8 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "subtitle: '$subtitle'"
 	echo "---"
 	echo
-	echo "![OSH Report]($(basename "$badge_file_report"))"
-	echo "![OSH Report]($(basename "$badge_file_openness"))"
+	echo "![OSH Report]($BADGE_FILE_NAME_REPORT)"
+	echo "![OSH Openness]($BADGE_FILE_NAME_OPENNESS)"
 	echo
 	echo "## Project meta-data"
 	echo
@@ -230,14 +233,18 @@ then
 fi
 
 # Generates HTML report
+cwd="$PWD"
+output_html_abs="$(cd "$(dirname "$output_html")"; pwd)/$(basename "$output_html")"
+cd "$(dirname "$output_md")"
 pandoc \
 	-t html \
-	-o "$output_html" \
+	-o "$output_html_abs" \
 	--standalone \
 	--self-contained \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
-	"$output_md"
+	"$(basename "$output_md")"
+cd "$cwd"
 echo "INFO Written HTML report file '$output_html'."
 
 # Generate an index.html if none exists yet
