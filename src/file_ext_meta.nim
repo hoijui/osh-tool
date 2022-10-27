@@ -146,10 +146,10 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
 
 proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string], fileExtsMaxParts: int, fileExtsMap: Table[string, (int, int, int)]): CheckResult =
   if configVal == YesNoAuto.No:
-    return newCheckResult(CheckResultKind.Inapplicable)
+    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Light, some("Configured to always skip"))
   let matchingFiles = filterByExtensions(state.listFiles(), fileExts, fileExtsMaxParts)
   if configVal == YesNoAuto.Auto and matchingFiles.len() == 0:
-    return newCheckResult(CheckResultKind.Inapplicable)
+    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Light, some("No relevant files were found"))
 
   var issues: seq[CheckIssue] = @[]
   if matchingFiles.len() == 0:

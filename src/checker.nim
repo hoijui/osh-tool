@@ -235,7 +235,8 @@ proc check*(registry: ChecksRegistry, state: var State) =
     for issue in res.issues:
       issues[$issue.importance] += 1
     if not isApplicable(res):
-      debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state)"
+      let reason = if res.issues.len() > 0 and res.issues[0].msg.isSome(): fmt" because: {res.issues[0].msg.get()}" else: ""
+      debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state){reason}"
       idxAll += 1
       continue
     for checkFmt in reports:
