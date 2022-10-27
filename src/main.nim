@@ -62,9 +62,9 @@ Options:
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
-  --markdown-table   Generates the reporting output as a markdown table, suitable to render as HTML or cop&paste into an issue report (default output format: markdown list).
-  --json             Generates the reporting output in JSON, a machine-readable format (default output format: markdown list).
-  -r --report <path> File-path the check-report gets written to; by default, it gets written to stdout.
+  --report-md-list=<path>  File-path a report in Markdown (list) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
+  --report-md-table=<path> File-path a report in Markdown (table) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
+  --report-json=<path>     File-path a report in JSON format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
