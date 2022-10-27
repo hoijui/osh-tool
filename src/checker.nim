@@ -1,17 +1,13 @@
 # This file is part of osh-tool.
 # <https://gitlab.opensourceecology.de/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import os
 import options
-import sequtils
 import strformat
-import strutils
-import std/json
-import std/jsonutils
 import std/logging
 import system/io
 import tables
@@ -19,146 +15,12 @@ import ./config
 import ./check
 import ./checks
 import ./state
+import ./reporters/api
+import ./reporters/md_list
+import ./reporters/md_table
+import ./reporters/json
 
 include ./version
-
-type
-  CheckFmt = ref object of RootObj
-    repStream: File
-    repStreamErr: File
-  MdListCheckFmt = ref object of CheckFmt
-  MdTableCheckFmt = ref object of CheckFmt
-  JsonCheckFmt = ref object of CheckFmt
-    checks: seq[tuple[
-      name: string,
-      passed: bool,
-      state: string,
-      issues: seq[tuple[
-        importance: string,
-        msg: string
-      ]]
-    ]]
-
-method init(self: CheckFmt) {.base.} =
-  quit "to override!"
-
-method init(self: MdListCheckFmt) =
-  discard
-
-method init(self: MdTableCheckFmt) =
-  let strm = self.repStream
-  strm.writeLine(fmt"| Passed | Check | Message |")
-  # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine(fmt"| - | --- | ----- |")
-
-method init(self: JsonCheckFmt) =
-  discard
-
-proc getStream(self: CheckFmt, res: CheckResult): File =
-# method getStream(self: CheckFmt, res: CheckResult): File {.base.} =
-  if isGood(res):
-    self.repStream
-  else:
-    self.repStreamErr
-
-proc msgFmt(msg: Option[string]): string =
-  return (if msg.isSome:
-      fmt(" - {msg.get()}").replace("\n", "\n    ")
-    else:
-      ""
-  )
-
-method report(self: CheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.base, locks: "unknown".} =
-  quit "to override!"
-
-method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
-  let strm = self.getStream(res)
-  let passed = isGood(res)
-  let passedStr = if passed: "x" else: " "
-  let msg = res.issues
-    .map(proc (issue: CheckIssue): string =
-      let importanceStr = fmt"{issue.importance}"
-      fmt("\n  - {importanceStr.toUpper()}{msgFmt(issue.msg)}")
-    )
-    .join("")
-  strm.writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
-
-method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
-  let strm = self.getStream(res)
-  let passed = isGood(res)
-  let passedStr = if passed: "x" else: " "
-  let msg = res.issues
-    .map(proc (issue: CheckIssue): string =
-      fmt"__{issue.importance}__{msgFmt(issue.msg)}"
-    )
-    .join("<br><hline/><br>")
-    .replace("\n", " <br>&nbsp;")
-  strm.writeLine(fmt"| [{passedStr}] | {check.name()} | {msg} |")
-
-method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
-  let passed = isGood(res)
-  var issues = newSeq[tuple[importance: string, msg: string]]()
-  for issue in res.issues:
-    issues.add((
-      importance: $issue.importance,
-      msg: issue.msg.get().replace("\n", "\\n"),
-      ))
-  self.checks.add((
-    name: check.name(),
-    passed: passed,
-    state: $res.kind,
-    issues: issues,
-    ))
-
-method finalize(self: CheckFmt, stats: ReportStats)  {.base, locks: "unknown".} =
-  self.repStream.close()
-  # NOTE This is not required,
-  # because stderr does not need to be closed,
-  # and if it is a file, it is the same like repStream,
-  # which was already closed in the line above
-  #repStreamErr.close()
-
-method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
-  let strm = self.repStream
-  strm.writeLine("")
-  strm.writeLine("## Project Statistics")
-  strm.writeLine("")
-  strm.writeLine(fmt"* Checks:")
-  strm.writeLine(fmt"  * Run: {stats.checks.run}")
-  strm.writeLine(fmt"  * Skipped: {stats.checks.skipped}")
-  strm.writeLine(fmt"  * Passed: {stats.checks.passed}")
-  strm.writeLine(fmt"  * Failed: {stats.checks.failed}")
-  strm.writeLine(fmt"  * Available: {stats.checks.available}")
-  strm.writeLine(fmt"* Issues:")
-  for imp in stats.issues.keys:
-    strm.writeLine(fmt"  * {imp}: {stats.issues[imp]}")
-  strm.writeLine(fmt"* Openness: {stats.openness}")
-  # See NOTE in CheckFmt.finalize
-  self.repStream.close()
-
-method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
-  let strm = self.repStream
-  strm.writeLine("")
-  strm.writeLine("## Project Statistics")
-  strm.writeLine("")
-  strm.writeLine("| Property | Value |")
-  # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine("| --- | -- |")
-  strm.writeLine(fmt"| Checks Run | {stats.checks.run} |")
-  strm.writeLine(fmt"| Checks Skipped | {stats.checks.skipped} |")
-  strm.writeLine(fmt"| Checks Passed | {stats.checks.passed} |")
-  strm.writeLine(fmt"| Checks Failed | {stats.checks.failed} |")
-  strm.writeLine(fmt"| Checks Available | {stats.checks.available} |")
-  for imp in stats.issues.keys:
-    strm.writeLine(fmt"| Issues {imp} | {stats.issues[imp]} |")
-  strm.writeLine(fmt"| Openness | {stats.openness} |")
-  # See NOTE in CheckFmt.finalize
-  self.repStream.close()
-
-method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
-  let strm = self.repStream
-  strm.writeLine((checks: self.checks, stats: stats).toJson)
-  self.repStream.close()
 
 proc initStreams(report: Report, state: State): (File, File) =
   return

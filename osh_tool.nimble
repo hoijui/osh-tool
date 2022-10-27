@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Unlicense
 
 include ./src/version
+#version     = "0.2.0"
 author      = "Robin Vobruba <hoijui.quaero@gmail.com>"
 description = "A Tool for managing Open Source Hardware projects, taking care of meta-data and keeping the structure clean"
 license     = "AGPL3"
