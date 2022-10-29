@@ -85,7 +85,6 @@ import strformat
 import std/logging
 import std/sequtils
 import std/sets
-import std/sugar
 import ./config
 import ./checks
 import ./checker
@@ -175,7 +174,7 @@ proc cli(): CliRes =
     reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.MdTable))
   for rep in  args["--report-json"]:
     reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.Json))
-  let reportPaths = reportTargets.map(rep => rep.path).toHashSet()
+  let reportPaths = reportTargets.mapIt(it.path).filterIt(it.isSome).mapIt(it.get()).toHashSet()
   if reportTargets.len() > reportPaths.len():
     error "Duplicate report paths supplied; Please use each path only once!"
     raise newException(Defect, "Duplicate report paths supplied")
