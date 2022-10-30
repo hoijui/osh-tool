@@ -16,6 +16,7 @@ import ./check
 import ./checks
 import ./state
 import ./reporters/api
+import ./reporters/csv
 import ./reporters/md_list
 import ./reporters/md_table
 import ./reporters/json
@@ -37,6 +38,8 @@ proc initStreams(report: Report, state: State): (File, File) =
 proc initCheckFmt(report: Report, state: State): CheckFmt =
   let (repStream, repStreamErr) = initStreams(report, state)
   case report.outputFormat:
+    of OutputFormat.Csv:
+      return CsvCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
     of OutputFormat.Json:
       return JsonCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
     of OutputFormat.MdTable:

@@ -49,7 +49,7 @@ It neither deletes, changes nor creates files.
 Usage:
   osh [-C <path>] [--quiet] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] [--quiet] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] [--quiet] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...]
+  osh [-C <path>] [--quiet] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -64,6 +64,7 @@ Options:
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
   --report-md-list=<path>  File-path a report in Markdown (list) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
   --report-md-table=<path> File-path a report in Markdown (table) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
+  --report-csv=<path>      File-path a report in CSV format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
   --report-json=<path>     File-path a report in JSON format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
@@ -75,6 +76,7 @@ Examples:
   osh check --force --report-md-list report.md
   osh check --force --report-md-table report.md
   osh check --force --report-json report.json
+  osh check --force --report-csv report.csv
 """
 
 import docopt
@@ -168,6 +170,8 @@ proc cli(): CliRes =
       os.getCurrentDir()
   debug "Creating config value 'reportTargets' ..."
   var reportTargets = newSeq[Report]()
+  for rep in  args["--report-csv"]:
+    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.Csv))
   for rep in args["--report-md-list"]:
     reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.MdList))
   for rep in  args["--report-md-table"]:

@@ -30,6 +30,7 @@ type
     Init
     Update
   OutputFormat* = enum
+    Csv
     MdList
     MdTable
     Json

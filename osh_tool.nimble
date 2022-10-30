@@ -12,6 +12,7 @@ namedBin["src/main"] = "osh"
 binDir = "build"
 
 requires "nim >= 0.10.0"
+requires "csvtools"
 requires "docopt"
 requires "shell"
 requires "regex"
