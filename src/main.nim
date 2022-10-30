@@ -73,6 +73,7 @@ Options:
 
 Examples:
   osh check
+  osh -C ./myFolder check
   osh check --force --report-md-list report.md
   osh check --force --report-md-table report.md
   osh check --force --report-json report.json
