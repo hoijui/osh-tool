@@ -22,17 +22,17 @@ import options
 
 type
   YesNoAuto* = enum
-    Yes,
-    No,
-    Auto,
+    Yes
+    No
+    Auto
   Command* = enum
-    Check,
-    Init,
-    Update,
+    Check
+    Init
+    Update
   OutputFormat* = enum
-    MdList,
-    MdTable,
-    Json,
+    MdList
+    MdTable
+    Json
   Report* = ref object of RootObj
     path*: Option[string]
     outputFormat*: OutputFormat
