@@ -49,7 +49,7 @@ It neither deletes, changes nor creates files.
 Usage:
   osh [-C <path>] [--quiet] init   [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] [--quiet] update [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] [--quiet] check  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
+  osh [-C <path>] [--quiet] [check]  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -151,8 +151,8 @@ proc extract_command(args: Table[string, Value]): Command =
   elif args["check"]:
     return Command.Check
   else:
-    error "No valid command given, see --help"
-    raise newException(Defect, "No valid command given, see --help")
+    info "No valid/known command given, defaultingto 'check'"
+    return Command.Check
 
 type CliRes = Result[void, string]
 
