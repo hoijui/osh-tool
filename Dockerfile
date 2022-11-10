@@ -15,6 +15,7 @@ FROM nimlang/nim:1.6.4
 ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.3.1
 ARG projvar_release=0.11.0
+ARG mle_release=0.20.0
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
@@ -87,6 +88,14 @@ RUN wget --quiet "$PROJVAR_DL" ; \
     mv $PROJVAR_PKG/projvar ./ ; \
     rm $PROJVAR_PKG.tar.gz ; \
     rm -Rf $PROJVAR_PKG
+
+ENV MLE_PKG="mle-${mle_release}-x86_64-unknown-linux-musl"
+ENV MLE_DL="https://github.com/hoijui/mle/releases/download/$mle_release/$MLE_PKG.tar.gz"
+RUN wget --quiet "$MLE_DL" ; \
+    tar xf $MLE_PKG.tar.gz ; \
+    mv $MLE_PKG/mle ./ ; \
+    rm $MLE_PKG.tar.gz ; \
+    rm -Rf $MLE_PKG
 
 # Ensures the `osh` tool is in PATH
 ENV OSH_TOOL_CLONE_URL="https://github.com/hoijui/osh-tool.git"
