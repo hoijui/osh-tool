@@ -160,6 +160,7 @@ osh_tool_version="$(osh --version --quiet)"
 okh_tool_version="$(okh-tool --version --quiet)"
 reuse_tool_version="$(reuse --version | sed -e 's|.* ||')"
 projvar_tool_version="$(projvar --version | sed -e 's|.* ||')"
+mle_tool_version="$(mle --version | sed -e 's|.* ||')"
 
 # Prepends meta-data to Markdown report
 prefix_file="/tmp/report_gen-prefix-$RANDOM"
@@ -197,6 +198,7 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "| [\`okh\`](https://github.com/OPEN-NEXT/LOSH-OKH-tool) | $okh_tool_version |"
 	echo "| [\`reuse\`](https://github.com/fsfe/reuse-tool/) | $reuse_tool_version |"
 	echo "| [\`projvar\`](https://github.com/hoijui/projvar/) | $projvar_tool_version |"
+	echo "| [\`mle\`](https://github.com/hoijui/mle/) | $mle_tool_version |"
 	echo
 	echo "## Report"
 	echo
