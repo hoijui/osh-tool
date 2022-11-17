@@ -145,7 +145,7 @@ proc containsAny(big: seq[string], small: seq[string]): bool =
       return true
   return false
 
-proc filterByExtensions*(filePaths: seq[string], extensions: seq[string], maxParts: int): seq[string] =
+proc filterByExtensions*(filePaths: seq[string], extensions: seq[string], maxParts: int = 1): seq[string] =
   ## Returns a list of only the entries from ``filePaths``
   ## of which the file extension ('.' separated) matches any in ``extensions``.
   ## ``maxParts`` should be set to the max number of parts of any of the file extensions in ``extensions``.
