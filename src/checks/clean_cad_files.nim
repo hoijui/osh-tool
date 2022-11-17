@@ -22,6 +22,15 @@ type CleanCadFilesCheck = ref object of Check
 method name*(this: CleanCadFilesCheck): string =
   return "Clean CAD files"
 
+method description*(this: CleanCadFilesCheck): string =
+  return """Checks that the Mechanical design files - \
+Computer Aided Design (CAD) files - \
+if any, \
+use an open format (good for collaboration), \
+are text-based (good for versioning with e.g. git) \
+and are actual source files, instead of generated \
+(which is required for being open *source*)."""
+
 method requirements*(this: CleanCadFilesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,

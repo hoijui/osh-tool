@@ -19,6 +19,20 @@ type MightBeGeneratedCheck = ref object of Check
 method name*(this: MightBeGeneratedCheck): string =
   return "Might be generated" # TODO Rename this, to be something that is good if the tst passes, e.g. "No possibly generatable files"
 
+method description*(this: MightBeGeneratedCheck): string =
+  return """Checks that no generated files are part of the project. \
+These are usually files that are created using a software \
+that is manually configured and executed by a human. \
+Try instead, to find a way to automate this process. \
+Doing so, both that the projects storage requirement gets lower - \
+usually by a lot -
+and more importantly,
+that the generated files are always up to date with the sources.
+This is one of the more controversial checks,
+as it often requires writing new software.
+That is sometimes a simple script,
+and sometimes complex software requiring many person-months of development."""
+
 method requirements*(this: MightBeGeneratedCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,

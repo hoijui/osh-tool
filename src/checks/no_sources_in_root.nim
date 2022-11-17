@@ -71,6 +71,10 @@ type NoSourceFilesInRootCheck = ref object of Check
 method name*(this: NoSourceFilesInRootCheck): string =
   return "No sources in root"
 
+method description*(this: NoSourceFilesInRootCheck): string =
+  return """Checks that no source files appear in the root dir of the project. \
+Make sure to put them all into sub-directories, for example `src/`."""
+
 method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
   return {
     CheckReq.FilesListL1,

@@ -22,6 +22,15 @@ type CleanElectronicsFilesCheck = ref object of Check
 method name*(this: CleanElectronicsFilesCheck): string =
   return "Clean electronics files"
 
+method description*(this: CleanElectronicsFilesCheck): string =
+  return """Checks that the contained Electronics blueprint files - \
+Schematics and PCB designs - \
+if any, \
+use an open format (good for collaboration), \
+are text-based (good for versioning with e.g. git) \
+and are actual source files, instead of generated \
+(which is required for being open *source*)."""
+
 method requirements*(this: CleanElectronicsFilesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,

@@ -7,18 +7,25 @@
 
 import re
 import options
+import strformat
 import ../tools
 import ../check
 import ../state
 
 # Requires "LICENSE" or "COPYING" (case-insensitive)
 # to appear somewhere in the file name.
-let R_LICENSE = re"(?i)^.*(LICENSE|COPYING).*$"
+let RS_LICENSE = "(?i)^.*(LICENSE|COPYING).*$"
+let R_LICENSE = re(RS_LICENSE)
 
 type LicenseExistsCheck = ref object of Check
 
 method name*(this: LicenseExistsCheck): string =
   return "LICENSE exists"
+
+method description*(this: LicenseExistsCheck): string =
+  return fmt"""Checks that a LICENSE file exists in the projects root dir, \
+using the regex `{RS_LICENSE}`.
+Note that this is related to the REUSE lint check."""
 
 method requirements*(this: LicenseExistsCheck): CheckReqs =
   return {

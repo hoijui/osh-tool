@@ -21,6 +21,12 @@ type OkhLintCheck = ref object of Check
 method name*(this: OkhLintCheck): string =
   return "OKH manifest content"
 
+method description*(this: OkhLintCheck): string =
+  return """Checks that the OKH manifest file - \
+which contains project meta-data - \
+contains at least the required properties, \
+and that all properties use the correct format."""
+
 method requirements*(this: OkhLintCheck): CheckReqs =
   return {}
 

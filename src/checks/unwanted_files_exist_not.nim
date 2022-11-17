@@ -19,6 +19,10 @@ type UnwantedFilesExistNotCheck = ref object of Check
 method name*(this: UnwantedFilesExistNotCheck): string =
   return "No unwanted files"
 
+method description*(this: UnwantedFilesExistNotCheck): string =
+  return """Checks that no unwanted files are part of the project. \
+These could be backups, caches, IDE/platform specific, and so on."""
+
 method requirements*(this: UnwantedFilesExistNotCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,

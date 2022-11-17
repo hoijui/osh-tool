@@ -86,6 +86,9 @@ proc isGood*(res: CheckResult): bool =
 method name*(this: Check): string {.base.} =
   return "TODO Override!"
 
+method description*(this: Check): string {.base.} =
+  return "TODO Override!"
+
 method requirements*(this: Check): CheckReqs {.base.} =
   echo "TODO Override!"
   quit 99

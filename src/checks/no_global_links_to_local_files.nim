@@ -20,6 +20,11 @@ type MdNoGlobalLinksToLocalFilesCheck = ref object of Check
 method name*(this: MdNoGlobalLinksToLocalFilesCheck): string =
   return "No global links to local files"
 
+method description*(this: MdNoGlobalLinksToLocalFilesCheck): string =
+  return """Checks no links to project local files use a 'global' prefix,
+be it a web-hosting URL or an absolute local path. \
+This is in favor of a documentation that is as distributed/distributable as possible."""
+
 method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,

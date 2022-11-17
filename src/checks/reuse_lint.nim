@@ -21,6 +21,12 @@ type ReuseLintCheck = ref object of Check
 method name*(this: ReuseLintCheck): string =
   return "REUSE/SPDX Licensing info"
 
+method description*(this: ReuseLintCheck): string =
+  return """Checks that complete SPDX licensing info is given \
+for all files in the project, \
+using the Free Software Foundations REUSE tool.
+Note that this is related to the License exists check."""
+
 method requirements*(this: ReuseLintCheck): CheckReqs =
   return {}
 

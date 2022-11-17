@@ -7,16 +7,22 @@
 
 import re
 import options
+import strformat
 import ../tools
 import ../check
 import ../state
 
-let R_README = re"^.*README.*$"
+let RS_README = "^.*README.*$"
+let R_README = re(RS_README)
 
 type ReadmeExistsCheck = ref object of Check
 
 method name(this: ReadmeExistsCheck): string =
   return "README exists"
+
+method description*(this: ReadmeExistsCheck): string =
+  return fmt"""Checks that a README file exists in the projects root dir, \
+using the regex `{RS_README}`."""
 
 method requirements*(this: ReadmeExistsCheck): CheckReqs =
   return {

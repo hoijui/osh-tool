@@ -20,6 +20,10 @@ type NoSpaceInFileNamesCheck = ref object of Check
 method name*(this: NoSpaceInFileNamesCheck): string =
   return "No space in file names"
 
+method description*(this: NoSpaceInFileNamesCheck): string =
+  return """Checks that no file-names in the project contain white-space, \
+as this makes automatic processing much easier and less error-prone."""
+
 method requirements*(this: NoSpaceInFileNamesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,
