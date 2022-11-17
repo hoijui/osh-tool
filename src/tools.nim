@@ -193,6 +193,8 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
       args = args,
       env = nil, # nil => inherit from parent process
       options = {poUsePath, poParentStreams}) # NOTE Add for debugging: poParentStreams
+    let stdout = osproc.outputStream(process)
+    let stderr = osproc.errorStream(process)
     debug "Now running 'projvar' ..."
     let exCode = osproc.waitForExit(process)
     debug "Running 'projvar' done."
@@ -204,8 +206,19 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
         vars[key] = val.getStr()
       return vars
     else:
-      let err = "N/A"
-      raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}; output:\n{err}"""))
+      var combOut, line: string = ""
+      combOut.add("##############\n")
+      combOut.add("### stdout ###\n")
+      while stdout.readLine(line):
+        combOut.add(line)
+        combOut.add("\n")
+      combOut.add("##############\n")
+      combOut.add("### stderr ###\n")
+      while stderr.readLine(line):
+        combOut.add(line)
+        combOut.add("\n")
+      combOut.add("##############\n")
+      raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}; output:\n{combOut}"""))
   except OSError as err:
     raise newException(IOError, fmt("Failed to run '{PROJVAR_CMD}'; make sure it is in your PATH: {err.msg}"))
 
