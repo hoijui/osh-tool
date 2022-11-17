@@ -20,7 +20,7 @@ type LicenseExistsCheck = ref object of Check
 method name*(this: LicenseExistsCheck): string =
   return "LICENSE exists"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: LicenseExistsCheck): CheckReqs =
   return {
     CheckReq.FilesListL1,
   }

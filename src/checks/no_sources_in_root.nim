@@ -71,7 +71,7 @@ type NoSourceFilesInRootCheck = ref object of Check
 method name*(this: NoSourceFilesInRootCheck): string =
   return "No sources in root"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
   return {
     CheckReq.FilesListL1,
   }

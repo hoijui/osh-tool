@@ -21,7 +21,7 @@ type OkhLintCheck = ref object of Check
 method name*(this: OkhLintCheck): string =
   return "OKH manifest content"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: OkhLintCheck): CheckReqs =
   return {}
 
 method run*(this: OkhLintCheck, state: var State): CheckResult =

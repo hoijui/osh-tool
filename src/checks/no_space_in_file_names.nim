@@ -20,7 +20,7 @@ type NoSpaceInFileNamesCheck = ref object of Check
 method name*(this: NoSpaceInFileNamesCheck): string =
   return "No space in file names"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: NoSpaceInFileNamesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,
   }

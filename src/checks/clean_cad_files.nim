@@ -22,7 +22,7 @@ type CleanCadFilesCheck = ref object of Check
 method name*(this: CleanCadFilesCheck): string =
   return "Clean CAD files"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: CleanCadFilesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,
   }

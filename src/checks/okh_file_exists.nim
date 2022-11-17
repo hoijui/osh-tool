@@ -28,7 +28,7 @@ type OkhFileExistsCheck = ref object of Check
 method name*(this: OkhFileExistsCheck): string =
   return "OKH file exists"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: OkhFileExistsCheck): CheckReqs =
   return {
     CheckReq.FilesListL1,
   }

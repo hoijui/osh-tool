@@ -19,7 +19,7 @@ type UnwantedFilesExistNotCheck = ref object of Check
 method name*(this: UnwantedFilesExistNotCheck): string =
   return "No unwanted files"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: UnwantedFilesExistNotCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,
   }

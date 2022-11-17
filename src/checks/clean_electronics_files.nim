@@ -22,7 +22,7 @@ type CleanElectronicsFilesCheck = ref object of Check
 method name*(this: CleanElectronicsFilesCheck): string =
   return "Clean electronics files"
 
-method requirements*(this: Check): CheckReqs =
+method requirements*(this: CleanElectronicsFilesCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,
   }
