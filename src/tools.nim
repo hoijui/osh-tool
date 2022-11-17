@@ -19,7 +19,24 @@ import shell
 import os
 import re
 import macros
+import std/json
+import std/logging
+import std/streams
+import std/tables
+import std/tempfiles
 import ./config
+
+const PROJVAR_CMD = "projvar"
+const MLE_CMD = "mle"
+
+type
+  LinkOcc* = object
+    srcFile*: string
+    srcLine*: int
+    srcColumn*: int
+    # link-path/-url
+    target*: string
+  LinkOccsCont = seq[LinkOcc]
 
 macro importAll*(dir: static[string]): untyped =
   var bracket = newNimNode(nnkBracket)
@@ -163,6 +180,66 @@ proc listFilesGit(dir: string): seq[string] =
       cut -d"\ " -f"2-" && git -C ($dir) "ls-files" ")"
       sort -u
   return toSeq(res.splitLines())
+
+proc runProjvar*(projRoot: string) : TableRef[string, string] =
+  try:
+    var args = newSeq[string]()
+    let outFilePath = genTempPath(fmt"osh-tool_{PROJVAR_CMD}_", ".json")
+    args.add("--file-out=" & outFilePath)
+    args.add("--log-level=trace")
+    let process = osproc.startProcess(
+      command = PROJVAR_CMD,
+      workingDir = projRoot,
+      args = args,
+      env = nil, # nil => inherit from parent process
+      options = {poUsePath, poParentStreams}) # NOTE Add for debugging: poParentStreams
+    debug "Now running 'projvar' ..."
+    let exCode = osproc.waitForExit(process)
+    debug "Running 'projvar' done."
+    if exCode == 0:
+      let jsonRoot = parseJson(newFileStream(outFilePath), outFilePath)
+      var vars = newTable[string, string]()
+      echo jsonRoot.kind
+      for (key, val) in jsonRoot.fields.pairs:
+        vars[key] = val.getStr()
+      return vars
+    else:
+      let err = "N/A"
+      raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}; output:\n{err}"""))
+  except OSError as err:
+    raise newException(IOError, fmt("Failed to run '{PROJVAR_CMD}'; make sure it is in your PATH: {err.msg}"))
+
+proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCont =
+  try:
+    var args = newSeq[string]()
+    # let outFilePath = genTempPath(fmt"osh-tool_{MLE_CMD}_", ".json")
+    # args.add("--result-file=" & outFilePath)
+    args.add("--result-format=json")
+    for mdFile in mdFiles:
+      args.add(mdFile)
+    let reuseProc = osproc.startProcess(
+      command = MLE_CMD,
+      workingDir = config.projRoot,
+      args = args,
+      env = nil,
+      options = {poUsePath}) # NOTE Add for debugging: poParentStreams
+    let (lines, exCode) = reuseProc.readLines
+    if exCode == 0:
+      let jsonRoot = parseJson(lines.join("\n"))
+      # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
+      var links = newSeq[LinkOcc]()
+      for linkNode in jsonRoot:
+        let link = LinkOcc(
+          srcFile: linkNode["src_file"].getStr(),
+          srcLine: linkNode["src_line"].getInt(),
+          srcColumn: linkNode["src_column"].getInt(),
+          target: linkNode["trg_link"].getStr())
+        links.add(link)
+      return links
+    else:
+      raise newException(IOError, fmt("""Failed to run '{MLE_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}"""))
+  except OSError as err:
+    raise newException(IOError, fmt("Failed to run '{MLE_CMD}'; make sure it is in your PATH: {err.msg}"))
 
 proc listFiles*(dir: string): seq[string] =
   if canTreatAsGitRepo(dir):

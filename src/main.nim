@@ -87,6 +87,7 @@ import options
 import strformat
 import std/logging
 import std/sequtils
+import std/strutils
 import std/sets
 import ./config
 import ./checks
@@ -94,6 +95,7 @@ import ./checker
 import ./init_update
 import ./init_updates
 import ./state
+import ./tools
 
 include ./version
 
@@ -156,6 +158,14 @@ proc extract_command(args: Table[string, Value]): Command =
 
 type CliRes = Result[void, string]
 
+const POSSIBLE_PV_PROJ_PREFIX_KEYS = [
+  "BUILD_HOSTING_URL",
+  "REPO_RAW_VERSIONED_PREFIX_URL",
+  # "REPO_VERSIONED_DIR_PREFIX_URL",
+  # "REPO_VERSIONED_FILE_PREFIX_URL",
+  "REPO_WEB_URL",
+]
+
 proc cli(): CliRes =
 
   debug "Initializing ..."
@@ -169,6 +179,20 @@ proc cli(): CliRes =
       $args["-C"]
     else:
       os.getCurrentDir()
+  debug "Running projvar ..."
+  let projvarVars = runProjvar(projRoot)
+  debug "Projvar fetched vars:"
+  debug projvarVars
+  var projPrefixesSet = newSeq[string]()
+  projPrefixesSet.add(projRoot)
+  projPrefixesSet.add(os.absolutePath(projRoot))
+  for prefixVar in POSSIBLE_PV_PROJ_PREFIX_KEYS:
+    if projvarVars.contains(prefixVar):
+      projPrefixesSet.add(projvarVars[prefixVar])
+  # Removes duplicates
+  let projPrefixes = projPrefixesSet.toHashSet().toSeq()
+  debug "Project prefixes:"
+  debug projPrefixes.join("\n\t")
   debug "Creating config value 'reportTargets' ..."
   var reportTargets = newSeq[Report]()
   for rep in  args["--report-csv"]:
@@ -208,6 +232,7 @@ proc cli(): CliRes =
   let config = RunConfig(
     command: command,
     projRoot: projRoot,
+    projPrefixes: projPrefixes,
     reportTargets: reportTargets,
     force: args["--force"],
     readme: args["--readme"],
