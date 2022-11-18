@@ -8,7 +8,7 @@
 import os
 import options
 import strformat
-import std/logging
+import logging
 import system/io
 import tables
 import ./config
