@@ -8,6 +8,7 @@
 import os
 import options
 import strformat
+import strutils
 import logging
 import system/io
 import tables
@@ -76,6 +77,15 @@ proc calcOpenness*(res: CheckResult): float32 =
       oIssues = 0.0
       break
   return oKind + oIssues
+
+proc list*(registry: ChecksRegistry) =
+  echo(fmt"# Checks")
+  echo(fmt"")
+  echo(fmt"| Name | Description |")
+  echo(fmt"| --- | --------- |")
+  for check in registry.checks:
+    let singleLineDesc = check.description().replace("\\\n", "").replace("\n", " ")
+    echo(fmt"| {check.name()} | {singleLineDesc} |")
 
 proc check*(registry: ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()

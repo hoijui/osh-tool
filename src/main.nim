@@ -49,7 +49,7 @@ It neither deletes, changes nor creates files.
 Usage:
   osh [-C <path>] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
   osh [-C <path>] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
+  osh [-C <path>] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -60,6 +60,7 @@ Options:
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
   --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
+  -l --list-checks   Creates a list of all available checks with descriptions in Markdown format and exits.
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
   --report-md-list=<path>  File-path a report in Markdown (list) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
@@ -79,6 +80,7 @@ Examples:
   osh check --force --report-md-table report.md
   osh check --force --report-json report.json
   osh check --force --report-csv report.csv
+  osh --list-checks
 """
 
 import docopt
@@ -157,6 +159,14 @@ proc extract_command(args: Table[string, Value]): Command =
     info "No valid/known command given, defaultingto 'check'"
     return Command.Check
 
+proc listChecks() =
+  debug "Creating the checks registry ..."
+  var registry = newChecksRegistry()
+  debug "Registering checks ..."
+  registry.registerChecks()
+  debug "Listing checks ..."
+  registry.list()
+
 type CliRes = Result[void, string]
 
 const POSSIBLE_PV_PROJ_PREFIX_KEYS = [
@@ -174,6 +184,10 @@ proc cli(): CliRes =
 
   let logLevel = if args["--quiet"]: lvlNone else: lvlAll
   addHandler(newConsoleLogger(levelThreshold = logLevel, useStderr = true))
+
+  if args["--list-checks"]:
+    listChecks()
+    quit(0)
 
   let projRoot =
     if args["-C"]:
