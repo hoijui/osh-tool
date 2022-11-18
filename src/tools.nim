@@ -187,15 +187,14 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     let outFilePath = genTempPath(fmt"osh-tool_{PROJVAR_CMD}_", ".json")
     args.add("--file-out=" & outFilePath)
     args.add("--log-level=trace")
+    debug "Now running 'projvar' ..."
     let process = osproc.startProcess(
       command = PROJVAR_CMD,
       workingDir = projRoot,
       args = args,
       env = nil, # nil => inherit from parent process
       options = {poUsePath, poParentStreams}) # NOTE Add for debugging: poParentStreams
-    let stdout = osproc.outputStream(process)
-    let stderr = osproc.errorStream(process)
-    debug "Now running 'projvar' ..."
+    debug "Waiting for 'projvar' run to end ..."
     let exCode = osproc.waitForExit(process)
     debug "Running 'projvar' done."
     if exCode == 0:
@@ -206,19 +205,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
         vars[key] = val.getStr()
       return vars
     else:
-      var combOut, line: string = ""
-      combOut.add("##############\n")
-      combOut.add("### stdout ###\n")
-      while stdout.readLine(line):
-        combOut.add(line)
-        combOut.add("\n")
-      combOut.add("##############\n")
-      combOut.add("### stderr ###\n")
-      while stderr.readLine(line):
-        combOut.add(line)
-        combOut.add("\n")
-      combOut.add("##############\n")
-      raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}; output:\n{combOut}"""))
+      raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}"""))
   except OSError as err:
     raise newException(IOError, fmt("Failed to run '{PROJVAR_CMD}'; make sure it is in your PATH: {err.msg}"))
 
