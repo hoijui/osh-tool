@@ -54,9 +54,9 @@ Usage:
   osh (-V | --version) [--quiet]
 
 Options:
-  -h --help          Show this screen.
-  -V --version       Show this tools version.
-  -q --quiet         Prevents all logging output.
+  -h --help          Show this screen and exit.
+  -V --version       Show this tools version and exit.
+  -q --quiet         Prevents all logging output, showing only the version number in combination with --version.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
   --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
