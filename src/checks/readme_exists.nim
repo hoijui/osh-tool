@@ -36,7 +36,10 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
     newCheckResult(
       CheckResultKind.Bad,
       CheckIssueImportance.Middle,
-      some("No README file found in the root directory.\nPlease consider adding a 'README.md'.\nYou might want to generate a template by issuing `osh init --readme`,\nor manually reating it.")
+      some("""No README file found in the root directory.
+ Please consider adding a 'README.md'.
+ You might want to generate a template by issuing `osh init --readme`,
+ or manually reating it.""")
     )
   )
 
