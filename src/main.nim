@@ -72,6 +72,7 @@ Options:
   -no-mechanics      Indicate that the project does not contain mechanical parts (FreeCAD)
 
 Examples:
+  osh
   osh check
   osh -C ./myFolder check
   osh check --force --report-md-list report.md
