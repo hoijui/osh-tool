@@ -173,7 +173,7 @@ proc cli(): CliRes =
   let args = docopt(doc, version = version)
 
   let logLevel = if args["--quiet"]: lvlNone else: lvlAll
-  addHandler(newConsoleLogger(levelThreshold = logLevel))
+  addHandler(newConsoleLogger(levelThreshold = logLevel, useStderr = true))
 
   let projRoot =
     if args["-C"]:
