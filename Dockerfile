@@ -14,7 +14,7 @@ FROM nimlang/nim:1.6.4
 #     .
 ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.3.1
-ARG projvar_release=0.12.0
+ARG projvar_release=0.13.0
 ARG mle_release=0.20.0
 
 # Installs the FSF REUSE CLI tool
