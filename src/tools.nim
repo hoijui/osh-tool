@@ -186,6 +186,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     var args = newSeq[string]()
     let outFilePath = genTempPath(fmt"osh-tool_{PROJVAR_CMD}_", ".json")
     args.add("--file-out=" & outFilePath)
+    args.add("--raw-panic")
     args.add("--log-level=trace")
     debug "Now running 'projvar' ..."
     let process = osproc.startProcess(
