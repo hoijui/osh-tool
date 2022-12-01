@@ -12,6 +12,12 @@ SPDX-License-Identifier: CC0-1.0
 [![REUSE status](
     https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
     https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
+[![In cooperation with FabCity Hamburg](
+    https://custom-icon-badges.demolab.com/badge/-FCHH-dddddd.svg?logo=fc_logo)](
+    https://fabcity.hamburg)
+[![In cooperation with Open Source Ecology Germany](
+    https://custom-icon-badges.demolab.com/badge/-OSEG-555555.svg?logo=oseg_logo)](
+    https://opensourceecology.de)
 
 A command line tool for Open Source Hardware (OSH)
 technical project linting (quality assessment).
