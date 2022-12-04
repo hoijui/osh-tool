@@ -218,13 +218,13 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
     args.add("--result-format=json")
     for mdFile in mdFiles:
       args.add(mdFile)
-    let reuseProc = osproc.startProcess(
+    let process = osproc.startProcess(
       command = MLE_CMD,
       workingDir = config.projRoot,
       args = args,
       env = nil,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
-    let (lines, exCode) = reuseProc.readLines
+    let (lines, exCode) = process.readLines
     if exCode == 0:
       let jsonRoot = parseJson(lines.join("\n"))
       # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
