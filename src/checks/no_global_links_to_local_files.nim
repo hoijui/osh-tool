@@ -7,7 +7,6 @@
 
 import os
 import options
-import sequtils
 import strutils
 import strformat
 import std/uri
@@ -31,7 +30,6 @@ method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
   }
 
 method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResult =
-  let projGlobalPrefixes = concat(state.config.projPrefixes, @[state.config.projRoot])
   let mdFiles = filterByExtensions(state.listfiles(), @["md", "markdown"]) # TODO Make case-insensitive
   let links = try:
     extractMarkdownLinks(state.config, mdFiles)
@@ -41,8 +39,8 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
   var issues = newSeq[CheckIssue]()
   let nl = "<br>&nbsp;"
   for link in links:
-    for projGlobPref in projGlobalPrefixes:
-      if link.target.startsWith(projGlobPref) and len(link.target) > len(projGlobPref):
+    for projGlobPref in state.config.projPrefixes:
+      if link.target.startsWith(projGlobPref) and len(link.target) > len(projGlobPref) and not (len(link.target) - 1 == len(projGlobPref) and link.target[^1] == '/'):
         var newTarget = link.target
         let uri = parseUri(newTarget)
         if uri.scheme == "file":

@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://gitlab.opensourceecology.de/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -199,7 +199,7 @@ proc cli(): CliRes =
   debug "Projvar fetched vars:"
   debug projvarVars
   var projPrefixesSet = newSeq[string]()
-  projPrefixesSet.add(projRoot)
+  projPrefixesSet.add(if projRoot == "." or projRoot == "": "./" else: projRoot)
   projPrefixesSet.add(os.absolutePath(projRoot))
   for prefixVar in POSSIBLE_PV_PROJ_PREFIX_KEYS:
     if projvarVars.contains(prefixVar):
