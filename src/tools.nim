@@ -22,6 +22,7 @@ import macros
 import std/json
 import std/logging
 import std/streams
+import std/strtabs
 import std/tables
 import std/tempfiles
 import ./config
@@ -180,6 +181,32 @@ proc listFilesGit(dir: string): seq[string] =
       cut -d"\ " -f"2-" && git -C ($dir) "ls-files" ")"
       sort -u
   return toSeq(res.splitLines())
+
+
+proc toolVersion*(binName: string, args: varargs[string]): string =
+  var version = "-0.0.0"
+  try:
+    debug fmt"Trying to find version for tool '{binName}' run to end ..."
+    let process = osproc.startProcess(
+      command = binName,
+      workingDir = "",
+      args = args.toSeq(),
+      env = newStringTable(), # nil => inherit from parent process
+      options = {poUsePath}) # NOTE Add for debugging: poParentStreams
+    let (lines, exCode) = process.readLines
+    if exCode == 0:
+      let firstLine = lines[0]
+      let words = firstLine.split(' ')
+      version = if words.len() > 1:
+        words[1]
+      else:
+        words[0]
+      debug fmt"{binName} version: '{version}'"
+    else:
+      warn fmt"Failed to run '{binName}'; exit state was {exCode}"
+  except OSError as err:
+    warn fmt"Failed to run '{binName}'; make sure it is in your PATH: {err.msg}"
+  return version
 
 proc runProjvar*(projRoot: string) : TableRef[string, string] =
   try:

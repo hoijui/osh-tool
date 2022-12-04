@@ -55,6 +55,13 @@ type
     # How well the project adheres to this tools criteria,
     # from 0.0 for not at all, to 1.0 for compleetely.
     openness*: float32
+    tool_versions*: tuple[
+      osh: string,
+      okh: string,
+      reuse: string,
+      projvar: string,
+      mle: string,
+    ]
 
 proc toNum*(flags: CheckReqs): int = cast[cint](flags)
 proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)

@@ -16,6 +16,7 @@ import ./config
 import ./check
 import ./checks
 import ./state
+import ./tools
 import ./reporters/api
 import ./reporters/csv
 import ./reporters/md_list
@@ -120,6 +121,13 @@ proc check*(registry: ChecksRegistry, state: var State) =
     idx += 1
     idxAll += 1
   let openness = opennessSum / float32(idx)
+  let tool_versions = (
+      osh: version,
+      okh: toolVersion("okh-tool", "--version", "--quiet"),
+      reuse: toolVersion("reuse", "--version"),
+      projvar: toolVersion("projvar", "--version", "--quiet"),
+      mle: toolVersion("mle", "--version", "--quiet"),
+  )
   let stats = ReportStats(
     checks: (
       run: idx,
@@ -129,7 +137,8 @@ proc check*(registry: ChecksRegistry, state: var State) =
       available: numChecks
       ),
     issues: issues,
-    openness: openness
+    openness: openness,
+    tool_versions: tool_versions
     )
   for checkFmt in reports:
     checkFmt.finalize(stats)
