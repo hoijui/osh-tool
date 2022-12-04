@@ -23,7 +23,7 @@ BADGE_FILE_NAME_OPENNESS="osh-badge-openness.svg"
 
 # parameters
 repo="$(pwd)"
-title="${TODO:-}"
+title=""
 echo_projvar=false
 output_dir="$OUT_DIR_DEFAULT"
 force=false
