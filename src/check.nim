@@ -43,6 +43,18 @@ type
   # CheckReqs* {.size: sizeof(cint).} = set[CheckReq]
   CheckReqs* = set[CheckReq]
 
+  # Data about the report that is available *before* running the checks
+  ReportPrelude* = object
+    projVars*: TableRef[string, string]
+    tool_versions*: tuple[
+      osh: string,
+      okh: string,
+      reuse: string,
+      projvar: string,
+      mle: string,
+    ]
+
+  # Data about the report that is available *after* running the checks
   ReportStats* = object
     checks*: tuple[
       run: int,
@@ -55,13 +67,6 @@ type
     # How well the project adheres to this tools criteria,
     # from 0.0 for not at all, to 1.0 for compleetely.
     openness*: float32
-    tool_versions*: tuple[
-      osh: string,
-      okh: string,
-      reuse: string,
-      projvar: string,
-      mle: string,
-    ]
 
 proc toNum*(flags: CheckReqs): int = cast[cint](flags)
 proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)
@@ -81,6 +86,13 @@ proc newCheckResult*(kind: CheckResultKind, importance: CheckIssueImportance, ms
       )
     ]
   )
+
+proc toColor*(importance: CheckIssueImportance): string =
+  return case importance:
+    of DeveloperFailure: "pink"
+    of Severe: "red"
+    of Middle: "orange"
+    of Light: "light-blue"
 
 type Check* = ref object of RootObj
 

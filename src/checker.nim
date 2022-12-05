@@ -93,8 +93,19 @@ proc check*(registry: ChecksRegistry, state: var State) =
   for report in state.config.reportTargets:
     reports.add(initCheckFmt(report, state))
   let numChecks = len(registry.checks)
+  let tool_versions = (
+      osh: version,
+      okh: toolVersion("okh-tool", "--version", "--quiet"),
+      reuse: toolVersion("reuse", "--version"),
+      projvar: toolVersion("projvar", "--version", "--quiet"),
+      mle: toolVersion("mle", "--version", "--quiet"),
+  )
+  let prelude = ReportPrelude(
+    projVars: state.projVars,
+    tool_versions: tool_versions
+    )
   for checkFmt in reports:
-    checkFmt.init()
+    checkFmt.init(prelude)
   # Disregarding skipped checks
   var idx = 0
   # including skipped checks
@@ -121,13 +132,6 @@ proc check*(registry: ChecksRegistry, state: var State) =
     idx += 1
     idxAll += 1
   let openness = opennessSum / float32(idx)
-  let tool_versions = (
-      osh: version,
-      okh: toolVersion("okh-tool", "--version", "--quiet"),
-      reuse: toolVersion("reuse", "--version"),
-      projvar: toolVersion("projvar", "--version", "--quiet"),
-      mle: toolVersion("mle", "--version", "--quiet"),
-  )
   let stats = ReportStats(
     checks: (
       run: idx,
@@ -138,7 +142,6 @@ proc check*(registry: ChecksRegistry, state: var State) =
       ),
     issues: issues,
     openness: openness,
-    tool_versions: tool_versions
     )
   for checkFmt in reports:
     checkFmt.finalize(stats)

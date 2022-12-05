@@ -10,12 +10,14 @@ import os
 import re
 import sequtils
 import strutils
+import tables
 import ./config
 import ./tools as tools
 
 type
   State* = object
     config*: RunConfig
+    projVars*: TableRef[string, string]
     projFiles*: Option[seq[string]]
     projFilesL1*: Option[seq[string]]
 
@@ -54,9 +56,10 @@ method listFilesL1Contains*(this: var State, regex: Regex): seq[string] {.base.}
   ## of which a part matches ``regex``
   return toSeq(this.listFilesL1().filterIt(it.contains(regex)))
 
-proc newState*(config: RunConfig): State =
+proc newState*(config: RunConfig, projVars: TableRef[string, string]): State =
   return State(
     config: config,
+    projVars: projVars,
     #projFiles: none[seq[string]],
     projFiles: none(seq[string])
     )

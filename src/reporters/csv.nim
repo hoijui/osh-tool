@@ -22,7 +22,7 @@ type
   CsvCheckFmt* = ref object of CheckFmt
     checks: seq[CsvCheck]
 
-method init(self: CsvCheckFmt) =
+method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   strm.writeLine("\"Passed\", \"Check\", \"Message\"")
 

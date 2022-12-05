@@ -9,7 +9,11 @@ import options
 import strformat
 import strutils
 import system/io
+import tables
 import ../check
+
+# const OSH_TOOL_REPO = "https://gitlab.com/OSEGermany/osh-tool/"
+const OSH_TOOL_REPO = "https://github.com/hoijui/osh-tool/"
 
 type
   CheckFmt* = ref object of RootObj
@@ -29,7 +33,39 @@ proc msgFmt*(msg: Option[string]): string =
     else:
       ""
 
-method init*(self: CheckFmt) {.base.} =
+proc mdPrelude*(strm: File, prelude: ReportPrelude) =
+  strm.writeLine("## Project meta-data")
+  strm.writeLine("")
+  strm.writeLine("| | |")
+  strm.writeLine("| --- | -------- |")
+  strm.writeLine(fmt"""| _version_ | {prelude.projVars.getOrDefault("VERSION", "N/A")} |""")
+  strm.writeLine(fmt"""| _version release date_ | {prelude.projVars.getOrDefault("VERSION_DATE", "N/A")} |""")
+  strm.writeLine(fmt"""| _branch_ | {prelude.projVars.getOrDefault("BUILD_BRANCH", "N/A")} |""")
+  strm.writeLine(fmt"""| _report build date_ | {prelude.projVars.getOrDefault("BUILD_DATE", "N/A")} |""")
+  strm.writeLine(fmt"""| _licenses_ | {prelude.projVars.getOrDefault("LICENSES", "N/A")} |""")
+  strm.writeLine("")
+  strm.writeLine("## Report tools")
+  strm.writeLine("")
+  strm.writeLine("| [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool | version |")
+  strm.writeLine("| --- | -------- |")
+  strm.writeLine(fmt"| [`osh`]({OSH_TOOL_REPO}) | {prelude.tool_versions.osh} |")
+  strm.writeLine(fmt"| [`okh`](https://github.com/OPEN-NEXT/LOSH-OKH-tool) | {prelude.tool_versions.okh} |")
+  strm.writeLine(fmt"| [`reuse`](https://github.com/fsfe/reuse-tool/) | {prelude.tool_versions.reuse} |")
+  strm.writeLine(fmt"| [`projvar`](https://github.com/hoijui/projvar/) | {prelude.tool_versions.projvar} |")
+  strm.writeLine(fmt"| [`mle`](https://github.com/hoijui/mle/) | {prelude.tool_versions.mle} |")
+  strm.writeLine("")
+  strm.writeLine("## Report")
+  strm.writeLine("")
+
+proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats) =
+  strm.writeLine("")
+  strm.writeLine("## Project meta-data (by projvar)")
+  strm.writeLine("")
+  strm.writeLine("| key | value |")
+  strm.writeLine("| --- | -------- |")
+  for (key, val) in prelude.projVars.pairs:
+    strm.writeLine(fmt"| {key} | {val} |")
+method init*(self: CheckFmt, prelude: ReportPrelude) {.base.} =
   quit "to override!"
 
 method report*(self: CheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.base, locks: "unknown".} =

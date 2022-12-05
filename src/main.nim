@@ -92,6 +92,7 @@ import std/logging
 import std/sequtils
 import std/strutils
 import std/sets
+import std/tables
 import ./config
 import ./checks
 import ./checker
@@ -122,9 +123,9 @@ proc update*(registry: InitUpdatesRegistry, state: var State) =
     else:
       log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}: {res.msg.get()}")
 
-proc run(config: RunConfig) =
+proc run(config: RunConfig, projVars: TableRef[string, string]) =
   debug "Creating the state ..."
-  var runState = newState(config)
+  var runState = newState(config, projVars)
   case config.command:
     of Init:
       debug "Creating the init&update registry ..."
@@ -195,15 +196,15 @@ proc cli(): CliRes =
     else:
       os.getCurrentDir()
   debug "Running projvar ..."
-  let projvarVars = runProjvar(projRoot)
+  let projVars = runProjvar(projRoot)
   debug "Projvar fetched vars:"
-  debug projvarVars
+  debug projVars
   var projPrefixesSet = newSeq[string]()
   projPrefixesSet.add(if projRoot == "." or projRoot == "": "./" else: projRoot)
   projPrefixesSet.add(os.absolutePath(projRoot))
   for prefixVar in POSSIBLE_PV_PROJ_PREFIX_KEYS:
-    if projvarVars.contains(prefixVar):
-      projPrefixesSet.add(projvarVars[prefixVar])
+    if projVars.contains(prefixVar):
+      projPrefixesSet.add(projVars[prefixVar])
   # Removes duplicates
   let projPrefixes = projPrefixesSet.toHashSet().toSeq()
   debug "Project prefixes:"
@@ -257,7 +258,7 @@ proc cli(): CliRes =
     mechanics: mechanics,
     )
 
-  run(config)
+  run(config, projVars)
 
   return ok()
 

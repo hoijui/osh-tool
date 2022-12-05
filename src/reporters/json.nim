@@ -16,6 +16,7 @@ import ./api
 
 type
   JsonCheckFmt* = ref object of CheckFmt
+    prelude: ReportPrelude
     checks: seq[tuple[
       name: string,
       passed: bool,
@@ -26,8 +27,8 @@ type
       ]]
     ]]
 
-method init(self: JsonCheckFmt) =
-  discard
+method init(self: JsonCheckFmt, prelude: ReportPrelude) =
+  self.prelude = prelude
 
 method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
@@ -46,5 +47,5 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, in
 
 method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
-  strm.writeLine((checks: self.checks, stats: stats).toJson)
+  strm.writeLine((prelude: self.prelude, checks: self.checks, stats: stats).toJson)
   self.repStream.close()

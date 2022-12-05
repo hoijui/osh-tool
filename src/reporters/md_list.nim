@@ -15,9 +15,12 @@ import ../check
 
 type
   MdListCheckFmt* = ref object of CheckFmt
+    prelude: ReportPrelude
 
-method init(self: MdListCheckFmt) =
-  discard
+method init(self: MdListCheckFmt, prelude: ReportPrelude) =
+  let strm = self.repStream
+  self.prelude = prelude
+  mdPrelude(strm, prelude)
 
 method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let strm = self.getStream(res)

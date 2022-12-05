@@ -17,14 +17,12 @@ OUT_DIR_DEFAULT="public"
 OUT_FILE_NAME_MD="osh-report.md"
 OUT_FILE_NAME_JSON="osh-report.json"
 OUT_FILE_NAME_HTML="osh-report.html"
-OUT_FILE_NAME_PROJVAR="projvar.env"
 BADGE_FILE_NAME_REPORT="osh-badge-report.svg"
 BADGE_FILE_NAME_OPENNESS="osh-badge-openness.svg"
 
 # parameters
 repo="$(pwd)"
 title=""
-echo_projvar=false
 output_dir="$OUT_DIR_DEFAULT"
 force=false
 
@@ -46,8 +44,6 @@ function print_help() {
 	echo -e "\t\t(default: '$OUT_DIR_DEFAULT')"
 	echo -e "\t-f, --force"
 	echo -e "\t\tForces overwriting index.html"
-	echo -e "\t-p, --projvar"
-	echo -e "\t\tAppends the raw projvar output to the generated report"
 	echo -e "\t-h, --help"
 	echo -e "\t\tPrint this usage help and exit"
 	echo -e ""
@@ -71,9 +67,6 @@ do
 		-f|--force)
 			force=true
 			;;
-		-p|--projvar)
-			echo_projvar=true
-			;;
 		-h|--help)
 			print_help
 			exit 0
@@ -88,7 +81,6 @@ done
 output_md="$output_dir/$OUT_FILE_NAME_MD"
 output_json="$output_dir/$OUT_FILE_NAME_JSON"
 output_html="$output_dir/$OUT_FILE_NAME_HTML"
-output_projvar="$output_dir/$OUT_FILE_NAME_PROJVAR"
 badge_file_report="$output_dir/$BADGE_FILE_NAME_REPORT"
 badge_file_openness="$output_dir/$BADGE_FILE_NAME_OPENNESS"
 
@@ -134,33 +126,45 @@ wget "https://img.shields.io/badge/OSH%20Openness-$stat_openness_p%-$openness_co
 	--quiet \
 	-O "$badge_file_openness"
 
-# Adds colors to the report
-sed -i \
-	-e 's|\[x\]|<font color="green">passed</font>|g' \
-	-e 's|\[ \]|<font color="red">failed</font>|g' \
-	-e 's|__Severe__|<font color="red">__Severe__</font>|g' \
-	-e 's|__Middle__|<font color="orange">__Middle__</font>|g' \
-	-e 's|__Light__|<font color="light-blue">__Light__</font>|g' \
-	"$output_md"
+function projvar_get() {
+	local key
+	local value
+	key="$1"
+	value="$(jq -r '.prelude.projVars["'"$key"'"]' < "$output_json")"
+	echo "$value"
+	if [ "$value" == "null" ]
+	then
+		return 1
+	else
+		return 0
+	fi
+}
 
-# Collects project-specific meta-data
-# (like project-name and version)
-projvar \
-	--none \
-	--file-out "$output_projvar"
-source "$output_projvar"
+function projvar_get_or_default() {
+	local key
+	local default
+	local value
+	local ret
+	key="$1"
+	default="$2"
+	value="$(projvar_get "$key")"
+	ret=$?
+	if [ $ret -eq 0 ]
+	then
+		echo "$value"
+	else
+		echo "$default"
+	fi
+	return $ret
+}
 
 if [ -z "$title" ]
 then
-	title="[${PROJECT_NAME:-"Project name N/A"}](${PROJECT_REPO_WEB_URL:-???}) - [OSH](https://en.wikipedia.org/wiki/Open-source_hardware) quality report"
+	proj_name="$(projvar_get_or_default 'NAME' 'Project name N/A')"
+	proj_repo_web_url="$(projvar_get_or_default 'REPO_WEB_URL' '???')"
+	title="[$proj_name]($proj_repo_web_url) - [OSH](https://en.wikipedia.org/wiki/Open-source_hardware) quality report"
 fi
-subtitle="Produced by the [\`osh\`-tool](https://gitlab.com/OSEGermany/osh-tool/)"
-
-osh_tool_version="$(osh --version --quiet)"
-okh_tool_version="$(okh-tool --version --quiet)"
-reuse_tool_version="$(reuse --version | sed -e 's|.* ||')"
-projvar_tool_version="$(projvar --version | sed -e 's|.* ||')"
-mle_tool_version="$(mle --version | sed -e 's|.* ||')"
+subtitle="Produced by the [\`osh\`-tool](https://gitlab.com/OSEGermany/osh-tool/)" # TODO Get the URL from a part in the JSON report as well (needs to be put there first)
 
 # Prepends meta-data to Markdown report
 prefix_file="/tmp/report_gen-prefix-$RANDOM"
@@ -180,46 +184,11 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "* [HTML]($OUT_FILE_NAME_HTML)"
 	echo "* [JSON]($OUT_FILE_NAME_JSON)"
 	echo
-	echo "## Project meta-data"
-	echo
-	echo "| | |"
-	echo "| --- | -------- |"
-	echo "| _version_ | ${PROJECT_VERSION:-"N/A"} |"
-	echo "| _version release date_ | ${PROJECT_VERSION_DATE:-"N/A"} |"
-	echo "| _branch_ | ${PROJECT_BUILD_BRANCH:-"N/A"} |"
-	echo "| _report build date_ | ${PROJECT_BUILD_DATE:-"N/A"} |"
-	echo "| _licenses_ | ${PROJECT_LICENSES:-"N/A"} |"
-	echo
-	echo "## Report tools"
-	echo
-	echo "| [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool | version |"
-	echo "| --- | -------- |"
-	echo "| [\`osh\`](https://gitlab.com/OSEGermany/osh-tool/) | $osh_tool_version |"
-	echo "| [\`okh\`](https://github.com/OPEN-NEXT/LOSH-OKH-tool) | $okh_tool_version |"
-	echo "| [\`reuse\`](https://github.com/fsfe/reuse-tool/) | $reuse_tool_version |"
-	echo "| [\`projvar\`](https://github.com/hoijui/projvar/) | $projvar_tool_version |"
-	echo "| [\`mle\`](https://github.com/hoijui/mle/) | $mle_tool_version |"
-	echo
-	echo "## Report"
-	echo
 } >> "$prefix_file"
 cat "$prefix_file" "$output_md" > "$tmp_file"
 mv "$tmp_file" "$output_md"
 echo "INFO Written Markdown report file '$output_md'."
 rm "$prefix_file"
-
-# Appends raw projvar output to Markdown report
-if $echo_projvar
-then
-	{
-		echo
-		echo "## Project meta-data (by projvar)"
-		echo
-		echo '```'
-		cat "$output_projvar"
-		echo '```'
-	} >> "$output_md"
-fi
 
 # Generates HTML report
 cwd="$PWD"
