@@ -1,5 +1,5 @@
 # This file is part of osh-tool.
-# <https://gitlab.opensourceecology.de/hoijui/osh-tool> # TODO Replace al thes eancient URLs!
+# <https://github.com/hoijui/osh-tool>
 #
 # SPDX-FileCopyrightText: 2022 Robin Vobruba <hoijui.quaero@gmail.com>
 #
