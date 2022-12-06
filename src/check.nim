@@ -45,6 +45,7 @@ type
 
   # Data about the report that is available *before* running the checks
   ReportPrelude* = object
+    homepage*: string
     projVars*: TableRef[string, string]
     tool_versions*: tuple[
       osh: string,
@@ -67,6 +68,22 @@ type
     # How well the project adheres to this tools criteria,
     # from 0.0 for not at all, to 1.0 for compleetely.
     openness*: float32
+    # Same as `openness`, but as a percentage,
+    # rounded to two digits after the comma.
+    opennessPercent*: string
+    # A colors name, depending on the value of openness,
+    # eg. "green" for high values,
+    # "yellow" for mid-range values,
+    # "red" for low values.
+    opennessColor*: string
+    # URL to a README badge image for this report,
+    # made up only of "OSH | Report",
+    # with `opennessColor` as the background color.
+    badgeUrlColor*: string
+    # URL to a README badge image for this report,
+    # made up of "OSH Openness | {opennessPercent}%",
+    # with `opennessColor` as the background color.
+    badgeUrlPercentage*: string
 
 proc toNum*(flags: CheckReqs): int = cast[cint](flags)
 proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)

@@ -1,0 +1,9 @@
+# This file is part of osh-tool.
+# <https://gitlab.opensourceecology.de/hoijui/osh-tool> # TODO Replace al thes eancient URLs!
+#
+# SPDX-FileCopyrightText: 2022 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# const OSH_TOOL_REPO = "https://gitlab.com/OSEGermany/osh-tool/"
+const OSH_TOOL_REPO = "https://github.com/hoijui/osh-tool/"

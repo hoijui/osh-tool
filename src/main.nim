@@ -5,8 +5,29 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import docopt
+import results
+import os
+import options
+import strformat
+import std/logging
+import std/sequtils
+import std/strutils
+import std/sets
+import std/tables
+import ./config
+import ./checks
+import ./checker
+import ./init_update
+import ./init_updates
+import ./state
+import ./tools
+
+include ./constants
+include ./version
+
 # TODO Try to name&//describe this tool in a shorter, slightly more catchy way.
-let doc = """
+let doc = fmt"""
 A linter (static analysis tool) for repositories
 which contain technical documentation
 of Open Source Hardware (OSH) projects.
@@ -34,7 +55,7 @@ As the later is pretty new and still quite "wild" and unorganized,
 there is little solid understanding of it all,
 and these rules are thus partly just guessing.
 We would be happy to get feedback through issues or even pull-reqests at:
-<https://gitlab.com/OSEGermany/osh-tool>
+<{OSH_TOOL_REPO}>
 
 The easiest way to understand what this tool does,
 is to just run it in a git repo with some content with:
@@ -82,26 +103,6 @@ Examples:
   osh check --force --report-csv report.csv
   osh --list-checks
 """
-
-import docopt
-import results
-import os
-import options
-import strformat
-import std/logging
-import std/sequtils
-import std/strutils
-import std/sets
-import std/tables
-import ./config
-import ./checks
-import ./checker
-import ./init_update
-import ./init_updates
-import ./state
-import ./tools
-
-include ./version
 
 proc init*(registry: InitUpdatesRegistry, state: var State) =
   info "Initializing OSH project directory ..."

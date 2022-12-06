@@ -25,6 +25,7 @@ repo="$(pwd)"
 title=""
 output_dir="$OUT_DIR_DEFAULT"
 force=false
+download_badges=false
 
 function print_help() {
 
@@ -44,6 +45,9 @@ function print_help() {
 	echo -e "\t\t(default: '$OUT_DIR_DEFAULT')"
 	echo -e "\t-f, --force"
 	echo -e "\t\tForces overwriting index.html"
+	echo -e "\t-d, --download-badges"
+	echo -e "\t\tInstead of linking to remote badges,"
+	echo -e "\t\tdownload them as files and link to them locally."
 	echo -e "\t-h, --help"
 	echo -e "\t\tPrint this usage help and exit"
 	echo -e ""
@@ -66,6 +70,9 @@ do
 			;;
 		-f|--force)
 			force=true
+			;;
+		-d|--download-badges)
+			download_badges=true
 			;;
 		-h|--help)
 			print_help
@@ -104,34 +111,32 @@ osh \
 jq < "$output_json" > "${output_json}_TMP"
 mv "${output_json}_TMP" "$output_json"
 
-stat_openness="$(jq -r '.stats."openness"' < "$output_json")"
-stat_openness_p="$(bc <<< "scale=2; $stat_openness*100/1")"
-stat_openness_p_int="$(bc <<< "scale=0; $stat_openness_p/1")"
+stat_openness_badge_r="$(jq -r '.stats.badgeUrlColor' < "$output_json")"
+stat_openness_badge_p="$(jq -r '.stats.badgeUrlPercentage' < "$output_json")"
+tool_homepage="$(jq -r '.prelude.homepage' < "$output_json")"
 
-if [ "$stat_openness_p_int" -gt 90 ]
+if $download_badges
 then
-	openness_color=green
-elif [ "$stat_openness_p_int" -gt 50 ]
-then
-	openness_color=yellow
+	rm -f \
+		"$badge_file_report" \
+		"$badge_file_openness"
+	wget "$stat_openness_badge_r" \
+		--quiet \
+		-O "$badge_file_report"
+	wget "$stat_openness_badge_p" \
+		--quiet \
+		-O "$badge_file_openness"
 else
-	openness_color=red
+	badge_file_report="$stat_openness_badge_r"
+	badge_file_openness="$stat_openness_badge_p"
 fi
-
-rm -f "$badge_file_report" "$badge_file_openness"
-wget "https://img.shields.io/badge/OSH-Report-$openness_color" \
-	--quiet \
-	-O "$badge_file_report"
-wget "https://img.shields.io/badge/OSH%20Openness-$stat_openness_p%-$openness_color" \
-	--quiet \
-	-O "$badge_file_openness"
 
 function projvar_get() {
 	local key
 	local value
 	key="$1"
 	value="$(jq -r '.prelude.projVars["'"$key"'"]' < "$output_json")"
-	echo "$value"
+	printf '%s' "$value"
 	if [ "$value" == "null" ]
 	then
 		return 1
@@ -151,9 +156,9 @@ function projvar_get_or_default() {
 	ret=$?
 	if [ $ret -eq 0 ]
 	then
-		echo "$value"
+		printf '%s' "$value"
 	else
-		echo "$default"
+		printf '%s' "$default"
 	fi
 	return $ret
 }
@@ -164,7 +169,7 @@ then
 	proj_repo_web_url="$(projvar_get_or_default 'REPO_WEB_URL' '???')"
 	title="[$proj_name]($proj_repo_web_url) - [OSH](https://en.wikipedia.org/wiki/Open-source_hardware) quality report"
 fi
-subtitle="Produced by the [\`osh\`-tool](https://gitlab.com/OSEGermany/osh-tool/)" # TODO Get the URL from a part in the JSON report as well (needs to be put there first)
+subtitle="Produced by the [\`osh\`-tool]($tool_homepage)"
 
 # Prepends meta-data to Markdown report
 prefix_file="/tmp/report_gen-prefix-$RANDOM"
@@ -198,6 +203,7 @@ pandoc \
 	-o "$OUT_FILE_NAME_HTML" \
 	--standalone \
 	--self-contained \
+	 -f markdown-smart \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
 	"$OUT_FILE_NAME_MD"

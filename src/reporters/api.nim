@@ -12,8 +12,7 @@ import system/io
 import tables
 import ../check
 
-# const OSH_TOOL_REPO = "https://gitlab.com/OSEGermany/osh-tool/"
-const OSH_TOOL_REPO = "https://github.com/hoijui/osh-tool/"
+include ../constants
 
 type
   CheckFmt* = ref object of RootObj

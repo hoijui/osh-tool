@@ -23,6 +23,7 @@ import ./reporters/md_list
 import ./reporters/md_table
 import ./reporters/json
 
+include ./constants
 include ./version
 
 proc initStreams(report: Report, state: State): (File, File) =
@@ -101,6 +102,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       mle: toolVersion("mle", "--version", "--quiet"),
   )
   let prelude = ReportPrelude(
+    homepage: OSH_TOOL_REPO,
     projVars: state.projVars,
     tool_versions: tool_versions
     )
@@ -132,6 +134,10 @@ proc check*(registry: ChecksRegistry, state: var State) =
     idx += 1
     idxAll += 1
   let openness = opennessSum / float32(idx)
+  let opennessPercent = formatFloat(openness*100.0, format=ffDecimal, precision=2)
+  let opennessColor = if openness >= 0.9: "green" elif openness >= 0.5: "yellow" else: "red"
+  let badgeUrlColor = fmt"https://img.shields.io/badge/OSH-Report-{opennessColor}"
+  let badgeUrlPercentage = fmt"https://img.shields.io/badge/OSH%20Openness-{opennessPercent}%-{opennessColor}"
   let stats = ReportStats(
     checks: (
       run: idx,
@@ -142,6 +148,9 @@ proc check*(registry: ChecksRegistry, state: var State) =
       ),
     issues: issues,
     openness: openness,
+    opennessPercent: opennessPercent,
+    badgeUrlColor: badgeUrlColor,
+    badgeUrlPercentage: badgeUrlPercentage,
     )
   for checkFmt in reports:
     checkFmt.finalize(stats)
