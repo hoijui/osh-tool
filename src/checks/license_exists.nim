@@ -14,7 +14,7 @@ import ../state
 
 # Requires "LICENSE" or "COPYING" (case-insensitive)
 # to appear somewhere in the file name.
-let RS_LICENSE = "(?i)^.*(LICENSE|COPYING).*$"
+let RS_LICENSE = "(?i)^.*(LICEN[SC]E|COPYING).*$"
 let R_LICENSE = re(RS_LICENSE)
 
 type LicenseExistsCheck = ref object of Check
