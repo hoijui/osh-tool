@@ -15,12 +15,12 @@ import ../check
 import ../state
 import ../tools
 
-const OKH_FILE = "okh.toml"
+const OKH_FILE* = "okh.toml"
 let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
 let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
 const OKH_TEMPLATE_TOML_URL = "https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/sample_data/okh-TEMPLATE.toml"
 
-proc okhFile(config: RunConfig): string =
+proc okhFile*(config: RunConfig): string =
   return os.joinPath(config.proj_root, OKH_FILE)
 
 type OkhFileExistsCheck = ref object of Check

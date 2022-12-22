@@ -6,6 +6,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import options
+import os
 import strformat
 import system
 import ../check
@@ -13,6 +14,7 @@ import ../config
 import ../state
 import std/osproc
 import std/strutils
+import ./okh_file_exists
 
 const OKH_CMD = "okh-tool"
 
@@ -31,6 +33,8 @@ method requirements*(this: OkhLintCheck): CheckReqs =
   return {}
 
 method run*(this: OkhLintCheck, state: var State): CheckResult =
+  if not os.fileExists(okhFile(state.config)):
+    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Severe, some(fmt"Main OKH manifest file {OKH_FILE} not found"))
   try:
     let okhProc = osproc.startProcess(
       command = OKH_CMD,
