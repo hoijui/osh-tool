@@ -38,6 +38,14 @@ method requirements*(this: OkhFileExistsCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
+method getRatingFactors*(this: OkhFileExistsCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.7,
+    openness: 1.0,
+    hardware: 1.0,
+    quality: 0.5,
+    machineReadability: 1.0,
+    )
 
 method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
   if os.fileExists(okhFile(state.config)):

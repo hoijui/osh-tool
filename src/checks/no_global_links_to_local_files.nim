@@ -29,6 +29,15 @@ method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
+method getRatingFactors*(this: MdNoGlobalLinksToLocalFilesCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.4,
+    openness: 0.8, # because it indicates how well the repo works offline/in a distributed environment
+    hardware: 0.0,
+    quality: 0.8,
+    machineReadability: 0.8,
+    )
+
 method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResult =
   let mdFiles = filterByExtensions(state.listfiles(), @["md", "markdown"]) # TODO Make case-insensitive
   let links = try:

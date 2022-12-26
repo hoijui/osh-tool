@@ -29,6 +29,15 @@ method requirements*(this: NoSpaceInFileNamesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
+method getRatingFactors*(this: NoSpaceInFileNamesCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.4,
+    openness: 0.6, # makes the repo easier to work wiht on hte command-line and with scripts
+    hardware: 0.0,
+    quality: 0.8,
+    machineReadability: 1.0,
+    )
+
 method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
   let spacedFiles = filterPathsMatching(state.listFiles(), R_SPACE)
   return (if spacedFiles.len == 0:

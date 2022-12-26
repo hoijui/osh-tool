@@ -80,6 +80,15 @@ method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
+method getRatingFactors*(this: NoSourceFilesInRootCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.1,
+    openness: 0.6, # makes the repo look less cluttered, and thus more friendly and less scarry
+    hardware: 0.0,
+    quality: 0.8,
+    machineReadability: 0.0,
+    )
+
 method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   let rootSourceFiles = filterByExtensions(state.listFilesL1(), SOURCE_EXTENSIONS, SOURCE_EXTENSIONS_MAX_PARTS)
   # TODO Only fail if more then 2 files with the same extension are found

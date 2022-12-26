@@ -38,6 +38,15 @@ method requirements*(this: MightBeGeneratedCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
+method getRatingFactors*(this: MightBeGeneratedCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.5,
+    openness: 0.6, # because the repo could be less heavy and thus easier to host/share/exchange
+    hardware: 0.0,
+    quality: 0.5,
+    machineReadability: 0.3,
+    )
+
 method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
   let foundFiles = filterPathsMatchingFileName(state.listFiles(), R_GENERATABLE)
   return (if foundFiles.len == 0:

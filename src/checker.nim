@@ -50,7 +50,10 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
     of OutputFormat.MdList:
       return MdListCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
 
-proc calcOpenness*(res: CheckResult): float32 =
+# Calculates the success factor of executing a check,
+# Explained here (among other things):
+# https://gitlab.com/OSEGermany/osh-tool/-/issues/27
+proc calcSuccess*(res: CheckResult): float32 =
   let oKind = case res.kind:
     of Perfect:
       0.5
@@ -61,8 +64,8 @@ proc calcOpenness*(res: CheckResult): float32 =
     of Bad:
       0.0
     of Inapplicable:
-      error "Programmer error: Code should never try to calculate openness of an 'Inapplicable' check!"
-      raise newException(Defect, "Code should never try to calculate openness of an 'Inapplicable' check!")
+      error "Programmer error: Code should never try to calculate the success factor of an 'Inapplicable' check!"
+      raise newException(Defect, "Code should never try to calculate the success factor of an 'Inapplicable' check!")
   var oIssues = 0.5
   for issue in res.issues:
     let severity = case issue.importance:
@@ -116,7 +119,10 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var issues = initTable[string, int]()
   for imp in CheckIssueImportance:
     issues[$imp] = 0
-  var opennessSum = 0.0
+  var successSum = 0.0
+  var checkRelevancySum = CheckRelevancy()
+  var checkRelevancySumWeighted = CheckRelevancy()
+  var checkRatingSum = CheckRelevancy()
   for check in registry.checks:
     let res = check.run(state)
     if isGood(res):
@@ -130,14 +136,15 @@ proc check*(registry: ChecksRegistry, state: var State) =
       continue
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
-    opennessSum += calcOpenness(res)
+    let success = calcSuccess(res)
+    let checkRatingFactors = check.getRatingFactors()
+    checkRelevancySum += checkRatingFactors
+    checkRelevancySumWeighted += checkRatingFactors * checkRatingFactors.weight
+    checkRatingSum += checkRatingFactors * (checkRatingFactors.weight * success)
+    successSum += success
     idx += 1
     idxAll += 1
-  let openness = opennessSum / float32(idx)
-  let opennessPercent = formatFloat(openness*100.0, format=ffDecimal, precision=2)
-  let opennessColor = if openness >= 0.9: "green" elif openness >= 0.5: "yellow" else: "red"
-  let badgeUrlColor = fmt"https://img.shields.io/badge/OSH-Report-{opennessColor}"
-  let badgeUrlPercentage = fmt"https://img.shields.io/badge/OSH%20Openness-{opennessPercent}%-{opennessColor}"
+  checkRatingSum /= checkRelevancySumWeighted
   let stats = ReportStats(
     checks: (
       run: idx,
@@ -147,10 +154,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       available: numChecks
       ),
     issues: issues,
-    openness: openness,
-    opennessPercent: opennessPercent,
-    badgeUrlColor: badgeUrlColor,
-    badgeUrlPercentage: badgeUrlPercentage,
+    ratings: checkRatingSum.intoRatings()
     )
   for checkFmt in reports:
     checkFmt.finalize(stats)

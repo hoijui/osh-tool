@@ -30,6 +30,15 @@ Note that this is related to the License exists check."""
 method requirements*(this: ReuseLintCheck): CheckReqs =
   return {}
 
+method getRatingFactors*(this: ReuseLintCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.5,
+    openness: 1.0,
+    hardware: 0.0,
+    quality: 0.3,
+    machineReadability: 1.0,
+    )
+
 method run*(this: ReuseLintCheck, state: var State): CheckResult =
   try:
     let reuseProc = osproc.startProcess(

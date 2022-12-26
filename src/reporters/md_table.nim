@@ -54,7 +54,11 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} 
   strm.writeLine(fmt"| Checks Available | {stats.checks.available} |")
   for imp in stats.issues.keys:
     strm.writeLine(fmt"| Issues {imp} | {stats.issues[imp]} |")
-  strm.writeLine(fmt"| Openness | {stats.openness} |")
+  strm.writeLine(fmt"| Success | {stats.ratings.success.percent}% - ![Badge - Success]({stats.ratings.success.badgeUrl}) |")
+  strm.writeLine(fmt"| Openness | {stats.ratings.openness.percent}% - ![Badge - Success]({stats.ratings.openness.badgeUrl}) |")
+  strm.writeLine(fmt"| is hardware (factor) | {stats.ratings.hardware.factor} |")
+  strm.writeLine(fmt"| Quality | {stats.ratings.quality.percent}% - ![Badge - OSH Quality]({stats.ratings.quality.badgeUrl}) |")
+  strm.writeLine(fmt"| Machine-Readability | {stats.ratings.machineReadability.percent}% - ![Badge - OSH Machine-Readability]({stats.ratings.machineReadability.badgeUrl}) |")
   mdOutro(strm, self.prelude, stats)
   # See NOTE in CheckFmt.finalize
   self.repStream.close()

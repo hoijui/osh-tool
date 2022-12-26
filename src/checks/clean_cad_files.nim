@@ -36,6 +36,15 @@ method requirements*(this: CleanCadFilesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
+method getRatingFactors*(this: CleanCadFilesCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 1.0,
+    openness: 1.0,
+    hardware: 1.0,
+    quality: 0.5,
+    machineReadability: 1.0,
+    )
+
 method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
   extCheckRun(state, state.config.mechanics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 

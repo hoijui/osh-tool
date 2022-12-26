@@ -32,6 +32,15 @@ method requirements*(this: LicenseExistsCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
+method getRatingFactors*(this: LicenseExistsCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.2,
+    openness: 1.0,
+    hardware: 0.0,
+    quality: 0.05,
+    machineReadability: 1.0,
+    )
+
 method run*(this: LicenseExistsCheck, state: var State): CheckResult =
   # TODO Add checks for REUSE bom, or check the output of `reuse --lint`
   return (if filterPathsMatching(state.listFilesL1(), R_LICENSE).len > 0:

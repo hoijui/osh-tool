@@ -28,6 +28,15 @@ method requirements*(this: UnwantedFilesExistNotCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
+method getRatingFactors*(this: UnwantedFilesExistNotCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.5,
+    openness: 0.6, # because the repo could be less heavy and thus easier to host/share/exchange
+    hardware: 0.0,
+    quality: 0.5,
+    machineReadability: 0.3,
+    )
+
 method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   let unwantedFiles = filterPathsMatchingFileName(state.listFiles(), R_UNWANTED_FILES)
   return (if unwantedFiles.len == 0:

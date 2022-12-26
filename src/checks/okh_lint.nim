@@ -32,6 +32,15 @@ and that all properties use the correct format."""
 method requirements*(this: OkhLintCheck): CheckReqs =
   return {}
 
+method getRatingFactors*(this: OkhLintCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.7,
+    openness: 1.0,
+    hardware: 0.0,
+    quality: 1.0,
+    machineReadability: 1.0,
+    )
+
 method run*(this: OkhLintCheck, state: var State): CheckResult =
   if not os.fileExists(okhFile(state.config)):
     return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Severe, some(fmt"Main OKH manifest file {OKH_FILE} not found"))

@@ -29,6 +29,15 @@ method requirements*(this: ReadmeExistsCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
+method getRatingFactors*(this: ReadmeExistsCheck): CheckRelevancy =
+  return CheckRelevancy(
+    weight: 0.2,
+    openness: 1.0,
+    hardware: 0.0,
+    quality: 0.1,
+    machineReadability: 0.5,
+    )
+
 method run(this: ReadmeExistsCheck, state: var State): CheckResult =
   return (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
     newCheckResult(CheckResultKind.Perfect)
