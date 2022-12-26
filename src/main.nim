@@ -41,11 +41,11 @@ This tool supports three main commands:
   This checks a given project dir/repo,
   reporting about what is and is not present and in order
   of the things we want to see in a project [1].
-- **init** (alpha, do not use!):
+- **init** (***NOT IMPLEMENTED***, do not use!):
   This initializes a project directory template from scratch,
   containing as much as possible
   of the structure and meta-data we want to see [1].
-- **update** (alpha, do not use!):
+- **update** (***NOT IMPLEMENTED***, do not use!):
   This auto-generates as much as possible
   of the structure and meta-data we want to see [1]
   in the given, already existing project directory.
@@ -61,7 +61,7 @@ We would be happy to get feedback through issues or even pull-reqests at:
 <{OSH_TOOL_REPO}>
 
 The easiest way to understand what this tool does,
-is to just run it in a git repo with some content with:
+is to just run it in a git repo with some content:
 
 ```
 osh check
