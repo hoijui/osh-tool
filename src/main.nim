@@ -32,7 +32,10 @@ A linter (static analysis tool) for repositories
 which contain technical documentation
 of Open Source Hardware (OSH) projects.
 
-It supports three main commands:
+Please send feedback here:
+<{OSH_TOOL_ISSUES_URL}>
+
+This tool supports three main commands:
 
 - **check** (beta, please try; only reads, does not write/create/change anything):
   This checks a given project dir/repo,

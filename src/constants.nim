@@ -7,3 +7,5 @@
 
 # const OSH_TOOL_REPO = "https://gitlab.com/OSEGermany/osh-tool/"
 const OSH_TOOL_REPO = "https://github.com/hoijui/osh-tool/"
+
+const OSH_TOOL_ISSUES_URL = "https://gitlab.com/OSEGermany/osh-tool/-/issues"
