@@ -56,7 +56,7 @@ proc mdPrelude*(strm: File, prelude: ReportPrelude) =
   strm.writeLine("## Report")
   strm.writeLine("")
 
-proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats) =
+proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle: bool = false) =
   strm.writeLine("")
   strm.writeLine("## Project meta-data (by projvar)")
   strm.writeLine("")
@@ -64,6 +64,15 @@ proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats) =
   strm.writeLine("| --- | -------- |")
   for (key, val) in prelude.projVars.pairs:
     strm.writeLine(fmt"| {key} | {val} |")
+  if bashStyle:
+    strm.writeLine("")
+    strm.writeLine("### BASH style")
+    strm.writeLine("")
+    strm.writeLine("```")
+    for (key, val) in prelude.projVars.pairs:
+      strm.writeLine(fmt"{key}='{val}'")
+    strm.writeLine("```")
+
 method init*(self: CheckFmt, prelude: ReportPrelude) {.base.} =
   quit "to override!"
 
