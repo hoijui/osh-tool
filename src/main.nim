@@ -185,7 +185,7 @@ const POSSIBLE_PV_PROJ_PREFIX_KEYS = [
 proc cli(): CliRes =
 
   debug "Initializing ..."
-  let args = docopt(doc, version = version)
+  let args = docopt(doc, version = VERSION)
 
   let logLevel = if args["--quiet"]: lvlNone else: lvlAll
   addHandler(newConsoleLogger(levelThreshold = logLevel, useStderr = true))

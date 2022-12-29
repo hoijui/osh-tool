@@ -1,9 +1,8 @@
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
-include ./src/version
-#version     = "0.2.0"
+version     = "0.2.0"
 author      = "Robin Vobruba <hoijui.quaero@gmail.com>"
 description = "A Tool for managing Open Source Hardware projects, taking care of meta-data and keeping the structure clean"
 license     = "AGPL3"

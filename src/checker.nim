@@ -98,7 +98,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
     reports.add(initCheckFmt(report, state))
   let numChecks = len(registry.checks)
   let tool_versions = (
-      osh: version,
+      osh: VERSION,
       okh: toolVersion("okh-tool", "--version", "--quiet"),
       reuse: toolVersion("reuse", "--version"),
       projvar: toolVersion("projvar", "--version", "--quiet"),
