@@ -41,13 +41,13 @@ method getRatingFactors*(this: ReuseLintCheck): CheckRelevancy =
 
 method run*(this: ReuseLintCheck, state: var State): CheckResult =
   try:
-    let reuseProc = osproc.startProcess(
+    let process = osproc.startProcess(
       command = REUSE_CMD,
       workingDir = state.config.projRoot,
       args = ["lint"],
       env = nil,
       options = {poUsePath})
-    let (lines, exCode) = reuseProc.readLines
+    let (lines, exCode) = process.readLines
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)
     else:
