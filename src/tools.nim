@@ -253,16 +253,17 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
     let (lines, exCode) = process.readLines
     if exCode == 0:
-      let jsonRoot = parseJson(lines.join("\n"))
-      # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
       var links = newSeq[LinkOcc]()
-      for linkNode in jsonRoot:
-        let link = LinkOcc(
-          srcFile: linkNode["src_file"].getStr(),
-          srcLine: linkNode["src_line"].getInt(),
-          srcColumn: linkNode["src_column"].getInt(),
-          target: linkNode["trg_link"].getStr())
-        links.add(link)
+      if lines.len() > 0:
+        let jsonRoot = parseJson(lines.join("\n"))
+        # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
+        for linkNode in jsonRoot:
+          let link = LinkOcc(
+            srcFile: linkNode["src_file"].getStr(),
+            srcLine: linkNode["src_line"].getInt(),
+            srcColumn: linkNode["src_column"].getInt(),
+            target: linkNode["trg_link"].getStr())
+          links.add(link)
       return links
     else:
       raise newException(IOError, fmt("""Failed to run '{MLE_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}"""))
