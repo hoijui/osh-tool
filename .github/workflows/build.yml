@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2022-2023 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+name: Compile Linux and Windows, and publish pages
+on:
+  push:
+    branches: [ master ]
+  release:
+    types: [published]
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup Nim and Nimble
+        uses: jiro4989/setup-nim-action@v1
+        #with:
+        #  nim-version: '1.6.8' # default is 'stable'
+
+      - name: Building
+        run: |
+          scripts/ci-run
+
+      - name: Deploy to pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
+
