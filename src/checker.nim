@@ -83,14 +83,18 @@ proc calcSuccess*(res: CheckResult): float32 =
       break
   return oKind + oIssues
 
+proc round*(factor: float32): string =
+  formatFloat(factor, format=ffDecimal, precision=2)
+
 proc list*(registry: ChecksRegistry) =
   echo(fmt"# Checks")
   echo(fmt"")
-  echo(fmt"| Name | Description |")
-  echo(fmt"| --- | --------- |")
+  echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description |")
+  echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- |")
   for check in registry.checks:
     let singleLineDesc = check.description().replace("\\\n", "").replace("\n", " ")
-    echo(fmt"| {check.name()} | {singleLineDesc} |")
+    let relevancy = check.getRatingFactors()
+    echo(fmt"| {check.name()} | {round(relevancy.weight)} | {round(relevancy.openness)} | {round(relevancy.hardware)} | {round(relevancy.quality)} | {round(relevancy.machineReadability)} | {singleLineDesc} |")
 
 proc check*(registry: ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()
