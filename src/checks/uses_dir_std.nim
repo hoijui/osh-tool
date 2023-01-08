@@ -40,7 +40,7 @@ method getRatingFactors*(this: UsesDirStdCheck): CheckRelevancy =
   return CheckRelevancy(
     weight: 1.0,
     openness: 1.0,
-    hardware: 1.0,
+    hardware: 0.3,
     quality: 1.0,
     machineReadability: 1.0,
     )
