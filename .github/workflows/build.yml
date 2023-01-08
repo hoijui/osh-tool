@@ -23,6 +23,10 @@ jobs:
         #with:
         #  nim-version: '1.6.8' # default is 'stable'
 
+      - name: Install our requirements
+        run: |
+          scripts/ci-run --install-requirements
+
       - name: Building
         run: |
           scripts/ci-run
