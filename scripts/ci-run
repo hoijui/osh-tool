@@ -48,11 +48,26 @@ function print_help() {
 
 function install_requirements() {
 
+	apt_updated=false
 	if ! which git > /dev/null || ! which x86_64-w64-mingw32-gcc > /dev/null
 	then
 		echo "Install pre-requisites ..."
-		$sudo apt-get update
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
 		$sudo apt-get install -y -qq curl git # > /dev/null
+	fi
+	if ! which pandoc > /dev/null
+	then
+		echo "Install pandoc ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
+		$sudo apt-get install -y -qq pandoc # > /dev/null
 	fi
 
 	mkdir -p "$build_dir"
@@ -71,6 +86,11 @@ function install_requirements() {
 	if ! which x86_64-w64-mingw32-gcc > /dev/null
 	then
 		echo "Install the win64 cross-compiler ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
 		$sudo apt-get install -y -qq mingw-w64 # > /dev/null
 	fi
 	if ! [ -d "$nim_win_dir" ] > /dev/null
@@ -158,6 +178,22 @@ cp "$build_dir/$bin_win" "$package_dir/win64/"
 cp "$nim_win_dir/bin/"{libcrypto-1_1,libcrypto-1_1-x64,libssl-1_1,libssl-1_1-x64,pcre64}.dll "$package_dir/win64/"
 
 echo
+echo "Create static documentation ..."
+"$build_dir/$bin_lin" --list-checks --quiet > "$package_dir/checks.md"
+{
+	echo 'Output of `'"$bin_lin"' --help`:'
+	echo
+	echo '```'
+	"$build_dir/$bin_lin" --help
+	echo '```'
+} > "$package_dir/help.md"
+for md in "$package_dir/"*.md
+do
+	html="${md%.md}.html"
+	pandoc -o "$html" "$md"
+done
+
+echo
 echo "State after package preparation:"
 find "$package_dir"
 
@@ -187,7 +223,7 @@ echo "Creating HTML ('index.html') that links to all the files generated above .
 	echo "<body>"
 	echo 'Downloadable, generated files from the <a href="https://gitlab.com/OSEGermany/osh-tool">osh-tool repo</a>.'
 	echo "<ul>"
-	# Create HTML links to all the files
+	# Create HTML links to all the archive files
 	for file in *.zip
 	do
 		img_src=''
@@ -201,6 +237,10 @@ echo "Creating HTML ('index.html') that links to all the files generated above .
 			img_src="$img_src_archive"
 		fi
 		echo "<li><img alt=\"os_icon\" width=\"64\" src=\"$img_src\"/><a href=\"$file\">$file</a></li>"
+	done
+	for file in *.md *.html
+	do
+		echo "<li><a href=\"$file\">$file</a></li>"
 	done
 	echo "</ul>"
 	echo "</body>"
