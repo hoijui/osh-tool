@@ -33,6 +33,9 @@ method description*(this: OkhFileExistsCheck): string =
 which contains project meta-data - \
 exists."""
 
+method sourcePath*(this: OkhFileExistsCheck): string =
+  return tools.srcFileName()
+
 method requirements*(this: OkhFileExistsCheck): CheckReqs =
   return {
     CheckReq.FilesListL1,

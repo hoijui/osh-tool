@@ -12,6 +12,7 @@ import system
 import ../check
 import ../config
 import ../state
+import ../tools
 import std/osproc
 
 const REUSE_CMD = "reuse"
@@ -26,6 +27,9 @@ method description*(this: ReuseLintCheck): string =
 for all files in the project, \
 using the Free Software Foundations REUSE tool.
 Note that this is related to the License exists check."""
+
+method sourcePath*(this: ReuseLintCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: ReuseLintCheck): CheckReqs =
   return {}

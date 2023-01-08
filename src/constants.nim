@@ -9,3 +9,5 @@
 const OSH_TOOL_REPO = "https://github.com/hoijui/osh-tool/"
 
 const OSH_TOOL_ISSUES_URL = "https://gitlab.com/OSEGermany/osh-tool/-/issues"
+
+const OSH_TOOL_SRC_FILES_BASE_URL = "https://github.com/hoijui/osh-tool/blob/master"

@@ -8,9 +8,9 @@
 from strutils import join
 import re
 import options
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 let R_GENERATABLE= re"^.*(jpg|jpeg|gif|png|bmp|pdf|stl)$" # TODO Add much more (PDF, STL, ...) and maybe make this list in a CSV as well
 
@@ -32,6 +32,9 @@ This is one of the more controversial checks,
 as it often requires writing new software.
 That is sometimes a simple script,
 and sometimes complex software requiring many person-months of development."""
+
+method sourcePath*(this: MightBeGeneratedCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: MightBeGeneratedCheck): CheckReqs =
   return {

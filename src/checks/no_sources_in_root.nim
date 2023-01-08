@@ -10,9 +10,9 @@ import options
 import macros
 import system
 import regex
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 const SOURCE_EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
@@ -74,6 +74,9 @@ method name*(this: NoSourceFilesInRootCheck): string =
 method description*(this: NoSourceFilesInRootCheck): string =
   return """Checks that no source files appear in the root dir of the project. \
 Make sure to put them all into sub-directories, for example `src/`."""
+
+method sourcePath*(this: NoSourceFilesInRootCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
   return {

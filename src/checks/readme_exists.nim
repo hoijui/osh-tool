@@ -8,9 +8,9 @@
 import re
 import options
 import strformat
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 let RS_README = "^.*README.*$"
 let R_README = re(RS_README)
@@ -23,6 +23,9 @@ method name(this: ReadmeExistsCheck): string =
 method description*(this: ReadmeExistsCheck): string =
   return fmt"""Checks that a README file exists in the projects root dir, \
 using the regex `{RS_README}`."""
+
+method sourcePath*(this: ReadmeExistsCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: ReadmeExistsCheck): CheckReqs =
   return {

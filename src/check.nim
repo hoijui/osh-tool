@@ -245,6 +245,9 @@ method name*(this: Check): string {.base.} =
 method description*(this: Check): string {.base.} =
   return "TODO Override!"
 
+method sourcePath*(this: Check): string {.base.} =
+  return "TODO Override!"
+
 method requirements*(this: Check): CheckReqs {.base.} =
   echo "TODO Override!"
   quit 99

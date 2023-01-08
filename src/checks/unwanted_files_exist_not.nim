@@ -8,9 +8,9 @@
 from strutils import join
 import re
 import options
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trashes|ehthumbs\.db|Thumbs\.db|.*~|.*\.orig|.*\.swp|.*\.kate-swp|.*\.fcstd1)$"
 
@@ -22,6 +22,9 @@ method name*(this: UnwantedFilesExistNotCheck): string =
 method description*(this: UnwantedFilesExistNotCheck): string =
   return """Checks that no unwanted files are part of the project. \
 These could be backups, caches, IDE/platform specific, and so on."""
+
+method sourcePath*(this: UnwantedFilesExistNotCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: UnwantedFilesExistNotCheck): CheckReqs =
   return {

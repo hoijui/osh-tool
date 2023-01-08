@@ -10,9 +10,9 @@ import options
 import strutils
 import strformat
 import std/uri
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 type MdNoGlobalLinksToLocalFilesCheck = ref object of Check
 
@@ -23,6 +23,9 @@ method description*(this: MdNoGlobalLinksToLocalFilesCheck): string =
   return """Checks no links to project local files use a 'global' prefix,
 be it a web-hosting URL or an absolute local path. \
 This is in favor of a documentation that is as distributed/distributable as possible."""
+
+method sourcePath*(this: MdNoGlobalLinksToLocalFilesCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
   return {

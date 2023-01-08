@@ -13,6 +13,7 @@ import system
 import ../check
 import ../config
 import ../state
+import ../tools
 import std/logging
 import std/osproc
 import std/streams
@@ -30,6 +31,9 @@ method description*(this: UsesDirStdCheck): string =
   return fmt"""Checks whether the {DIR_STD_NAME} OSH directory standard is used \
 for a sufficient ammount of files and direcotries in the project, \
 using the {OSH_DIR_STD_TOOL_CMD} CLI tool."""
+
+method sourcePath*(this: UsesDirStdCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: UsesDirStdCheck): CheckReqs =
   return {

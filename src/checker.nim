@@ -97,12 +97,14 @@ proc round*(factor: float32): string =
 proc list*(registry: ChecksRegistry) =
   echo(fmt"# Checks")
   echo(fmt"")
-  echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description |")
-  echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- |")
+  echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Source Code |")
+  echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- | ------ |")
   for check in registry.checks:
     let singleLineDesc = check.description().replace("\\\n", "").replace("\n", " ")
     let relevancy = check.getRatingFactors()
-    echo(fmt"| {check.name()} | {round(relevancy.weight)} | {round(relevancy.openness)} | {round(relevancy.hardware)} | {round(relevancy.quality)} | {round(relevancy.machineReadability)} | {singleLineDesc} |")
+    let srcCodePath = check.sourcePath()
+    let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
+    echo(fmt"| {check.name()} | {round(relevancy.weight)} | {round(relevancy.openness)} | {round(relevancy.hardware)} | {round(relevancy.quality)} | {round(relevancy.machineReadability)} | {singleLineDesc} | {srcText} |")
 
 proc check*(registry: ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()

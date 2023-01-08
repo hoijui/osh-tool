@@ -8,9 +8,9 @@
 import re
 import options
 import strformat
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 # Requires "LICENSE" or "COPYING" (case-insensitive)
 # to appear somewhere in the file name.
@@ -26,6 +26,9 @@ method description*(this: LicenseExistsCheck): string =
   return fmt"""Checks that a LICENSE file exists in the projects root dir, \
 using the regex `{RS_LICENSE}`.
 Note that this is related to the REUSE lint check."""
+
+method sourcePath*(this: LicenseExistsCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: LicenseExistsCheck): CheckReqs =
   return {

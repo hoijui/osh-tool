@@ -8,9 +8,9 @@
 from strutils import join
 import re
 import options
-import ../tools
 import ../check
 import ../state
+import ../tools
 
 ## Check: Remove OS & Application generated backup and cache files
 let R_SPACE = re".*\s.*"
@@ -23,6 +23,9 @@ method name*(this: NoSpaceInFileNamesCheck): string =
 method description*(this: NoSpaceInFileNamesCheck): string =
   return """Checks that no file-names in the project contain white-space, \
 as this makes automatic processing much easier and less error-prone."""
+
+method sourcePath*(this: NoSpaceInFileNamesCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: NoSpaceInFileNamesCheck): CheckReqs =
   return {

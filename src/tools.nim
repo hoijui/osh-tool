@@ -270,6 +270,9 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
   except OSError as err:
     raise newException(IOError, fmt("Failed to run '{MLE_CMD}'; make sure it is in your PATH: {err.msg}"))
 
+template srcFileName*: string =
+  instantiationInfo(-1).filename
+
 proc listFiles*(dir: string): seq[string] =
   if canTreatAsGitRepo(dir):
     listFilesGit(dir)

@@ -9,6 +9,7 @@ import system
 import ../check
 import ../config
 import ../state
+import ../tools
 import ../file_ext_meta
 import std/tables
 
@@ -30,6 +31,9 @@ use an open format (good for collaboration), \
 are text-based (good for versioning with e.g. git) \
 and are actual source files, instead of generated \
 (which is required for being open *source*)."""
+
+method sourcePath*(this: CleanElectronicsFilesCheck): string =
+  return tools.srcFileName()
 
 method requirements*(this: CleanElectronicsFilesCheck): CheckReqs =
   return {
