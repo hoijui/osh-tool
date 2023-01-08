@@ -195,10 +195,24 @@ echo "Create static documentation ..."
 	"$build_dir/$bin_lin" --help
 	echo '```'
 } > "$package_dir/help.md"
+css="https://fonts.googleapis.com/css?family=Rock+Salt"
+echo '
+tbody tr:nth-child(odd) {
+	background-color: #dddddd;
+}
+
+tbody tr:nth-child(even) {
+	background-color: #cccccc;
+}
+
+table {
+	background-color: #dddddd;
+}
+' > "$package_dir/table.css"
 for md in "$package_dir/"*.md
 do
 	html="${md%.md}.html"
-	pandoc -o "$html" "$md"
+	pandoc -s --css "$css" --css "table.css" -o "$html" "$md"
 done
 
 echo
