@@ -56,32 +56,40 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
 proc calcSuccess*(res: CheckResult): float32 =
   let oKind = case res.kind:
     of Perfect:
-      0.5
+      1.0
     of Ok:
-      0.4
+      0.8
     of Acceptable:
-      0.3
+      0.6
     of Bad:
       0.0
     of Inapplicable:
       error "Programmer error: Code should never try to calculate the success factor of an 'Inapplicable' check!"
       raise newException(Defect, "Code should never try to calculate the success factor of an 'Inapplicable' check!")
-  var oIssues = 0.5
+
+  var dedLight = 0.075
+  var dedMiddle = 0.15
+  var dedSevere = 0.3
+  var oIssues = 1.0
   for issue in res.issues:
     let severity = case issue.importance:
       of Light:
-        0.02
+        dedLight /= 2
+        dedLight * 2
       of Middle:
-        0.05
+        dedMiddle /= 2
+        dedMiddle * 2
       of Severe:
-        0.1
+        dedSevere /= 2
+        dedSevere * 2
       of DeveloperFailure:
         0.0
     oIssues -= severity
     if oIssues <= 0.0:
       oIssues = 0.0
       break
-  return oKind + oIssues
+
+  return oKind * oIssues
 
 proc round*(factor: float32): string =
   formatFloat(factor, format=ffDecimal, precision=2)
