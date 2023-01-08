@@ -56,6 +56,7 @@ type
       reuse: string,
       projvar: string,
       mle: string,
+      osh_dir_std: string,
     ]
 
   # Data about the report that is available *after* running the checks

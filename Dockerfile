@@ -16,6 +16,7 @@ ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.4.0
 ARG projvar_release=0.15.0
 ARG mle_release=0.21.1
+ARG osh_dir_std_release=0.3.2
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
@@ -96,6 +97,14 @@ RUN wget --quiet "$MLE_DL" ; \
     mv $MLE_PKG/mle ./ ; \
     rm $MLE_PKG.tar.gz ; \
     rm -Rf $MLE_PKG
+
+ENV OSH_DIR_STD_PKG="osh-dir-std-${osh_dir_std_release}-x86_64-unknown-linux-musl"
+ENV OSH_DIR_STD_DL="https://github.com/hoijui/osh-dir-std-rs/releases/download/$osh_dir_std_release/$OSH_DIR_STD_PKG.tar.gz"
+RUN wget --quiet "$OSH_DIR_STD_DL" ; \
+    tar xf $OSH_DIR_STD_PKG.tar.gz ; \
+    mv $OSH_DIR_STD_PKG/osh-dir-std ./ ; \
+    rm $OSH_DIR_STD_PKG.tar.gz ; \
+    rm -Rf $OSH_DIR_STD_PKG
 
 # Ensures the `osh` tool is in PATH
 ENV OSH_TOOL_CLONE_URL="https://github.com/hoijui/osh-tool.git"

@@ -103,6 +103,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       reuse: toolVersion("reuse", "--version"),
       projvar: toolVersion("projvar", "--version", "--quiet"),
       mle: toolVersion("mle", "--version", "--quiet"),
+      osh_dir_std: toolVersion("osh-dir-std", "--version", "--quiet"),
   )
   let prelude = ReportPrelude(
     homepage: OSH_TOOL_REPO,
