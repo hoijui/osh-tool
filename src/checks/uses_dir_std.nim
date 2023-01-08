@@ -29,7 +29,7 @@ method name*(this: UsesDirStdCheck): string =
 
 method description*(this: UsesDirStdCheck): string =
   return fmt"""Checks whether the {DIR_STD_NAME} OSH directory standard is used \
-for a sufficient ammount of files and direcotries in the project, \
+for a sufficient amount of files and directories in the project, \
 using the {OSH_DIR_STD_TOOL_CMD} CLI tool."""
 
 method sourcePath*(this: UsesDirStdCheck): string =
