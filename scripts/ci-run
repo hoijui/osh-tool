@@ -262,6 +262,10 @@ echo "Creating HTML ('index.html') that links to all the files generated above .
 	done
 	for file in *.md *.html
 	do
+		if [ "$file" = "index.html" ]
+		then
+			continue
+		fi
 		echo "<li><a href=\"$file\">$file</a></li>"
 	done
 	echo "</ul>"
