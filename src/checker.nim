@@ -125,7 +125,6 @@ proc check*(registry: ChecksRegistry, state: var State) =
   for imp in CheckIssueImportance:
     issues[$imp] = 0
   var successSum = 0.0
-  var checkRelevancySum = CheckRelevancy()
   var checkRelevancySumWeighted = CheckRelevancy()
   var checkRatingSum = CheckRelevancy()
   for check in registry.checks:
@@ -143,7 +142,6 @@ proc check*(registry: ChecksRegistry, state: var State) =
       checkFmt.report(check, res, idx, idxAll, numChecks)
     let success = calcSuccess(res)
     let checkRatingFactors = check.getRatingFactors()
-    checkRelevancySum += checkRatingFactors
     checkRelevancySumWeighted += checkRatingFactors * checkRatingFactors.weight
     checkRatingSum += checkRatingFactors * (checkRatingFactors.weight * success)
     successSum += success
