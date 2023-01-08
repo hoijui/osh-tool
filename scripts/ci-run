@@ -179,9 +179,17 @@ cp "$nim_win_dir/bin/"{libcrypto-1_1,libcrypto-1_1-x64,libssl-1_1,libssl-1_1-x64
 
 echo
 echo "Create static documentation ..."
-"$build_dir/$bin_lin" --list-checks --quiet > "$package_dir/checks.md"
 {
-	echo 'Output of `'"$bin_lin"' --help`:'
+	echo '---'
+	echo "title: $bin_lin - List of checks"
+	echo '---'
+	echo
+	"$build_dir/$bin_lin" --list-checks --quiet
+} > "$package_dir/checks.md"
+{
+	echo '---'
+	echo "title: $bin_lin - "'Output of `'"$bin_lin"' --help`'
+	echo '---'
 	echo
 	echo '```'
 	"$build_dir/$bin_lin" --help
