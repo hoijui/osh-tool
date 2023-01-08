@@ -1,4 +1,6 @@
-Output of `osh --help`:
+---
+title: osh - Output of `osh --help`
+---
 
 ```
 A linter (static analysis tool) for repositories
@@ -36,9 +38,7 @@ We would be happy to get feedback through issues or even pull-reqests at:
 The easiest way to understand what this tool does,
 is to just run it in a git repo with some content:
 
-```
-osh check
-```
+    osh check
 
 This just reads files and writes to stdout.
 It neither deletes, changes nor creates files.

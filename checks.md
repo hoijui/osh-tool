@@ -1,3 +1,7 @@
+---
+title: osh - List of checks
+---
+
 # Checks
 
 | Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Source Code |
@@ -10,7 +14,7 @@
 | No space in file names | 0.40 | 0.60 | 0.00 | 0.80 | 1.00 | Checks that no file-names in the project contain white-space, as this makes automatic processing much easier and less error-prone. | [`no_space_in_file_names.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/no_space_in_file_names.nim) |
 | Clean electronics files | 1.00 | 1.00 | 1.00 | 0.50 | 1.00 | Checks that the contained Electronics blueprint files - Schematics and PCB designs - if any, use an open format (good for collaboration), are text-based (good for versioning with e.g. git) and are actual source files, instead of generated (which is required for being open *source*). | [`clean_electronics_files.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_electronics_files.nim) |
 | Clean CAD files | 1.00 | 1.00 | 1.00 | 0.50 | 1.00 | Checks that the Mechanical design files - Computer Aided Design (CAD) files - if any, use an open format (good for collaboration), are text-based (good for versioning with e.g. git) and are actual source files, instead of generated (which is required for being open *source*). | [`clean_cad_files.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_cad_files.nim) |
-| Uses dir standard | 1.00 | 1.00 | 0.30 | 1.00 | 1.00 | Checks whether the unixish OSH directory standard is used for a sufficient ammount of files and direcotries in the project, using the osh-dir-std CLI tool. | [`uses_dir_std.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim) |
+| Uses dir standard | 1.00 | 1.00 | 0.30 | 1.00 | 1.00 | Checks whether the unixish OSH directory standard is used for a sufficient amount of files and directories in the project, using the osh-dir-std CLI tool. | [`uses_dir_std.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim) |
 | OKH manifest content | 0.70 | 1.00 | 0.00 | 1.00 | 1.00 | Checks that the OKH manifest file - which contains project meta-data - contains at least the required properties, and that all properties use the correct format. | [`okh_lint.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_lint.nim) |
 | No sources in root | 0.10 | 0.60 | 0.00 | 0.80 | 0.00 | Checks that no source files appear in the root dir of the project. Make sure to put them all into sub-directories, for example `src/`. | [`no_sources_in_root.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/no_sources_in_root.nim) |
 | REUSE/SPDX Licensing info | 0.50 | 1.00 | 0.00 | 0.30 | 1.00 | Checks that complete SPDX licensing info is given for all files in the project, using the Free Software Foundations REUSE tool. Note that this is related to the License exists check. | [`reuse_lint.nim`](https://github.com/hoijui/osh-tool/blob/master/src/checks/reuse_lint.nim) |
