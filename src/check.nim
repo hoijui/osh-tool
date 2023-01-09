@@ -67,7 +67,9 @@ type
       skipped: int,
       passed: int,
       failed: int,
-      available: int
+      available: int,
+      successSum: float,
+      weightsSum: float,
       ]
     issues*: Table[string, int]
     # Ratings of the project,

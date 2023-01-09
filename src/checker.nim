@@ -91,6 +91,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   for imp in CheckIssueImportance:
     issues[$imp] = 0
   var successSum = 0.0
+  var weightsSum = 0.0
   var checkRelevancySumWeighted = CheckRelevancy()
   var checkRatingSum = CheckRelevancy()
   for check in registry.checks:
@@ -111,6 +112,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
     checkRelevancySumWeighted += checkRatingFactors * checkRatingFactors.weight
     checkRatingSum += checkRatingFactors * (checkRatingFactors.weight * success)
     successSum += success
+    weightsSum += checkRatingFactors.weight
     idx += 1
     idxAll += 1
   checkRatingSum /= checkRelevancySumWeighted
@@ -120,7 +122,9 @@ proc check*(registry: ChecksRegistry, state: var State) =
       skipped: idxAll - idx,
       passed: passedChecks,
       failed: idx - passedChecks,
-      available: numChecks
+      available: numChecks,
+      successSum: successSum,
+      weightsSum: weightsSum,
       ),
     issues: issues,
     ratings: checkRatingSum.intoRatings()
