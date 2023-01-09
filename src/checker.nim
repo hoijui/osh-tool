@@ -109,8 +109,15 @@ proc check*(registry: ChecksRegistry, state: var State) =
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
     let checkRatingFactors = check.getRatingFactors()
-    checkRelevancySumWeighted += checkRatingFactors * checkRatingFactors.weight
-    checkRatingSum += checkRatingFactors * (checkRatingFactors.weight * success)
+    # Scales all sub-ratings (openness, quality, ...) by the weight
+    var weightedFactors = checkRatingFactors * checkRatingFactors.weight
+    # ... except the weight itsself
+    weightedFactors.weight = checkRatingFactors.weight
+    # Tracks the maximum achievable sum value of all sub-ratings,
+    # if all checks would pass with 100% success
+    checkRelevancySumWeighted += weightedFactors
+    # Tracks the actually achieves sum of success of all sub-ratings.
+    checkRatingSum += weightedFactors * success
     successSum += success
     weightsSum += checkRatingFactors.weight
     idx += 1
