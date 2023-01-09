@@ -182,7 +182,6 @@ proc listFilesGit(dir: string): seq[string] =
       sort -u
   return toSeq(res.splitLines())
 
-
 proc toolVersion*(binName: string, args: varargs[string]): string =
   var version = "-0.0.0"
   try:
@@ -272,6 +271,12 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
 
 template srcFileName*: string =
   instantiationInfo(-1).filename
+
+proc round*(factor: float32): string =
+  # Rounds a floating point number to exactly two digits,
+  # and returns it as a string,
+  # as this is the only way to ensure there are not more digits.
+  formatFloat(factor, format=ffDecimal, precision=2)
 
 proc listFiles*(dir: string): seq[string] =
   if canTreatAsGitRepo(dir):

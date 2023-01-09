@@ -50,9 +50,6 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
     of OutputFormat.MdList:
       return MdListCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
 
-proc round*(factor: float32): string =
-  formatFloat(factor, format=ffDecimal, precision=2)
-
 proc list*(registry: ChecksRegistry) =
   echo(fmt"# Checks")
   echo(fmt"")
