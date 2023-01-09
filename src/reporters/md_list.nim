@@ -10,6 +10,7 @@ import strformat
 import strutils
 import system/io
 import tables
+from ../tools import round
 import ./api
 import ../check
 
@@ -32,7 +33,7 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
       fmt("\n  - {importanceStr.toUpper()}{msgFmt(issue.msg)}")
     )
     .join("")
-  strm.writeLine(fmt"- [{passedStr}] {check.name()}{msg}")
+  strm.writeLine(fmt"- [{passedStr}] (success: {round(res.calcSuccess())}) {check.name()}{msg}")
 
 method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream

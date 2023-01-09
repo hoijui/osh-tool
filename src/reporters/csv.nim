@@ -17,6 +17,7 @@ type
   CsvCheck = object
       name: string
       passed: string
+      success: float
       state: string
       msg: string
   CsvCheckFmt* = ref object of CheckFmt
@@ -24,7 +25,7 @@ type
 
 method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
-  strm.writeLine("\"Passed\", \"Check\", \"Message\"")
+  strm.writeLine("\"Passed\", \"Check\", \"Success Factor\", \"Message\"")
 
 method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
@@ -38,6 +39,7 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
   self.checks.add(CsvCheck(
     name: check.name(),
     passed: passedStr,
+    success: res.calcSuccess(),
     state: $res.kind,
     msg: msg))
 

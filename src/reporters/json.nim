@@ -20,6 +20,7 @@ type
     checks: seq[tuple[
       name: string,
       passed: bool,
+      success: float,
       state: string,
       issues: seq[tuple[
         importance: string,
@@ -41,6 +42,7 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, in
   self.checks.add((
     name: check.name(),
     passed: passed,
+    success: float(res.calcSuccess()),
     state: $res.kind,
     issues: issues,
     ))
