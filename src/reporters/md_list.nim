@@ -46,6 +46,8 @@ method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   strm.writeLine(fmt"  * Passed: {stats.checks.passed}")
   strm.writeLine(fmt"  * Failed: {stats.checks.failed}")
   strm.writeLine(fmt"  * Available: {stats.checks.available}")
+  strm.writeLine(fmt"  * Success (Sum / Average): {round(stats.checks.successSum)} / {round(stats.checks.successSum / float(stats.checks.run))}")
+  strm.writeLine(fmt"  * Weights (Sum / Average): {round(stats.checks.weightsSum)} / {round(stats.checks.weightsSum / float(stats.checks.run))}")
   strm.writeLine(fmt"* Issues:")
   for imp in stats.issues.keys:
     strm.writeLine(fmt"  * {imp}: {stats.issues[imp]}")

@@ -45,6 +45,11 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
+  strm.writeLine("| " &
+    fmt"| {round(stats.checks.successSum)}/__{round(stats.checks.successSum / float(stats.checks.run))}__ " &
+    fmt"| {round(stats.checks.weightsSum)}/__{round(stats.checks.weightsSum / float(stats.checks.run))}__ " &
+    fmt"| {round(stats.ratings.success.factor * float(stats.checks.run))}/__{round(stats.ratings.success.factor)}__ " &
+    "| Sum/__Average__ | |")
   strm.writeLine("")
   strm.writeLine("## Project Statistics")
   strm.writeLine("")
