@@ -5,8 +5,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# TODO We may want to introduce a small DSL for reducing checks (and init_updtes) boilerplate code, see https://github.com/GaryM-exkage/GDGW-Maverick-Bot/blob/master/src/nimcordbot/command/command.nim
+# TODO We may want to introduce a small DSL for reducing checks (and init_updates) boilerplate code; see https://github.com/GaryM-exkage/GDGW-Maverick-Bot/blob/master/src/nimcordbot/command/command.nim
 
+import logging
 import options
 import tables
 import strformat
@@ -238,6 +239,47 @@ proc isApplicable*(res: CheckResult): bool =
 
 proc isGood*(res: CheckResult): bool =
   return res.kind in [Perfect, Ok, Acceptable]
+
+# Calculates the success factor of executing a check,
+# Explained here (among other things):
+# https://gitlab.com/OSEGermany/osh-tool/-/issues/27
+proc calcSuccess*(res: CheckResult): float32 =
+  let oKind = case res.kind:
+    of Perfect:
+      1.0
+    of Ok:
+      0.8
+    of Acceptable:
+      0.6
+    of Bad:
+      0.0
+    of Inapplicable:
+      error "Programmer error: Code should never try to calculate the success factor of an 'Inapplicable' check!"
+      raise newException(Defect, "Code should never try to calculate the success factor of an 'Inapplicable' check!")
+
+  var dedLight = 0.075
+  var dedMiddle = 0.15
+  var dedSevere = 0.3
+  var oIssues = 1.0
+  for issue in res.issues:
+    let severity = case issue.importance:
+      of Light:
+        dedLight /= 2
+        dedLight * 2
+      of Middle:
+        dedMiddle /= 2
+        dedMiddle * 2
+      of Severe:
+        dedSevere /= 2
+        dedSevere * 2
+      of DeveloperFailure:
+        0.0
+    oIssues -= severity
+    if oIssues <= 0.0:
+      oIssues = 0.0
+      break
+
+  return oKind * oIssues
 
 method name*(this: Check): string {.base.} =
   return "TODO Override!"

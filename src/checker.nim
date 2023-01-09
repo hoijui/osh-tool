@@ -50,47 +50,6 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
     of OutputFormat.MdList:
       return MdListCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
 
-# Calculates the success factor of executing a check,
-# Explained here (among other things):
-# https://gitlab.com/OSEGermany/osh-tool/-/issues/27
-proc calcSuccess*(res: CheckResult): float32 =
-  let oKind = case res.kind:
-    of Perfect:
-      1.0
-    of Ok:
-      0.8
-    of Acceptable:
-      0.6
-    of Bad:
-      0.0
-    of Inapplicable:
-      error "Programmer error: Code should never try to calculate the success factor of an 'Inapplicable' check!"
-      raise newException(Defect, "Code should never try to calculate the success factor of an 'Inapplicable' check!")
-
-  var dedLight = 0.075
-  var dedMiddle = 0.15
-  var dedSevere = 0.3
-  var oIssues = 1.0
-  for issue in res.issues:
-    let severity = case issue.importance:
-      of Light:
-        dedLight /= 2
-        dedLight * 2
-      of Middle:
-        dedMiddle /= 2
-        dedMiddle * 2
-      of Severe:
-        dedSevere /= 2
-        dedSevere * 2
-      of DeveloperFailure:
-        0.0
-    oIssues -= severity
-    if oIssues <= 0.0:
-      oIssues = 0.0
-      break
-
-  return oKind * oIssues
-
 proc round*(factor: float32): string =
   formatFloat(factor, format=ffDecimal, precision=2)
 
@@ -148,9 +107,9 @@ proc check*(registry: ChecksRegistry, state: var State) =
       debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state){reason}"
       idxAll += 1
       continue
+    let success = res.calcSuccess()
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
-    let success = calcSuccess(res)
     let checkRatingFactors = check.getRatingFactors()
     checkRelevancySumWeighted += checkRatingFactors * checkRatingFactors.weight
     checkRatingSum += checkRatingFactors * (checkRatingFactors.weight * success)
