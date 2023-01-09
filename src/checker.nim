@@ -122,6 +122,9 @@ proc check*(registry: ChecksRegistry, state: var State) =
     weightsSum += checkRatingFactors.weight
     idx += 1
     idxAll += 1
+  # Divides the actually achieved success rates of al lsub-ratings
+  # by the maximum achievable value of each.
+  # -> percentage
   checkRatingSum /= checkRelevancySumWeighted
   let stats = ReportStats(
     checks: (
