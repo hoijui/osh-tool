@@ -240,7 +240,7 @@ proc isApplicable*(res: CheckResult): bool =
 proc isGood*(res: CheckResult): bool =
   return res.kind in [Perfect, Ok, Acceptable]
 
-# Calculates the success factor of executing a check,
+# Calculates the success factor of executing a check.
 # Explained here (among other things):
 # https://gitlab.com/OSEGermany/osh-tool/-/issues/27
 proc calcSuccess*(res: CheckResult): float32 =
