@@ -254,8 +254,9 @@ proc calcSuccess*(res: CheckResult): float32 =
     of Bad:
       0.0
     of Inapplicable:
-      error "Programmer error: Code should never try to calculate the success factor of an 'Inapplicable' check!"
-      raise newException(Defect, "Code should never try to calculate the success factor of an 'Inapplicable' check!")
+      let errMsg = "Code should never try to calculate the success factor of an 'Inapplicable' check!"
+      error fmt"Programmer error: {errMsg}"
+      raise newException(Defect, errMsg)
 
   var dedLight = 0.075
   var dedMiddle = 0.15
