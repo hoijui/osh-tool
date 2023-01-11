@@ -29,8 +29,8 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
   let passedStr = if passed: "x" else: " "
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      let importanceStr = fmt"{issue.importance}"
-      fmt("\n  - {importanceStr.toUpper()}{msgFmt(issue.msg)}")
+      let severityStr = fmt"{issue.severity}"
+      fmt("\n  - {severityStr.toUpper()}{msgFmt(issue.msg)}")
     )
     .join("")
   strm.writeLine(fmt"- [{passedStr}] (success: {round(res.calcSuccess())}) {check.name()}{msg}")

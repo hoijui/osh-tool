@@ -23,7 +23,7 @@ type
       success: float,
       state: string,
       issues: seq[tuple[
-        importance: string,
+        severity: string,
         msg: string
       ]]
     ]]
@@ -33,10 +33,10 @@ method init(self: JsonCheckFmt, prelude: ReportPrelude) =
 
 method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
-  var issues = newSeq[tuple[importance: string, msg: string]]()
+  var issues = newSeq[tuple[severity: string, msg: string]]()
   for issue in res.issues:
     issues.add((
-      importance: $issue.importance,
+      severity: $issue.severity,
       msg: issue.msg.get().replace("\n", "\\n"),
       ))
   self.checks.add((

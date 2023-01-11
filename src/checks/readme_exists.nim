@@ -47,7 +47,7 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
   else:
     newCheckResult(
       CheckResultKind.Bad,
-      CheckIssueImportance.Middle,
+      CheckIssueSeverity.Middle,
       some("""No README file found in the root directory.
  Please consider adding a 'README.md'.
  You might want to generate a template by issuing `osh init --readme`,

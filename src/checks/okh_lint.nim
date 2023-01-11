@@ -47,7 +47,7 @@ method getRatingFactors*(this: OkhLintCheck): CheckRelevancy =
 
 method run*(this: OkhLintCheck, state: var State): CheckResult =
   if not os.fileExists(okhFile(state.config)):
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Severe, some(fmt"Main OKH manifest file {OKH_FILE} not found"))
+    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(fmt"Main OKH manifest file {OKH_FILE} not found"))
   try:
     let okhProc = osproc.startProcess(
       command = OKH_CMD,
@@ -63,10 +63,10 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
           some(lines.join("\n"))
         else:
           none(string)
-      newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Middle, msg)
+      newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
   except OSError as err:
     let msg = fmt("ERROR Failed to run '{OKH_CMD}'; make sure it is in your PATH: {err.msg}")
-    newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe, some(msg))
+    newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 proc createDefault*(): Check =
   OkhLintCheck()

@@ -79,19 +79,19 @@ method run*(this: UsesDirStdCheck, state: var State): CheckResult =
           if confFactor == 1.0:
             return newCheckResult(CheckResultKind.Perfect)
           if confFactor >= MIN_CONFORMANCE:
-            return newCheckResult(CheckResultKind.Ok, CheckIssueImportance.Middle,
+            return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
                 some(fmt"Not perfect, but above the minimum expected conformance factor of {MIN_CONFORMANCE}"))
           else:
-            return newCheckResult(CheckResultKind.Ok, CheckIssueImportance.Middle,
+            return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
                 some(fmt"Conformance is not perfect, but above the minimum expected factor of {MIN_CONFORMANCE}"))
-      return newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe,
+      return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High,
           some(fmt"Conformance is below the minimum expected factor of {MIN_CONFORMANCE}"))
     else:
       let msg = fmt("""Failed to run '{OSH_DIR_STD_TOOL_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}""")
-      return newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe, some(msg))
+      return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
   except OSError as err:
     let msg = fmt("Failed to run '{OSH_DIR_STD_TOOL_CMD}'; make sure it is in your PATH: {err.msg}")
-    return newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe, some(msg))
+    return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 proc createDefault*(): Check =
   UsesDirStdCheck()

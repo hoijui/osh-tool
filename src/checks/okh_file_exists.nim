@@ -59,7 +59,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
       let presentTomls = nonDefaultTomls.join(", ")
       return newCheckResult(
           CheckResultKind.Bad,
-          CheckIssueImportance.Light,
+          CheckIssueSeverity.Low,
           some(fmt("While you have an OKH meta-data file ({presentTomls}),\nit is prefferable to use the specific file name '{OKH_FILE}'."))
         )
     else:
@@ -68,13 +68,13 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
         let presentYamls = nonDefaultYamls.join(", ")
         return newCheckResult(
           CheckResultKind.Bad,
-          CheckIssueImportance.Middle,
+          CheckIssueSeverity.Middle,
           some(fmt("While you have an OKH v1 meta-data file ({presentYamls}),\nit is prefferable to use the new OKH LOSH standard,\nwhich would result in having an '{OKH_FILE}'."))
         )
       else:
         return newCheckResult(
           CheckResultKind.Bad,
-          CheckIssueImportance.Severe,
+          CheckIssueSeverity.High,
           some(fmt("Open Know-How meta-data file ({OKH_FILE}) not found.\nPlease consider creating it, if this is an OSH project.\nSee <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
         )
 

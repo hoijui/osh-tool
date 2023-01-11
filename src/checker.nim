@@ -88,7 +88,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var idxAll = 0
   var passedChecks = 0
   var issues = initTable[string, int]()
-  for imp in CheckIssueImportance:
+  for imp in CheckIssueSeverity:
     issues[$imp] = 0
   var successSum = 0.0
   var weightsSum = 0.0
@@ -99,7 +99,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
     if isGood(res):
       passedChecks += 1
     for issue in res.issues:
-      issues[$issue.importance] += 1
+      issues[$issue.severity] += 1
     if not isApplicable(res):
       let reason = if res.issues.len() > 0 and res.issues[0].msg.isSome(): fmt" because: {res.issues[0].msg.get()}" else: ""
       debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state){reason}"

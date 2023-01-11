@@ -36,7 +36,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let weightedSuc = sucFac * weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      fmt"""<font color="{issue.importance.toColor()}">__{issue.importance}__</font>{msgFmt(issue.msg)}"""
+      fmt"""<font color="{issue.severity.toColor()}">__{issue.severity}__</font>{msgFmt(issue.msg)}"""
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")

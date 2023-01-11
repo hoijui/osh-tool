@@ -48,7 +48,7 @@ method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
   else:
     newCheckResult(
       CheckResultKind.Bad,
-      CheckIssueImportance.Light,
+      CheckIssueSeverity.Low,
       some("Files with spaces in their names (Please consider renaming them):\n\n- " &
         spacedFiles.join("\n- ")
       )

@@ -146,16 +146,16 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
 
 proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string], fileExtsMaxParts: int, fileExtsMap: Table[string, (int, int, int)]): CheckResult =
   if configVal == YesNoAuto.No:
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Light, some("Configured to always skip"))
+    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("Configured to always skip"))
   let matchingFiles = filterByExtensions(state.listFiles(), fileExts, fileExtsMaxParts)
   if configVal == YesNoAuto.Auto and matchingFiles.len() == 0:
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueImportance.Light, some("No relevant files were found"))
+    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("No relevant files were found"))
 
   var issues: seq[CheckIssue] = @[]
   if matchingFiles.len() == 0:
     issues.add(
       CheckIssue(
-        importance: CheckIssueImportance.Middle,
+        severity: CheckIssueSeverity.Middle,
         msg: some(fmt"No matching file types found")
       )
     )
@@ -174,7 +174,7 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
         if fileIssues.len() > 0:
           issues.add(
             CheckIssue(
-              importance: CheckIssueImportance.Light,
+              severity: CheckIssueSeverity.Low,
               msg: some(fmt"File-format issue(s) with '{mFile}': " & fileIssues.join(", "))
             )
           )

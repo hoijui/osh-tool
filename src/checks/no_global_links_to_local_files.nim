@@ -47,7 +47,7 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
     extractMarkdownLinks(state.config, mdFiles)
   except IOError as err:
     let msg = fmt("Failed to extract Markdown links from docu: {err.msg}")
-    return newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe, some(msg))
+    return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
   var issues = newSeq[CheckIssue]()
   let nl = "<br>&nbsp;"
   for link in links:
@@ -66,7 +66,7 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
           # file path
           newTarget = relativePath(link.target, projGlobPref)
         issues.add(CheckIssue(
-          importance: CheckIssueImportance.Middle,
+          severity: CheckIssueSeverity.Middle,
           msg: some(fmt"'{link.srcFile}':{link.srcLine}:{link.srcColumn}{nl}    '{link.target}'{nl}    ->{nl}    '{newTarget}'")))
         continue
   if len(issues) == 0:

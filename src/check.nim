@@ -19,11 +19,11 @@ type
   CheckResultKind* {.pure.} = enum
     Perfect, Ok, Acceptable, Bad, Inapplicable
 
-  CheckIssueImportance* {.pure.} = enum
-    DeveloperFailure, Severe, Middle, Light
+  CheckIssueSeverity* {.pure.} = enum
+    DeveloperFailure, High, Middle, Low
 
   CheckIssue* = object
-    importance*: CheckIssueImportance
+    severity*: CheckIssueSeverity
     msg*: Option[string]
 
   CheckResult* = object
@@ -216,23 +216,23 @@ proc newCheckResult*(kind: CheckResultKind): CheckResult =
   return CheckResult(kind: kind, issues: @[])
 
 # Creates a check-result with a single issue
-proc newCheckResult*(kind: CheckResultKind, importance: CheckIssueImportance, msg: Option[string]): CheckResult =
+proc newCheckResult*(kind: CheckResultKind, severity: CheckIssueSeverity, msg: Option[string]): CheckResult =
   return CheckResult(
     kind: kind,
     issues: @[
       CheckIssue(
-        importance: importance,
+        severity: severity,
         msg: msg
       )
     ]
   )
 
-proc toColor*(importance: CheckIssueImportance): string =
-  return case importance:
+proc toColor*(severity: CheckIssueSeverity): string =
+  return case severity:
     of DeveloperFailure: "pink"
-    of Severe: "red"
+    of High: "red"
     of Middle: "orange"
-    of Light: "light-blue"
+    of Low: "light-blue"
 
 type Check* = ref object of RootObj
 
@@ -266,21 +266,21 @@ proc calcSuccess*(res: CheckResult): float32 =
       error fmt"Programmer error: {errMsg}"
       raise newException(Defect, errMsg)
 
-  var dedLight = 0.075
+  var dedLow = 0.075
   var dedMiddle = 0.15
-  var dedSevere = 0.3
+  var dedHigh = 0.3
   var oIssues = 1.0
   for issue in res.issues:
-    let severity = case issue.importance:
-      of Light:
-        dedLight /= 2
-        dedLight * 2
+    let severity = case issue.severity:
+      of Low:
+        dedLow /= 2
+        dedLow * 2
       of Middle:
         dedMiddle /= 2
         dedMiddle * 2
-      of Severe:
-        dedSevere /= 2
-        dedSevere * 2
+      of High:
+        dedHigh /= 2
+        dedHigh * 2
       of DeveloperFailure:
         0.0
     oIssues -= severity
@@ -313,7 +313,7 @@ method run*(this: Check, state: var State): CheckResult {.base,
     kind: CheckResultKind.Bad,
     issues: @[
       CheckIssue(
-        importance: CheckIssueImportance.DeveloperFailure,
+        severity: CheckIssueSeverity.DeveloperFailure,
         msg: some("Not implemented for this specific check!")
       )
     ]

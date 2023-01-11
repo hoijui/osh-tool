@@ -36,7 +36,7 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
   let weight = check.getRatingFactors().weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      fmt"__{issue.importance}__{msgFmt(issue.msg)}"
+      fmt"__{issue.severity}__{msgFmt(issue.msg)}"
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")

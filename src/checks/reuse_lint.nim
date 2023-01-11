@@ -68,10 +68,10 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
           some(msg_lines)
         else:
           none(string)
-      newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Middle, msg)
+      newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
   except OSError as err:
     let msg = fmt("Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
-    newCheckResult(CheckResultKind.Bad, CheckIssueImportance.Severe, some(msg))
+    newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 proc createDefault*(): Check =
   ReuseLintCheck()
