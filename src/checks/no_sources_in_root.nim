@@ -86,7 +86,10 @@ method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
 method getRatingFactors*(this: NoSourceFilesInRootCheck): CheckRelevancy =
   return CheckRelevancy(
     weight: 0.1,
-    openness: 0.6, # makes the repo look less cluttered, and thus more friendly and less scarry
+    # makes the repo look less cluttered,
+    # and thus more friendly and less scarry
+    # -> beter for collaboration/openness
+    openness: 0.6,
     hardware: 0.0,
     quality: 0.8,
     machineReadability: 0.0,

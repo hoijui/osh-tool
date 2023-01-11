@@ -35,7 +35,9 @@ method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
 method getRatingFactors*(this: MdNoGlobalLinksToLocalFilesCheck): CheckRelevancy =
   return CheckRelevancy(
     weight: 0.4,
-    openness: 0.8, # because it indicates how well the repo works offline/in a distributed environment
+    # because it indicates how well the repo works offline,
+    # or say: in a distributed environment
+    openness: 0.8,
     hardware: 0.0,
     quality: 0.8,
     machineReadability: 0.8,
