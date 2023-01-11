@@ -38,6 +38,9 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     let passedName = if res.isGood(): "🗹" else: "☐"
     let passedColor = res.getGoodColor()
     fmt"""<font color="{passedColor}">{passedName}</font>"""
+  let kindName = $res.kind
+  let kindColor = res.getKindColor()
+  let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
   let sucFac = res.calcSuccess()
   let weight = check.getRatingFactors().weight
   let weightedSuc = sucFac * weight
@@ -47,7 +50,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
-  strm.writeLine(fmt"| {passedStr} | {res.kind} | {round(sucFac)} | {round(weight)} | {round(weightedSuc)} | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| {passedStr} | {kindStr} | {round(sucFac)} | {round(weight)} | {round(weightedSuc)} | {check.name()} | {msg} |")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream

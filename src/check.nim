@@ -248,6 +248,14 @@ proc getGoodHumanReadable*(res: CheckResult): string =
 proc getGoodColor*(res: CheckResult): string =
   return if res.isGood(): "Green" else: "Red"
 
+proc getKindColor*(res: CheckResult): string =
+  return case res.kind:
+    of Perfect: "Green"
+    of Ok: "DarkGoldenRod"
+    of Acceptable: "Orange"
+    of Bad: "Red"
+    of Inapplicable: "Black"
+
 # Calculates the success factor of executing a check.
 # Explained here (among other things):
 # https://gitlab.com/OSEGermany/osh-tool/-/issues/27
