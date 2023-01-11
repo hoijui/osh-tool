@@ -17,13 +17,13 @@ import ../tools
 const SOURCE_EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 
-# This macro reads the file SOURCE_EXT_FILE at compile time,
-# and parses the list of file extensions into a list.
-# That list the ngets written into a const variable availabel at run-time
-# under the name `SOURCE_EXTENSIONS`.
-# The `const SOURCE_EXTENSIONS_MAX_PARTS` is an integer,
-# indicating the max number of parts in the above list,
-# when splitting each extension with '.'.
+## This macro reads the file SOURCE_EXT_FILE at compile time,
+## and parses the list of file extensions into a list.
+## That list the ngets written into a const variable availabel at run-time
+## under the name `SOURCE_EXTENSIONS`.
+## The `const SOURCE_EXTENSIONS_MAX_PARTS` is an integer,
+## indicating the max number of parts in the above list,
+## when splitting each extension with '.'.
 macro parseInjectExts(): untyped =
   var sourceExts: seq[string] = @[]
   var maxParts = 0

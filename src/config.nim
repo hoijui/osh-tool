@@ -42,19 +42,19 @@ type
   RunConfig* = object
     command*: Command
     projRoot*: string
-    # A list of roots/prefixes (excluding `projRoot`)
-    # this project might be found at,
-    # either absolute paths to directories on the local file-system
-    # or web base-URLs.
-    # Examples:
-    # * /home/user/repos/myProj/
-    # * https://user.github.com/myProj/
+    ## A list of roots/prefixes (excluding `projRoot`)
+    ## this project might be found at,
+    ## either absolute paths to directories on the local file-system
+    ## or web base-URLs.
+    ## Examples:
+    ## * /home/user/repos/myProj/
+    ## * https://user.github.com/myProj/
     projPrefixes*: seq[string]
-    # Where evaluation output gets written to.
-    # Stdout if None, else a file.
+    ## Where evaluation output gets written to.
+    ## Stdout if None, else a file.
     reportTargets*: seq[Report]
-    # Whether output files get overwritten if they exist,
-    # or the application exits with an error.
+    ## Whether output files get overwritten if they exist,
+    ## or the application exits with an error.
     force*: bool
     readme*: bool
     license*: bool

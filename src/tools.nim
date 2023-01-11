@@ -35,7 +35,7 @@ type
     srcFile*: string
     srcLine*: int
     srcColumn*: int
-    # link-path/-url
+    ## link-path/-url
     target*: string
   LinkOccsCont = seq[LinkOcc]
 
@@ -273,9 +273,9 @@ template srcFileName*: string =
   instantiationInfo(-1).filename
 
 proc round*(factor: float32): string =
-  # Rounds a floating point number to exactly two digits,
-  # and returns it as a string,
-  # as this is the only way to ensure there are not more digits.
+  ## Rounds a floating point number to exactly two digits,
+  ## and returns it as a string,
+  ## as this is the only way to ensure there are not more digits.
   formatFloat(factor, format=ffDecimal, precision=2)
 
 proc listFiles*(dir: string): seq[string] =
