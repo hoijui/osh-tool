@@ -100,7 +100,7 @@ type
   # representing its compliance or failure on a specific axis/dimension,
   # e.g. openness or documentation quality.
   Rating* = object
-    # Human redaable, Title Case name of for this rating,
+    # Human readable, Title Case name of for this rating,
     # e.g. "Openness".
     name*: string
     # The main value of the rating as a factor,
