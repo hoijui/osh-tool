@@ -28,8 +28,8 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let strm = self.getStream(res)
-  let passedColor = res.isGoodColor()
-  let passedName = res.isGoodHumanReadable()
+  let passedColor = res.getGoodColor()
+  let passedName = res.getGoodHumanReadable()
   let passedStr = fmt"""<font color="{passedColor}">{passedName}</font>"""
   let sucFac = res.calcSuccess()
   let weight = check.getRatingFactors().weight
