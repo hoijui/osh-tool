@@ -22,7 +22,7 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   self.prelude = prelude
   mdPrelude(strm, prelude)
-  strm.writeLine(fmt"| Passed | Status | Success Factor | Weight | Weighted Suc. Fac. | Check | Message |")
+  strm.writeLine(fmt"| Passed | Status | Success Factor | Weight | Weighted Suc. Fac. | Check | Severity - Issue |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
   strm.writeLine(fmt"| - | -- | - | - | - | --- | ----- |")
 

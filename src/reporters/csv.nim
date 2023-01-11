@@ -27,7 +27,7 @@ type
 
 method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
-  strm.writeLine("\"Passed\", \"Status\", \"Success Factor\", \"Weight\", \"Weighted Suc. Fac.\", \"Check\", \"Message\"")
+  strm.writeLine("\"Passed\", \"Status\", \"Success Factor\", \"Weight\", \"Weighted Suc. Fac.\", \"Check\", \"Severity - Issue\"")
 
 method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
