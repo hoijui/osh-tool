@@ -22,7 +22,7 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   self.prelude = prelude
   mdPrelude(strm, prelude)
-  strm.writeLine(fmt"| Passed | Status | Success Factor | Weight | Weighted Suc. Fac. | Check | Severity - Issue |")
+  strm.writeLine(fmt"| Passed | Status | Compliance Factor | Weight | Weighted Comp. Fac. | Check | Severity - Issue |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
   strm.writeLine(fmt"| - | -- | - | - | - | --- | ----- |")
 
@@ -41,23 +41,23 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let kindName = $res.kind
   let kindColor = res.getKindColor()
   let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
-  let sucFac = res.calcSuccess()
+  let compFac = res.calcCompliance()
   let weight = check.getRatingFactors().weight
-  let weightedSuc = sucFac * weight
+  let weightedComp = compFac * weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
       fmt"""<font color="{issue.severity.toColor()}">__{issue.severity}__</font>{msgFmt(issue.msg)}"""
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
-  strm.writeLine(fmt"| {passedStr} | {kindStr} | {round(sucFac)} | {round(weight)} | {round(weightedSuc)} | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| {passedStr} | {kindStr} | {round(compFac)} | {round(weight)} | {round(weightedComp)} | {check.name()} | {msg} |")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
   strm.writeLine("| " &
-    fmt"| {round(stats.checks.successSum)}/__{round(stats.checks.successSum / float(stats.checks.run))}__ " &
+    fmt"| {round(stats.checks.complianceSum)}/__{round(stats.checks.complianceSum / float(stats.checks.run))}__ " &
     fmt"| {round(stats.checks.weightsSum)}/__{round(stats.checks.weightsSum / float(stats.checks.run))}__ " &
-    fmt"| {round(stats.ratings.success.factor * float(stats.checks.run))}/__{round(stats.ratings.success.factor)}__ " &
+    fmt"| {round(stats.ratings.compliance.factor * float(stats.checks.run))}/__{round(stats.ratings.compliance.factor)}__ " &
     "| Sum/__Average__ | |")
   strm.writeLine("")
   strm.writeLine("## Project Statistics")
@@ -72,8 +72,8 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} 
   strm.writeLine(fmt"| Checks Available | {stats.checks.available} |")
   for imp in stats.issues.keys:
     strm.writeLine(fmt"| Issues {imp} | {stats.issues[imp]} |")
-  strm.writeLine(fmt"| Success | {stats.ratings.success.percent}% - ![Badge - Success]({stats.ratings.success.badgeUrl}) |")
-  strm.writeLine(fmt"| Openness | {stats.ratings.openness.percent}% - ![Badge - Success]({stats.ratings.openness.badgeUrl}) |")
+  strm.writeLine(fmt"| Compliance | {stats.ratings.compliance.percent}% - ![Badge - Compliance]({stats.ratings.compliance.badgeUrl}) |")
+  strm.writeLine(fmt"| Openness | {stats.ratings.openness.percent}% - ![Badge - Compliance]({stats.ratings.openness.badgeUrl}) |")
   strm.writeLine(fmt"| is hardware (factor) | {stats.ratings.hardware.factor} |")
   strm.writeLine(fmt"| Quality | {stats.ratings.quality.percent}% - ![Badge - OSH Quality]({stats.ratings.quality.badgeUrl}) |")
   strm.writeLine(fmt"| Machine-Readability | {stats.ratings.machineReadability.percent}% - ![Badge - OSH Machine-Readability]({stats.ratings.machineReadability.badgeUrl}) |")

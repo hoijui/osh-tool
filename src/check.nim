@@ -68,7 +68,7 @@ type
       passed: int,
       failed: int,
       available: int,
-      successSum: float,
+      complianceSum: float,
       weightsSum: float,
       ]
     issues*: Table[string, int]
@@ -97,7 +97,7 @@ type
     machineReadability*: float32
 
   # A single rating for a project,
-  # representing its success or failure on a specific axis/dimension,
+  # representing its compliance or failure on a specific axis/dimension,
   # e.g. openness or documentation quality.
   Rating* = object
     # Human redaable, Title Case name of for this rating,
@@ -105,7 +105,7 @@ type
     name*: string
     # The main value of the rating as a factor,
     # from 0.0 for total failure,
-    # to 1.0 for complete success.
+    # to 1.0 for complete compliance.
     factor*: float32
     # The same as `factor`,
     # but as a percentage
@@ -125,13 +125,13 @@ type
     # NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
     badgeUrl*: string
 
-  # How successfull all checks combined ran,
+  # How compliancefull all checks combined ran,
   # as a factor from 0.0 to 1.0,
   # taking each checks weight into account.
   Ratings* = object
-    # Overall success of check executaion/passing,
+    # Overall compliance of check executaion/passing,
     # not taking any sub-topic/-dimension into account.
-    success*: Rating
+    compliance*: Rating
     # How much does the project adhere to
     # Open Source (Hardware) best-pracitces.
     openness*: Rating
@@ -201,7 +201,7 @@ proc newRating*(name: string, factor: float32): Rating =
 
 method intoRatings*(this: CheckRelevancy): Ratings {.base.} =
   return Ratings(
-    success: newRating("OSH Tool Success", this.weight),
+    compliance: newRating("OSH Tool Compliance", this.weight),
     openness: newRating("OSH Openness", this.openness),
     hardware: newRating("is hardware", this.hardware),
     quality: newRating("OSH Documentation Quality", this.quality),
@@ -256,10 +256,10 @@ proc getKindColor*(res: CheckResult): string =
     of Bad: "Red"
     of Inapplicable: "Black"
 
-# Calculates the success factor of executing a check.
+# Calculates the compliance factor of executing a check.
 # Explained here (among other things):
 # https://gitlab.com/OSEGermany/osh-tool/-/issues/27
-proc calcSuccess*(res: CheckResult): float32 =
+proc calcCompliance*(res: CheckResult): float32 =
   let oKind = case res.kind:
     of Perfect:
       1.0
@@ -270,7 +270,7 @@ proc calcSuccess*(res: CheckResult): float32 =
     of Bad:
       0.0
     of Inapplicable:
-      let errMsg = "Code should never try to calculate the success factor of an 'Inapplicable' check!"
+      let errMsg = "Code should never try to calculate the compliance factor of an 'Inapplicable' check!"
       error fmt"Programmer error: {errMsg}"
       raise newException(Defect, errMsg)
 

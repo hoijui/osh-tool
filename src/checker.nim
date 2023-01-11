@@ -90,7 +90,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var issues = initTable[string, int]()
   for imp in CheckIssueSeverity:
     issues[$imp] = 0
-  var successSum = 0.0
+  var complianceSum = 0.0
   var weightsSum = 0.0
   var checkRelevancySumWeighted = CheckRelevancy()
   var checkRatingSum = CheckRelevancy()
@@ -105,7 +105,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state){reason}"
       idxAll += 1
       continue
-    let success = res.calcSuccess()
+    let compliance = res.calcCompliance()
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
     let checkRatingFactors = check.getRatingFactors()
@@ -114,15 +114,15 @@ proc check*(registry: ChecksRegistry, state: var State) =
     # ... except the weight itsself
     weightedFactors.weight = checkRatingFactors.weight
     # Tracks the maximum achievable sum value of all sub-ratings,
-    # if all checks would pass with 100% success
+    # if all checks would pass with 100% compliance
     checkRelevancySumWeighted += weightedFactors
-    # Tracks the actually achieves sum of success of all sub-ratings.
-    checkRatingSum += weightedFactors * success
-    successSum += success
+    # Tracks the actually achieves sum of compliance of all sub-ratings.
+    checkRatingSum += weightedFactors * compliance
+    complianceSum += compliance
     weightsSum += checkRatingFactors.weight
     idx += 1
     idxAll += 1
-  # Divides the actually achieved success rates of al lsub-ratings
+  # Divides the actually achieved compliance rates of al lsub-ratings
   # by the maximum achievable value of each.
   # -> percentage
   checkRatingSum /= checkRelevancySumWeighted
@@ -133,7 +133,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       passed: passedChecks,
       failed: idx - passedChecks,
       available: numChecks,
-      successSum: successSum,
+      complianceSum: complianceSum,
       weightsSum: weightsSum,
       ),
     issues: issues,

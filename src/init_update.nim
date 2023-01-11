@@ -11,7 +11,7 @@ import ./state
 
 type
   ResultKind* = enum
-    Success
+    Compliance
     Note
     Warning
     Error
@@ -26,7 +26,7 @@ type InitUpdate* = ref object of RootObj
 
 proc logLevel*(this: ResultKind): Level =
   case this:
-    of Success:
+    of Compliance:
       return lvlInfo
     of Note:
       return lvlNotice

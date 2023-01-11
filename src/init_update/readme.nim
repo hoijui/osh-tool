@@ -32,7 +32,7 @@ method init(this: ReadmeInitUpdate, state: var State): InitResult =
       result = InitResult(kind: Note, msg: some("Not generating README.md, because the file already exists."))
     else:
       downloadTemplate(state.config, "README.md", README_TEMPLATE_URL) # TODO Have multiple file options, and a way to choose from them, maybe?
-      result = InitResult(kind: Success, msg: none(string))
+      result = InitResult(kind: Compliance, msg: none(string))
   return result
 
 method update(this: ReadmeInitUpdate, state: var State): UpdateResult =

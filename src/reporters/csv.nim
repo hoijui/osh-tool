@@ -17,9 +17,9 @@ type
   CsvCheck = object
       passed: string
       state: string
-      success: float
+      compliance: float
       weight: float
-      weightedSuccess: float
+      weightedCompliance: float
       name: string
       msg: string
   CsvCheckFmt* = ref object of CheckFmt
@@ -27,12 +27,12 @@ type
 
 method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
-  strm.writeLine("\"Passed\", \"Status\", \"Success Factor\", \"Weight\", \"Weighted Suc. Fac.\", \"Check\", \"Severity - Issue\"")
+  strm.writeLine("\"Passed\", \"Status\", \"Compliance Factor\", \"Weight\", \"Weighted Comp. Fac.\", \"Check\", \"Severity - Issue\"")
 
 method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
   let passedStr = if passed: "true" else: "false"
-  let success = res.calcSuccess()
+  let compliance = res.calcCompliance()
   let weight = check.getRatingFactors().weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
@@ -43,9 +43,9 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
   self.checks.add(CsvCheck(
     passed: passedStr,
     state: $res.kind,
-    success: success,
+    compliance: compliance,
     weight: weight,
-    weightedSuccess: success * weight,
+    weightedCompliance: compliance * weight,
     name: check.name(),
     msg: msg))
 

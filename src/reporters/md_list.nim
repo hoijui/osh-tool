@@ -33,7 +33,7 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
       fmt("\n  - {severityStr.toUpper()}{msgFmt(issue.msg)}")
     )
     .join("")
-  strm.writeLine(fmt"- [{passedStr}] (success: {round(res.calcSuccess())}) {check.name()}{msg}")
+  strm.writeLine(fmt"- [{passedStr}] (compliance: {round(res.calcCompliance())}) {check.name()}{msg}")
 
 method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
@@ -46,13 +46,13 @@ method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   strm.writeLine(fmt"  * Passed: {stats.checks.passed}")
   strm.writeLine(fmt"  * Failed: {stats.checks.failed}")
   strm.writeLine(fmt"  * Available: {stats.checks.available}")
-  strm.writeLine(fmt"  * Success (Sum / Average): {round(stats.checks.successSum)} / {round(stats.checks.successSum / float(stats.checks.run))}")
+  strm.writeLine(fmt"  * Compliance (Sum / Average): {round(stats.checks.complianceSum)} / {round(stats.checks.complianceSum / float(stats.checks.run))}")
   strm.writeLine(fmt"  * Weights (Sum / Average): {round(stats.checks.weightsSum)} / {round(stats.checks.weightsSum / float(stats.checks.run))}")
   strm.writeLine(fmt"* Issues:")
   for imp in stats.issues.keys:
     strm.writeLine(fmt"  * {imp}: {stats.issues[imp]}")
-  strm.writeLine(fmt"* Success: {stats.ratings.success.percent}% - ![Badge - Success]({stats.ratings.success.badgeUrl})")
-  strm.writeLine(fmt"* Openness: {stats.ratings.openness.percent}% - ![Badge - Success]({stats.ratings.openness.badgeUrl})")
+  strm.writeLine(fmt"* Compliance: {stats.ratings.compliance.percent}% - ![Badge - Compliance]({stats.ratings.compliance.badgeUrl})")
+  strm.writeLine(fmt"* Openness: {stats.ratings.openness.percent}% - ![Badge - Compliance]({stats.ratings.openness.badgeUrl})")
   strm.writeLine(fmt"* is hardware (factor): {stats.ratings.hardware.factor}")
   strm.writeLine(fmt"* Quality: {stats.ratings.quality.percent}% - ![Badge - OSH Quality]({stats.ratings.quality.badgeUrl})")
   strm.writeLine(fmt"* Machine-Readability: {stats.ratings.machineReadability.percent}% - ![Badge - OSH Machine-Readability]({stats.ratings.machineReadability.badgeUrl})")

@@ -91,7 +91,7 @@ proc download*(file: string, link: string, overwrite: bool = false) =
     var file_h = open(file, fmWrite)
     defer: file_h.close()
     file_h.write(client.getContent(link))
-    echo(fmt"INFO Success - downloaded '{link}' to '{file}'.")
+    echo(fmt"INFO Compliance - downloaded '{link}' to '{file}'.")
   except IOError as err:
     echo(fmt"ERROR Failed to download '{link}' to '{file}': " & err.msg)
 
