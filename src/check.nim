@@ -242,6 +242,12 @@ proc isApplicable*(res: CheckResult): bool =
 proc isGood*(res: CheckResult): bool =
   return res.kind in [Perfect, Ok, Acceptable]
 
+proc isGoodHumanReadable*(res: CheckResult): string =
+  return if res.isGood(): "passed" else: "failed"
+
+proc isGoodColor*(res: CheckResult): string =
+  return if res.isGood(): "green" else: "red"
+
 # Calculates the success factor of executing a check.
 # Explained here (among other things):
 # https://gitlab.com/OSEGermany/osh-tool/-/issues/27
