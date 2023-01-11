@@ -28,9 +28,16 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let strm = self.getStream(res)
-  let passedColor = res.getGoodColor()
-  let passedName = res.getGoodHumanReadable()
-  let passedStr = fmt"""<font color="{passedColor}">{passedName}</font>"""
+  # See:
+  # * <https://en.wikipedia.org/wiki/Check_mark>
+  # * <https://en.wikipedia.org/wiki/X_mark>
+  let type_1 = true
+  let passedStr = if type_1:
+    if res.isGood(): "✅" else: "❌"
+  else:
+    let passedName = if res.isGood(): "🗹" else: "☐"
+    let passedColor = res.getGoodColor()
+    fmt"""<font color="{passedColor}">{passedName}</font>"""
   let sucFac = res.calcSuccess()
   let weight = check.getRatingFactors().weight
   let weightedSuc = sucFac * weight
