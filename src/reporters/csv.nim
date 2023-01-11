@@ -15,21 +15,25 @@ import csvtools
 
 type
   CsvCheck = object
-      name: string
       passed: string
-      success: float
       state: string
+      success: float
+      weight: float
+      weightedSuccess: float
+      name: string
       msg: string
   CsvCheckFmt* = ref object of CheckFmt
     checks: seq[CsvCheck]
 
 method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
-  strm.writeLine("\"Passed\", \"Check\", \"Success Factor\", \"Message\"")
+  strm.writeLine("\"Passed\", \"Status\", \"Success Factor\", \"Weight\", \"Weighted Suc. Fac.\", \"Check\", \"Message\"")
 
 method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let passed = isGood(res)
   let passedStr = if passed: "true" else: "false"
+  let success = res.calcSuccess()
+  let weight = check.getRatingFactors().weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
       fmt"__{issue.importance}__{msgFmt(issue.msg)}"
@@ -37,10 +41,12 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
   self.checks.add(CsvCheck(
-    name: check.name(),
     passed: passedStr,
-    success: res.calcSuccess(),
     state: $res.kind,
+    success: success,
+    weight: weight,
+    weightedSuccess: success * weight,
+    name: check.name(),
     msg: msg))
 
 method finalize(self: CsvCheckFmt, stats: ReportStats) {.locks: "unknown".} =

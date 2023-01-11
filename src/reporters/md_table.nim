@@ -22,9 +22,9 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   self.prelude = prelude
   mdPrelude(strm, prelude)
-  strm.writeLine(fmt"| Passed | Success Factor | Weight | Weighted Suc. Fac. | Check | Message |")
+  strm.writeLine(fmt"| Passed | Status | Success Factor | Weight | Weighted Suc. Fac. | Check | Message |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine(fmt"| - | - | - | - | --- | ----- |")
+  strm.writeLine(fmt"| - | -- | - | - | - | --- | ----- |")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let strm = self.getStream(res)
@@ -41,7 +41,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
-  strm.writeLine(fmt"| {passedStr} | {round(sucFac)} | {round(weight)} | {round(weightedSuc)} | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| {passedStr} | {res.kind} | {round(sucFac)} | {round(weight)} | {round(weightedSuc)} | {check.name()} | {msg} |")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
