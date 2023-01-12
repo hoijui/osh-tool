@@ -162,6 +162,15 @@ method `+=`*(this: var CheckSignificance, other: CheckSignificance) {.base.} =
   this.quality += other.quality
   this.machineReadability += other.machineReadability
 
+method `/`*(first: var CheckSignificance, second: CheckSignificance) : CheckSignificance {.base.} =
+  CheckSignificance(
+    weight: first.weight / second.weight,
+    openness: first.openness / second.openness,
+    hardware: first.hardware / second.hardware,
+    quality: first.quality / second.quality,
+    machineReadability: first.machineReadability / second.machineReadability,
+  )
+
 method `/=`*(this: var CheckSignificance, other: CheckSignificance) {.base.} =
   this.weight /= other.weight
   this.openness /= other.openness
