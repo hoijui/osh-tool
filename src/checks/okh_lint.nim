@@ -36,8 +36,8 @@ method sourcePath*(this: OkhLintCheck): string =
 method requirements*(this: OkhLintCheck): CheckReqs =
   return {}
 
-method getRatingFactors*(this: OkhLintCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: OkhLintCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.7,
     openness: 1.0,
     hardware: 0.0,

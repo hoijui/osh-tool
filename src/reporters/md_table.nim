@@ -42,7 +42,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let kindColor = res.getKindColor()
   let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
   let compFac = res.calcCompliance()
-  let weight = check.getRatingFactors().weight
+  let weight = check.getSignificanceFactors().weight
   let weightedComp = compFac * weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =

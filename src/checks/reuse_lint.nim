@@ -34,8 +34,8 @@ method sourcePath*(this: ReuseLintCheck): string =
 method requirements*(this: ReuseLintCheck): CheckReqs =
   return {}
 
-method getRatingFactors*(this: ReuseLintCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: ReuseLintCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.5,
     openness: 1.0,
     hardware: 0.0,

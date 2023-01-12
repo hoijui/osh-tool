@@ -79,7 +79,7 @@ type
   ## How much a check is relevant for the different ratings.
   ## All values go from 0.0 for not relevant at all,
   ## to 1.0 for very relevant.
-  CheckRelevancy* = object
+  CheckSignificance* = object
     ## How relevant/important is the check in general.
     ## For combined ratings, this gets multiplied with all the other
     weight*: float32
@@ -146,8 +146,8 @@ type
     ## that the project is easily machine readable.
     machineReadability*: Rating
 
-method `*`*(this: CheckRelevancy, multiplier: float32) : CheckRelevancy {.base.} =
-  CheckRelevancy(
+method `*`*(this: CheckSignificance, multiplier: float32) : CheckSignificance {.base.} =
+  CheckSignificance(
     weight: this.weight * multiplier,
     openness: this.openness * multiplier,
     hardware: this.hardware * multiplier,
@@ -155,21 +155,21 @@ method `*`*(this: CheckRelevancy, multiplier: float32) : CheckRelevancy {.base.}
     machineReadability: this.machineReadability * multiplier,
   )
 
-method `+=`*(this: var CheckRelevancy, other: CheckRelevancy) {.base.} =
+method `+=`*(this: var CheckSignificance, other: CheckSignificance) {.base.} =
   this.weight += + other.weight
   this.openness += other.openness
   this.hardware += other.hardware
   this.quality += other.quality
   this.machineReadability += other.machineReadability
 
-method `/=`*(this: var CheckRelevancy, other: CheckRelevancy) {.base.} =
+method `/=`*(this: var CheckSignificance, other: CheckSignificance) {.base.} =
   this.weight /= other.weight
   this.openness /= other.openness
   this.hardware /= other.hardware
   this.quality /= other.quality
   this.machineReadability /= other.machineReadability
 
-method `/=`*(this: var CheckRelevancy, dividend: float32) {.base.} =
+method `/=`*(this: var CheckSignificance, dividend: float32) {.base.} =
   this.weight /= dividend
   this.openness /= dividend
   this.hardware /= dividend
@@ -199,7 +199,7 @@ proc newRating*(name: string, factor: float32): Rating =
     badgeUrl: fmt"https://img.shields.io/badge/{nameEnc}-{percent}%25-{color}",
   )
 
-method intoRatings*(this: CheckRelevancy): Ratings {.base.} =
+method intoRatings*(this: CheckSignificance): Ratings {.base.} =
   return Ratings(
     compliance: newRating("OSH Tool Compliance", this.weight),
     openness: newRating("OSH Openness", this.openness),
@@ -311,7 +311,7 @@ method requirements*(this: Check): CheckReqs {.base.} =
   echo "TODO Override!"
   quit 99
 
-method getRatingFactors*(this: Check): CheckRelevancy {.base.} =
+method getSignificanceFactors*(this: Check): CheckSignificance {.base.} =
   echo "TODO Override!"
   quit 98
 

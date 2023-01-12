@@ -32,8 +32,8 @@ method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: MdNoGlobalLinksToLocalFilesCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: MdNoGlobalLinksToLocalFilesCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.4,
     # because it indicates how well the repo works offline,
     # or say: in a distributed environment

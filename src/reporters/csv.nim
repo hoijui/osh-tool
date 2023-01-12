@@ -33,7 +33,7 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
   let passed = isGood(res)
   let passedStr = if passed: "true" else: "false"
   let compliance = res.calcCompliance()
-  let weight = check.getRatingFactors().weight
+  let weight = check.getSignificanceFactors().weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
       fmt"__{issue.severity}__{msgFmt(issue.msg)}"

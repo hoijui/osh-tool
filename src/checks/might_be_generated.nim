@@ -41,8 +41,8 @@ method requirements*(this: MightBeGeneratedCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: MightBeGeneratedCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: MightBeGeneratedCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.5,
     openness: 0.6, # because the repo could be less heavy and thus easier to host/share/exchange
     hardware: 0.0,

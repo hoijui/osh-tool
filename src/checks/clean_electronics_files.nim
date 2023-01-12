@@ -40,8 +40,8 @@ method requirements*(this: CleanElectronicsFilesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: CleanElectronicsFilesCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: CleanElectronicsFilesCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 1.0,
     openness: 1.0,
     hardware: 1.0,

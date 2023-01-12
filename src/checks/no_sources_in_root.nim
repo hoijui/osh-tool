@@ -83,8 +83,8 @@ method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
-method getRatingFactors*(this: NoSourceFilesInRootCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: NoSourceFilesInRootCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.1,
     # makes the repo look less cluttered,
     # and thus more friendly and less scarry

@@ -32,8 +32,8 @@ method requirements*(this: ReadmeExistsCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
-method getRatingFactors*(this: ReadmeExistsCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: ReadmeExistsCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.2,
     openness: 1.0,
     hardware: 0.0,

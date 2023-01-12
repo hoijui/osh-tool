@@ -33,8 +33,8 @@ method requirements*(this: LicenseExistsCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
-method getRatingFactors*(this: LicenseExistsCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: LicenseExistsCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.2,
     openness: 1.0,
     hardware: 0.0,

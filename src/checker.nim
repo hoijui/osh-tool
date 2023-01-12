@@ -57,10 +57,10 @@ proc list*(registry: ChecksRegistry) =
   echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- | ------ |")
   for check in registry.checks:
     let singleLineDesc = check.description().replace("\\\n", "").replace("\n", " ")
-    let relevancy = check.getRatingFactors()
+    let checkSign = check.getSignificanceFactors()
     let srcCodePath = check.sourcePath()
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
-    echo(fmt"| {check.name()} | {round(relevancy.weight)} | {round(relevancy.openness)} | {round(relevancy.hardware)} | {round(relevancy.quality)} | {round(relevancy.machineReadability)} | {singleLineDesc} | {srcText} |")
+    echo(fmt"| {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {srcText} |")
 
 proc check*(registry: ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()
@@ -92,8 +92,8 @@ proc check*(registry: ChecksRegistry, state: var State) =
     issues[$imp] = 0
   var complianceSum = 0.0
   var weightsSum = 0.0
-  var checkRelevancySumWeighted = CheckRelevancy()
-  var checkRatingSum = CheckRelevancy()
+  var checkSignSumWeighted = CheckSignificance()
+  var checkRatingSum = CheckSignificance()
   for check in registry.checks:
     let res = check.run(state)
     if isGood(res):
@@ -108,24 +108,24 @@ proc check*(registry: ChecksRegistry, state: var State) =
     let compliance = res.calcCompliance()
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
-    let checkRatingFactors = check.getRatingFactors()
+    let checkSigFacs = check.getSignificanceFactors()
     # Scales all sub-ratings (openness, quality, ...) by the weight
-    var weightedFactors = checkRatingFactors * checkRatingFactors.weight
+    var weightedFactors = checkSigFacs * checkSigFacs.weight
     # ... except the weight itsself
-    weightedFactors.weight = checkRatingFactors.weight
+    weightedFactors.weight = checkSigFacs.weight
     # Tracks the maximum achievable sum value of all sub-ratings,
     # if all checks would pass with 100% compliance
-    checkRelevancySumWeighted += weightedFactors
+    checkSignSumWeighted += weightedFactors
     # Tracks the actually achieves sum of compliance of all sub-ratings.
     checkRatingSum += weightedFactors * compliance
     complianceSum += compliance
-    weightsSum += checkRatingFactors.weight
+    weightsSum += checkSigFacs.weight
     idx += 1
     idxAll += 1
   # Divides the actually achieved compliance rates of al lsub-ratings
   # by the maximum achievable value of each.
   # -> percentage
-  checkRatingSum /= checkRelevancySumWeighted
+  checkRatingSum /= checkSignSumWeighted
   let stats = ReportStats(
     checks: (
       run: idx,

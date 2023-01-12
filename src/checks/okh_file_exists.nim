@@ -41,8 +41,8 @@ method requirements*(this: OkhFileExistsCheck): CheckReqs =
     CheckReq.FilesListL1,
   }
 
-method getRatingFactors*(this: OkhFileExistsCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: OkhFileExistsCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.7,
     openness: 1.0,
     hardware: 1.0,

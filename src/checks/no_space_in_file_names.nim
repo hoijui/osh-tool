@@ -32,8 +32,8 @@ method requirements*(this: NoSpaceInFileNamesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: NoSpaceInFileNamesCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: NoSpaceInFileNamesCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.4,
     openness: 0.6, # makes the repo easier to work wiht on hte command-line and with scripts
     hardware: 0.0,

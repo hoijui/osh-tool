@@ -31,8 +31,8 @@ method requirements*(this: UnwantedFilesExistNotCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: UnwantedFilesExistNotCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: UnwantedFilesExistNotCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 0.5,
     openness: 0.6, # because the repo could be less heavy and thus easier to host/share/exchange
     hardware: 0.0,

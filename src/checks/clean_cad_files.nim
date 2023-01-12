@@ -40,8 +40,8 @@ method requirements*(this: CleanCadFilesCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: CleanCadFilesCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: CleanCadFilesCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 1.0,
     openness: 1.0,
     hardware: 1.0,

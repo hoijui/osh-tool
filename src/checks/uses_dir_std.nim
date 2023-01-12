@@ -40,8 +40,8 @@ method requirements*(this: UsesDirStdCheck): CheckReqs =
     CheckReq.FilesListRec,
   }
 
-method getRatingFactors*(this: UsesDirStdCheck): CheckRelevancy =
-  return CheckRelevancy(
+method getSignificanceFactors*(this: UsesDirStdCheck): CheckSignificance =
+  return CheckSignificance(
     weight: 1.0,
     openness: 1.0,
     hardware: 0.3,
