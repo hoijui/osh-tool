@@ -47,17 +47,17 @@ template parseTriValue(value: string, name, goodVal: string, badVal: string, non
     echo column
     quit 33 + 1 # + 1 because humans and text editors start counting at 1
 
-##This macro takes the CSV content supplied as an argument at compile time,
-##parses the file extensions into a list,
-##and creates a mapping from each extension to the other entires in the table (hard-coded).
-##The extensions list gets written into a const variable available at run-time
-##under the name `FILE_EXTENSIONS`.
-##The `const FILE_EXTENSIONS_MAX_PARTS` is an integer,
-##indicating the max number of parts in the above list,
-##when splitting each extension with '.'.
-##Finally, `FILE_EXTENSIONS_MAP` contains the aforementioned mapping
-##from "ext" to `(open, text, source)`.
 macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
+  ## This macro takes the CSV content supplied as an argument at compile time,
+  ## parses the file extensions into a list,
+  ## and creates a mapping from each extension to the other entires in the table (hard-coded).
+  ## The extensions list gets written into a const variable available at run-time
+  ## under the name `FILE_EXTENSIONS`.
+  ## The `const FILE_EXTENSIONS_MAX_PARTS` is an integer,
+  ## indicating the max number of parts in the above list,
+  ## when splitting each extension with '.'.
+  ## Finally, `FILE_EXTENSIONS_MAP` contains the aforementioned mapping
+  ## from "ext" to `(open, text, source)`.
   var exts: seq[(string, int, int, int)] = @[]
   var maxParts = 0
 

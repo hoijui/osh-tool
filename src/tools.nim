@@ -35,8 +35,8 @@ type
     srcFile*: string
     srcLine*: int
     srcColumn*: int
-    ## link-path/-url
     target*: string
+      ## link-path/-url
   LinkOccsCont = seq[LinkOcc]
 
 macro importAll*(dir: static[string]): untyped =

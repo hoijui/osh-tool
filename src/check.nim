@@ -28,27 +28,26 @@ type
 
   CheckResult* = object
     kind*: CheckResultKind
-    ## Zero or more issues
     issues*: seq[CheckIssue]
-    ## msg*: Option[string]
+    ## Zero or more issues
+    # msg*: Option[string]
 
-  ## Requirements of a check at runtime
   CheckReq* {.size: sizeof(cint).} = enum
-    ## Requires a connection to the internet
+    ## Requirements of a check at runtime
     Online
-    ## Requires the recursive directory tree of the project files
+      ## Requires a connection to the internet
     FilesListRec
-    ## Requires the list of files in the root of the project
+      ## Requires the recursive directory tree of the project files
     FilesListL1
-    ## Requires access to the contents of one or more files in the project
+      ## Requires the list of files in the root of the project
     FileContent
-    ## Requires executing an external tool, for example `reuse lint`
+      ## Requires access to the contents of one or more files in the project
     ExternalTool
-  ## CheckReqs* {.size: sizeof(cint).} = set[CheckReq]
+      ## Requires executing an external tool, for example `reuse lint`
   CheckReqs* = set[CheckReq]
 
-  ## Data about the report that is available *before* running the checks
   ReportPrelude* = object
+    ## Data about the report that is available *before* running the checks
     homepage*: string
     projVars*: TableRef[string, string]
     tool_versions*: tuple[
@@ -60,8 +59,8 @@ type
       osh_dir_std: string,
     ]
 
-  ## Data about the report that is available *after* running the checks
   ReportStats* = object
+    ## Data about the report that is available *after* running the checks
     checks*: tuple[
       run: int,
       skipped: int,
@@ -73,79 +72,79 @@ type
       weightedComplianceSum: float,
       ]
     issues*: Table[string, int]
-    ## Ratings of the project,
-    ## each one on a different topic/dimension/axis.
     ratings*: Ratings
+      ## Ratings of the project,
+      ## each one on a different topic/dimension/axis.
 
-  ## How much a check is relevant for the different ratings.
-  ## All values go from 0.0 for not relevant at all,
-  ## to 1.0 for very relevant.
   CheckSignificance* = object
-    ## How relevant/important is the check in general.
-    ## For combined ratings, this gets multiplied with all the other
+    ## How much a check is relevant for the different ratings.
+    ## All values go from 0.0 for not relevant at all,
+    ## to 1.0 for very relevant.
     weight*: float32
-    ## How relevant is the check to determine how much the project
-    ## adheres to Open Source (Hardware) best-pracitces.
+      ## How relevant/important is the check in general.
+      ## For combined ratings, this gets multiplied with all the other
     openness*: float32
-    ## How relevant is the check to determine whether the project
-    ## describes hardware.
+      ## How relevant is the check to determine how much the project
+      ## adheres to Open Source (Hardware) best-pracitces.
     hardware*: float32
-    ## How relevant is the check to determine whether the project
-    ## is of high quality.
+      ## How relevant is the check to determine whether the project
+      ## describes hardware.
     quality*: float32
-    ## How relevant is the check to determine whether the project
-    ## is easily machine readable.
+      ## How relevant is the check to determine whether the project
+      ## is of high quality.
     machineReadability*: float32
+      ## How relevant is the check to determine whether the project
+      ## is easily machine readable.
 
-  ## A single rating for a project,
-  ## representing its compliance or failure on a specific axis/dimension,
-  ## e.g. openness or documentation quality.
   Rating* = object
-    ## Human readable, Title Case name of for this rating,
-    ## e.g. "Openness".
+    ## A single rating for a project,
+    ## representing its compliance or failure on a specific axis/dimension,
+    ## e.g. openness or documentation quality.
     name*: string
-    ## The main value of the rating as a factor,
-    ## from 0.0 for total failure,
-    ## to 1.0 for complete compliance.
+      ## Human readable, Title Case name of for this rating,
+      ## e.g. "Openness".
     factor*: float32
-    ## The same as `factor`,
-    ## but as a percentage
-    ## with exactly two digits after the comma,
-    ## excluding the '%'.
-    ## Possible values go from "0.00" to "100.00".
-    ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON) - TODO Check if one can serialize function return values too
+      ## The main value of the rating as a factor,
+      ## from 0.0 for total failure,
+      ## to 1.0 for complete compliance.
     percent*: string
-    ## Lower snakeCase name of the color associated to the rating,
-    ## E.g. "red" for low values,
-    ## "yellow" for mid-range values,
-    ## "green" for high values.
-    ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
+      ## The same as `factor`,
+      ## but as a percentage
+      ## with exactly two digits after the comma,
+      ## excluding the '%'.
+      ## Possible values go from "0.00" to "100.00".
+      ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON) - TODO Check if one can serialize function return values too
     color*: string
-    ## URL to a README badge representing this rating,
-    ## showing off the `name`, `percentage` and `color`.
-    ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
+      ## Lower snakeCase name of the color associated to the rating,
+      ## E.g. "red" for low values,
+      ## "yellow" for mid-range values,
+      ## "green" for high values.
+      ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
     badgeUrl*: string
+      ## URL to a README badge representing this rating,
+      ## showing off the `name`, `percentage` and `color`.
+      ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
 
-  ## How compliancefull all checks combined ran,
-  ## as a factor from 0.0 to 1.0,
-  ## taking each checks weight into account.
   Ratings* = object
-    ## Overall compliance of check executaion/passing,
-    ## not taking any sub-topic/-dimension into account.
+    ## How compliancefull all checks combined ran,
+    ## as a factor from 0.0 to 1.0,
+    ## taking each checks weight into account.
     compliance*: Rating
-    ## How much does the project adhere to
-    ## Open Source (Hardware) best-pracitces.
+      ## Overall compliance of check executaion/passing,
+      ## not taking any sub-topic/-dimension into account.
     openness*: Rating
-    ## How confident are we,
-    ## that the project describes hardware
-    ## (vs e.g. software or data).
+      ## How much does the project adhere to
+      ## Open Source (Hardware) best-pracitces.
     hardware*: Rating
-    ## How confident are we,
-    ## that the projects documentation is of high quality.
+      ## How confident are we,
+      ## that the project describes hardware
+      ## (vs e.g. software or data).
     quality*: Rating
-    ## How confident are we,
-    ## that the project is easily machine readable.
+      ## How confident are we,
+      ## that the projects documentation is of high quality.
     machineReadability*: Rating
+      ## How confident are we,
+      ## that the project is easily machine readable.
 
 method `*`*(this: CheckSignificance, multiplier: float32) : CheckSignificance {.base.} =
   CheckSignificance(
@@ -221,12 +220,12 @@ method intoRatings*(this: CheckSignificance): Ratings {.base.} =
 proc toNum*(flags: CheckReqs): int = cast[cint](flags)
 proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)
 
-## Creates a check-result without an issue
 proc newCheckResult*(kind: CheckResultKind): CheckResult =
+  ## Creates a check-result without an issue
   return CheckResult(kind: kind, issues: @[])
 
-## Creates a check-result with a single issue
 proc newCheckResult*(kind: CheckResultKind, severity: CheckIssueSeverity, msg: Option[string]): CheckResult =
+  ## Creates a check-result with a single issue
   return CheckResult(
     kind: kind,
     issues: @[
@@ -266,10 +265,10 @@ proc getKindColor*(res: CheckResult): string =
     of Bad: "Red"
     of Inapplicable: "Black"
 
-## Calculates the compliance factor of executing a check.
-## Explained here (among other things):
-## https://gitlab.com/OSEGermany/osh-tool/-/issues/27
 proc calcCompliance*(res: CheckResult): float32 =
+  ## Calculates the compliance factor of executing a check.
+  ## Explained here (among other things):
+  ## https://gitlab.com/OSEGermany/osh-tool/-/issues/27
   let oKind = case res.kind:
     of Perfect:
       1.0

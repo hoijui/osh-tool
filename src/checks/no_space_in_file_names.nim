@@ -12,7 +12,6 @@ import ../check
 import ../state
 import ../tools
 
-## Check: Remove OS & Application generated backup and cache files
 let R_SPACE = re".*\s.*"
 
 type NoSpaceInFileNamesCheck = ref object of Check
