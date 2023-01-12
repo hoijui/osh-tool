@@ -70,6 +70,7 @@ type
       available: int,
       complianceSum: float,
       weightsSum: float,
+      weightedComplianceSum: float,
       ]
     issues*: Table[string, int]
     ## Ratings of the project,

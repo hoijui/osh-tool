@@ -92,6 +92,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
     issues[$imp] = 0
   var complianceSum = 0.0
   var weightsSum = 0.0
+  var weightedComplianceSum = 0.0
   var maxScoreSum = CheckSignificance()
   var scoreSum = CheckSignificance()
   for check in registry.checks:
@@ -120,6 +121,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
     scoreSum += weightedFactors * compliance
     complianceSum += compliance
     weightsSum += checkSigFacs.weight
+    weightedComplianceSum += compliance * checkSigFacs.weight
     idx += 1
     idxAll += 1
   # Divides the actually achieved compliance rates of al lsub-ratings
@@ -135,6 +137,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       available: numChecks,
       complianceSum: complianceSum,
       weightsSum: weightsSum,
+      weightedComplianceSum: weightedComplianceSum,
       ),
     issues: issues,
     ratings: score.intoRatings()
