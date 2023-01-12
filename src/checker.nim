@@ -92,8 +92,8 @@ proc check*(registry: ChecksRegistry, state: var State) =
     issues[$imp] = 0
   var complianceSum = 0.0
   var weightsSum = 0.0
-  var checkSignSumWeighted = CheckSignificance()
-  var checkRatingSum = CheckSignificance()
+  var maxScoreSum = CheckSignificance()
+  var scoreSum = CheckSignificance()
   for check in registry.checks:
     let res = check.run(state)
     if isGood(res):
@@ -115,9 +115,9 @@ proc check*(registry: ChecksRegistry, state: var State) =
     weightedFactors.weight = checkSigFacs.weight
     # Tracks the maximum achievable sum value of all sub-ratings,
     # if all checks would pass with 100% compliance
-    checkSignSumWeighted += weightedFactors
+    maxScoreSum += weightedFactors
     # Tracks the actually achieves sum of compliance of all sub-ratings.
-    checkRatingSum += weightedFactors * compliance
+    scoreSum += weightedFactors * compliance
     complianceSum += compliance
     weightsSum += checkSigFacs.weight
     idx += 1
@@ -125,7 +125,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   # Divides the actually achieved compliance rates of al lsub-ratings
   # by the maximum achievable value of each.
   # -> percentage
-  checkRatingSum /= checkSignSumWeighted
+  let score = scoreSum / maxScoreSum
   let stats = ReportStats(
     checks: (
       run: idx,
@@ -137,7 +137,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       weightsSum: weightsSum,
       ),
     issues: issues,
-    ratings: checkRatingSum.intoRatings()
+    ratings: score.intoRatings()
     )
   for checkFmt in reports:
     checkFmt.finalize(stats)
