@@ -17,23 +17,48 @@ import ./state
 
 type
   CheckResultKind* {.pure.} = enum
-    Perfect, Ok, Acceptable, Bad, Inapplicable
+    ## The basic states the result of running a checks
+    ## on a project may yield.
+    Perfect,
+      ## Not a single thing could be better
+    Ok,
+      ## Still quite good, but could be better.
+      ## For a more specific understanding,
+      ## one has to check out the individual checks implementations;
+      ## as in: their code.
+    Acceptable,
+      ## worse then `Ok`, but not yet `Bad`.
+    Bad,
+      ## The worst state a check can result in.
+      ## Would we be in school, this would be a failing grade.
+    Inapplicable
 
   CheckIssueSeverity* {.pure.} = enum
+    ## The result of a check run can come with `CheckIssue`,
+    ## which further describe what would have to change in the project
+    ## to get a better rating according to that check.
     DeveloperFailure, High, Middle, Low
 
   CheckIssue* = object
+    ## The result of a checks run may include 0, 1 or more instnaces of this.
+    ## An issue further describes what would have to change in the project,
+    ## for it to get a better rating according to the specific check.
     severity*: CheckIssueSeverity
+      ## Giving an idea how important this issue is
     msg*: Option[string]
+      ## A message describing the issue in some detail to a human audience.
 
   CheckResult* = object
+    ## A container for all the data that makes up the result/scoring,
+    ## by running a single check on a project.
     kind*: CheckResultKind
+      ## The main status indicator of the check run.
     issues*: seq[CheckIssue]
-    ## Zero or more issues
+      ## Zero or more issues
     # msg*: Option[string]
 
   CheckReq* {.size: sizeof(cint).} = enum
-    ## Requirements of a check at runtime
+    ## Requirements of a check at runtime.
     Online
       ## Requires a connection to the internet
     FilesListRec
@@ -47,9 +72,10 @@ type
   CheckReqs* = set[CheckReq]
 
   ReportPrelude* = object
-    ## Data about the report that is available *before* running the checks
+    ## Data about the report that is available *before* running the checks.
     homepage*: string
     projVars*: TableRef[string, string]
+      ## Project meta-data; see <https://github.com/hoijui/projvar/>
     tool_versions*: tuple[
       osh: string,
       okh: string,
@@ -58,20 +84,35 @@ type
       mle: string,
       osh_dir_std: string,
     ]
+      ## The versions of external CLI tools used by the checks.
 
   ReportStats* = object
-    ## Data about the report that is available *after* running the checks
+    ## Statistical and rating/compliance related data,
+    ## making up a report.
+    ## All this data is only available *after* running the checks.
     checks*: tuple[
-      run: int,
-      skipped: int,
-      passed: int,
-      failed: int,
-      available: int,
-      complianceSum: float,
-      weightsSum: float,
-      weightedComplianceSum: float,
+      run: int, ## Number of checks that were executed/that ran.
+        ## This should equal `available` - `skipped`.
+      skipped: int, ## Number of checks that were skipped, due to being inapplicable.
+        ## See `CheckResult.isApplicable()`.
+      passed: int, ## Number of checks that passed.
+        ## See `CheckResult.isGood()`.
+        ## This should equal `run` - `failed`.
+      failed: int, ## Number of checks that did not pass.
+        ## This should equal `run` - `passed`.
+      available: int,## Number of checks that are available.
+        ## This should equal `run` + `skipped`. 
+      complianceSum: float, ## The sum over the unweighted compliance factors
+        ## of all checks that ran.
+      weightsSum: float, ## The sum over the weights
+        ## of all checks that ran.
+      weightedComplianceSum: float, ## The sum over the weighted compliance factors
+        ## of all checks that ran.
       ]
+      ## Rough statistical data about the running of the checks.
     issues*: Table[string, int]
+      ## How many times each `CheckIssueSeverity` variant appeared
+      ## in all check runs combined.
     ratings*: Ratings
       ## Ratings of the project,
       ## each one on a different topic/dimension/axis.
@@ -186,17 +227,28 @@ method `/=`*(this: var CheckSignificance, dividend: float32) {.base.} =
   this.machineReadability /= dividend
 
 proc toPercentStr*(factor: float32): string =
+  ## Converts a factor (a float between `[0.0, 1.0]`)
+  ## to a string representaiton of the same value as percentage,
+  ## roudned to exactly 2 digits after the comma,
+  ## and *excluding* the '%' sign.
+  ## `assert_eq(toPercentStr(0.956), "95.60")`
   formatFloat(factor*100.0, format=ffDecimal, precision=2)
 
 proc toColorName*(factor: float32): string =
+  ## Converts a factor (a float between `[0.0, 1.0]`) -
+  ## while assuming 0.0 is undesirably/worst, and 1.0 is desirable/best -
+  ## to a name of a color from the web colors palette:
+  ## <https://www.w3schools.com/tags/ref_colornames.asp>
   if factor >= 0.9:
-    "green"
+    "Green"
   elif factor >= 0.5:
-    "yellow"
+    "Yellow"
   else:
-    "red"
+    "Red"
 
 proc newRating*(name: string, factor: float32): Rating =
+  ## Instantiates a new `Rating`;
+  ## ... no magic here!
   let percent = toPercentStr(factor)
   let color = toColorName(factor)
   let nameEnc = encodeUrl(name, usePlus = false)
@@ -209,6 +261,9 @@ proc newRating*(name: string, factor: float32): Rating =
   )
 
 method intoRatings*(this: CheckSignificance): Ratings {.base.} =
+  ## Instantiates a new `Ratings` vector,
+  ## based on the  average, weighted `CheckSignificance`
+  ## from a run over all checks.
   return Ratings(
     compliance: newRating("OSH Tool Compliance", this.weight),
     openness: newRating("OSH Openness", this.openness),
@@ -217,8 +272,17 @@ method intoRatings*(this: CheckSignificance): Ratings {.base.} =
     machineReadability: newRating("OSH Machine Readability", this.machineReadability),
   )
 
-proc toNum*(flags: CheckReqs): int = cast[cint](flags)
-proc toCheckReqs*(bits: int): CheckReqs = cast[CheckReqs](bits)
+proc toNum*(flags: CheckReqs): int =
+  ## Converts a variant of the pure enum `CheckReqs`
+  ## into an integer.
+  ## This is the inverse of `CheckReqs.toCheckReqs(int)`.
+  cast[cint](flags)
+
+proc toCheckReqs*(bits: int): CheckReqs =
+  ## Converts an integer into a variant
+  ## of the pure enum `CheckReqs`.
+  ## This is the inverse of `CheckReqs.toNum(CheckReqs)`.
+  cast[CheckReqs](bits)
 
 proc newCheckResult*(kind: CheckResultKind): CheckResult =
   ## Creates a check-result without an issue
@@ -237,27 +301,43 @@ proc newCheckResult*(kind: CheckResultKind, severity: CheckIssueSeverity, msg: O
   )
 
 proc toColor*(severity: CheckIssueSeverity): string =
+  ## Converts the severity of an isssue
+  ## to a name of a color from the web colors palette:
+  ## <https://www.w3schools.com/tags/ref_colornames.asp>
   return case severity:
-    of DeveloperFailure: "pink"
-    of High: "red"
-    of Middle: "orange"
-    of Low: "light-blue"
+    of DeveloperFailure: "Pink"
+    of High: "Red"
+    of Middle: "Orange"
+    of Low: "LightBlue"
 
 type Check* = ref object of RootObj
 
 proc isApplicable*(res: CheckResult): bool =
+  ## Whether the check reported being applicable to the project in question.
+  ## It might not be applicable, for example,
+  ## if it checks the content of a file for correctness,
+  ## but that file is not present in the project.
   return res.kind != Inapplicable
 
 proc isGood*(res: CheckResult): bool =
+  ## Whether the check got a passing or a failing "grade".
   return res.kind in [Perfect, Ok, Acceptable]
 
 proc getGoodHumanReadable*(res: CheckResult): string =
   return if res.isGood(): "passed" else: "failed"
 
 proc getGoodColor*(res: CheckResult): string =
+  ## Returns a web color name
+  ## that fits to the result of `CheckResukt.isGood()`.
+  ## It will be part of this pallette:
+  ## <https://www.w3schools.com/tags/ref_colornames.asp>
   return if res.isGood(): "Green" else: "Red"
 
 proc getKindColor*(res: CheckResult): string =
+  ## Returns a web color name
+  ## that fits to `CheckResukt.kind`.
+  ## It will be part of this pallette:
+  ## <https://www.w3schools.com/tags/ref_colornames.asp>
   return case res.kind:
     of Perfect: "Green"
     of Ok: "DarkGoldenRod"
@@ -308,24 +388,39 @@ proc calcCompliance*(res: CheckResult): float32 =
   return oKind * oIssues
 
 method name*(this: Check): string {.base.} =
+  ## Returns the name of the check.
+  ## This might often be a description,
+  ## but should be kept short.
   return "TODO Override!"
 
 method description*(this: Check): string {.base.} =
+  ## Returns a detailed, human oriented description
+  ## of what the check checks for.
   return "TODO Override!"
 
 method sourcePath*(this: Check): string {.base.} =
+  ## Returns the path to the source file that implements the check,
+  ## relative to the root of this tools project root directory.
   return "TODO Override!"
 
 method requirements*(this: Check): CheckReqs {.base.} =
+  ## Returns a machine-oriented descriptions of the requriements
+  ## to run this check.
+  ## This might be, that the list requires a list of all files
+  ## of the project to check,
+  ## which might not always be available.
   echo "TODO Override!"
   quit 99
 
 method getSignificanceFactors*(this: Check): CheckSignificance {.base.} =
+  ## This indicates how relevant this check is
+  ## for the different ratings this supplies,
+  ## plus the overall weight of this check.
   echo "TODO Override!"
   quit 98
 
-method run*(this: Check, state: var State): CheckResult {.base,
-    locks: "unknown".} =
+method run*(this: Check, state: var State): CheckResult {.base, locks: "unknown".} =
+  ## Runs this check on a specific project.
   return CheckResult(
     kind: CheckResultKind.Bad,
     issues: @[
