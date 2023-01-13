@@ -20,7 +20,7 @@ import std/streams
 
 const OSH_DIR_STD_TOOL_CMD = "osh-dir-std"
 const DIR_STD_NAME = "unixish"
-const MIN_CONFORMANCE = 0.6
+const MIN_COMPLIANCE = 0.6
 
 type UsesDirStdCheck = ref object of Check
 
@@ -75,17 +75,17 @@ method run*(this: UsesDirStdCheck, state: var State): CheckResult =
       let jsonRoot = parseJson(jsonLines)
       for std in jsonRoot:
         if std["name"].getStr() == DIR_STD_NAME:
-          let confFactor = float32(std["factor"].getFloat())
-          if confFactor == 1.0:
+          let compFactor = float32(std["factor"].getFloat())
+          if compFactor == 1.0:
             return newCheckResult(CheckResultKind.Perfect)
-          if confFactor >= MIN_CONFORMANCE:
+          elif compFactor >= MIN_COMPLIANCE:
             return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-                some(fmt"Not perfect, but above the minimum expected conformance factor of {MIN_CONFORMANCE}"))
+                some(fmt"Compliance factor {compFactor} is not perfect, but above the minimum expected factor of {MIN_COMPLIANCE}"))
           else:
             return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-                some(fmt"Conformance is not perfect, but above the minimum expected factor of {MIN_CONFORMANCE}"))
+                some(fmt"Compliance factor {compFactor} is not perfect, but above the minimum expected factor of {MIN_COMPLIANCE}"))
       return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High,
-          some(fmt"Conformance is below the minimum expected factor of {MIN_CONFORMANCE}"))
+          some(fmt"Compliance factor {compFactor} is below the minimum expected factor of {MIN_COMPLIANCE}"))
     else:
       let msg = fmt("""Failed to run '{OSH_DIR_STD_TOOL_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}""")
       return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
