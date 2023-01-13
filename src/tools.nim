@@ -278,6 +278,14 @@ proc round*(factor: float32): string =
   ## as this is the only way to ensure there are not more digits.
   formatFloat(factor, format=ffDecimal, precision=2)
 
+proc toPercentStr*(factor: float32): string =
+  ## Converts a factor (a float between `[0.0, 1.0]`)
+  ## to a string representaiton of the same value as percentage,
+  ## roudned to exactly 2 digits after the comma,
+  ## and *excluding* the '%' sign.
+  ## `assert_eq(toPercentStr(0.956), "95.60")`
+  formatFloat(factor*100.0, format=ffDecimal, precision=2)
+
 proc listFiles*(dir: string): seq[string] =
   if canTreatAsGitRepo(dir):
     listFilesGit(dir)

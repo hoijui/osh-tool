@@ -14,6 +14,7 @@ import strformat
 import strutils
 import uri
 import ./state
+from ./tools import toPercentStr
 
 type
   CheckResultKind* {.pure.} = enum
@@ -225,14 +226,6 @@ method `/=`*(this: var CheckSignificance, dividend: float32) {.base.} =
   this.hardware /= dividend
   this.quality /= dividend
   this.machineReadability /= dividend
-
-proc toPercentStr*(factor: float32): string =
-  ## Converts a factor (a float between `[0.0, 1.0]`)
-  ## to a string representaiton of the same value as percentage,
-  ## roudned to exactly 2 digits after the comma,
-  ## and *excluding* the '%' sign.
-  ## `assert_eq(toPercentStr(0.956), "95.60")`
-  formatFloat(factor*100.0, format=ffDecimal, precision=2)
 
 proc toColorName*(factor: float32): string =
   ## Converts a factor (a float between `[0.0, 1.0]`) -
