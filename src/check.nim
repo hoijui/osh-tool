@@ -167,8 +167,8 @@ type
       ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
 
   Ratings* = object
-    ## How compliancefull all checks combined ran,
-    ## as a factor from 0.0 to 1.0,
+    ## How successfull all checks combined ran,
+    ## as factors from 0.0 to 1.0,
     ## taking each checks weight into account.
     compliance*: Rating
       ## Overall compliance of check executaion/passing,
