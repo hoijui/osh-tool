@@ -18,8 +18,11 @@ import std/logging
 import std/osproc
 import std/streams
 
+include ../constants
+
 const OSH_DIR_STD_TOOL_CMD = "osh-dir-std"
 const DIR_STD_NAME = "unixish"
+const HIGH_COMPLIANCE = 0.9
 const MIN_COMPLIANCE = 0.6
 
 type UsesDirStdCheck = ref object of Check
@@ -76,16 +79,20 @@ method run*(this: UsesDirStdCheck, state: var State): CheckResult =
       for std in jsonRoot:
         if std["name"].getStr() == DIR_STD_NAME:
           let compFactor = float32(std["factor"].getFloat())
+          let compFactorRounded = round(compFactor)
           if compFactor == 1.0:
             return newCheckResult(CheckResultKind.Perfect)
+          elif compFactor >= HIGH_COMPLIANCE:
+            return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
+                some(fmt"Compliance factor {compFactorRounded} is not perfect, but above the high expected factor of {HIGH_COMPLIANCE}"))
           elif compFactor >= MIN_COMPLIANCE:
             return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-                some(fmt"Compliance factor {compFactor} is not perfect, but above the minimum expected factor of {MIN_COMPLIANCE}"))
+                some(fmt"Compliance factor {compFactorRounded} is not especially high, but above the minimum expected factor of {MIN_COMPLIANCE}"))
           else:
-            return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-                some(fmt"Compliance factor {compFactor} is not perfect, but above the minimum expected factor of {MIN_COMPLIANCE}"))
-      return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High,
-          some(fmt"Compliance factor {compFactor} is below the minimum expected factor of {MIN_COMPLIANCE}"))
+            return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle,
+                some(fmt"Compliance factor {compFactorRounded} is low; below the minimum expected factor of {MIN_COMPLIANCE}"))
+      return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
+          some(fmt"Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"))
     else:
       let msg = fmt("""Failed to run '{OSH_DIR_STD_TOOL_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}""")
       return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
