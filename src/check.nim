@@ -250,7 +250,7 @@ proc newRating*(name: string, factor: float32): Rating =
   ## Instantiates a new `Rating`;
   ## ... no magic here!
   let percent = toPercentStr(factor)
-  let color = toColorName(factor)
+  let color = toColorName(factor).toLower()
   let nameEnc = encodeUrl(name, usePlus = false)
   return Rating(
     name: name,
