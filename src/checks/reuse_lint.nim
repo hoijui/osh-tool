@@ -16,6 +16,7 @@ import ../tools
 import std/osproc
 
 const REUSE_CMD = "reuse"
+const REUSE_TOOL_URL = "https://reuse.software/"
 
 type ReuseLintCheck = ref object of Check
 
@@ -56,6 +57,10 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
       newCheckResult(CheckResultKind.Perfect)
     else:
       var msg_lines = ""
+      msg_lines &= "For more details then this list, and help with fixing these issues,\n"
+      msg_lines &= "please use the REUSE tool, available in as Linux package `reuse`,\n"
+      msg_lines &= fmt"or under <{REUSE_TOOL_URL}>." & "\n"
+      msg_lines &= "\n"
       var summary = false
       var m: RegexMatch
       for line in lines:
@@ -64,10 +69,7 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
             msg_lines = fmt("{msg_lines}{m.group(0, line)[0]}\n")
         if not summary and line == "# SUMMARY":
           summary = true
-      let msg = if len(msg_lines) > 0:
-          some(msg_lines)
-        else:
-          none(string)
+      let msg = some(msg_lines)
       newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
   except OSError as err:
     let msg = fmt("Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
