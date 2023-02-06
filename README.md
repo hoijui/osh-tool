@@ -77,6 +77,8 @@ To compile:
 ### From repository
 
 ```sh
+# Fetch the whole source code
+git submodule update --init --recursive
 # Latest released version
 nimble install osh
 # Latest developmental state inside git repository
