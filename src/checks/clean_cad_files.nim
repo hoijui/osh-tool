@@ -1,10 +1,11 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import os
 import system
 import ../check
 import ../config
@@ -15,8 +16,14 @@ import std/tables
 
 const EXT_FILE = "resources/osh-file-types/file_extension_formats-cad.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
+const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
+const EXT_FILE_ABS = staticExec("pwd") & "/" & EXT_FILE_REL
 
-parseInjectExtsAndMap(staticRead(FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE))
+static:
+  if not fileExists(EXT_FILE_ABS):
+    echo "\nError: Required file does not exist: " & EXT_FILE &
+      "\n\tMaybe you forgot to checkout git submodules? (`git submodule update --init --recursive`)\n"
+parseInjectExtsAndMap(staticRead(EXT_FILE_REL))
 
 type CleanCadFilesCheck = ref object of Check
 

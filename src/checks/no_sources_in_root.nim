@@ -1,12 +1,13 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import strutils
 import options
+import os
 import macros
 import system
 import regex
@@ -14,8 +15,10 @@ import ../check
 import ../state
 import ../tools
 
-const SOURCE_EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
+const EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
+const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
+const EXT_FILE_ABS = staticExec("pwd") & "/" & EXT_FILE_REL
 
 macro parseInjectExts(): untyped =
   ## This macro reads the file SOURCE_EXT_FILE at compile time,
@@ -28,7 +31,7 @@ macro parseInjectExts(): untyped =
   var sourceExts: seq[string] = @[]
   var maxParts = 0
 
-  let sources_list = staticRead(FROM_THIS_FILE_TO_PROJ_ROOT & "/" & SOURCE_EXT_FILE)
+  let sources_list = staticRead(EXT_FILE_REL)
   for line in sources_list.split('\n'):
     # retain only the first CSV column
     let ext = line.replace(re",.*$", "")
@@ -64,6 +67,10 @@ macro parseInjectExts(): untyped =
   )
   # echo toStrLit(result)
 
+static:
+  if not fileExists(EXT_FILE_ABS):
+    echo "\nError: Required file does not exist: " & EXT_FILE &
+      "\n\tMaybe you forgot to checkout git submodules? (`git submodule update --init --recursive`)\n"
 parseInjectExts()
 
 type NoSourceFilesInRootCheck = ref object of Check
