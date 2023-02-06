@@ -84,10 +84,10 @@ method run*(this: UsesDirStdCheck, state: var State): CheckResult =
             return newCheckResult(CheckResultKind.Perfect)
           elif compFactor >= HIGH_COMPLIANCE:
             return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-                some(fmt"Compliance factor {compFactorRounded} is not perfect, but above the high expected factor of {HIGH_COMPLIANCE}"))
+                some(fmt"Compliance factor {compFactorRounded} is not perfect, but close, being above the upper expected factor of {HIGH_COMPLIANCE}"))
           elif compFactor >= MIN_COMPLIANCE:
             return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-                some(fmt"Compliance factor {compFactorRounded} is not especially high, but above the minimum expected factor of {MIN_COMPLIANCE}"))
+                some(fmt"Compliance factor {compFactorRounded} is above the minimum expected factor of {MIN_COMPLIANCE}; good! :-)"))
           else:
             return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle,
                 some(fmt"Compliance factor {compFactorRounded} is low; below the minimum expected factor of {MIN_COMPLIANCE}"))
