@@ -139,4 +139,4 @@ LABEL org.opencontainers.image.description="Contains the OSH Check/Linter CLI to
 
 WORKDIR /data
 
-CMD ["report_gen"]
+CMD ["report_gen", "--download-badges"]
