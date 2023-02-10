@@ -17,8 +17,8 @@ OUT_DIR_DEFAULT="public"
 OUT_FILE_NAME_MD="osh-report.md"
 OUT_FILE_NAME_JSON="osh-report.json"
 OUT_FILE_NAME_HTML="osh-report.html"
-BADGE_FILE_NAME_REPORT="osh-badge-report.svg"
-BADGE_FILE_NAME_OPENNESS="osh-badge-openness.svg"
+BADGE_FILE_NAME_PREFIX="osh-badge-"
+RATINGS="compliance openness hardware quality machineReadability"
 
 # parameters
 repo="$(pwd)"
@@ -88,8 +88,7 @@ done
 output_md="$output_dir/$OUT_FILE_NAME_MD"
 output_json="$output_dir/$OUT_FILE_NAME_JSON"
 output_html="$output_dir/$OUT_FILE_NAME_HTML"
-badge_file_report="$output_dir/$BADGE_FILE_NAME_REPORT"
-badge_file_openness="$output_dir/$BADGE_FILE_NAME_OPENNESS"
+badge_file_prefix="$output_dir/$BADGE_FILE_NAME_PREFIX"
 
 if ! [ -d "$repo" ]
 then
@@ -111,24 +110,17 @@ osh \
 jq < "$output_json" > "${output_json}_TMP"
 mv "${output_json}_TMP" "$output_json"
 
-stat_openness_badge_r="$(jq -r '.stats.badgeUrlColor' < "$output_json")"
-stat_openness_badge_p="$(jq -r '.stats.badgeUrlPercentage' < "$output_json")"
 tool_homepage="$(jq -r '.prelude.homepage' < "$output_json")"
 
 if $download_badges
 then
-	rm -f \
-		"$badge_file_report" \
-		"$badge_file_openness"
-	wget "$stat_openness_badge_r" \
-		--quiet \
-		-O "$badge_file_report"
-	wget "$stat_openness_badge_p" \
-		--quiet \
-		-O "$badge_file_openness"
-else
-	badge_file_report="$stat_openness_badge_r"
-	badge_file_openness="$stat_openness_badge_p"
+	for rating in $RATINGS
+	do
+		badge_file="${badge_file_prefix}${rating}.svg"
+		rm -f "$badge_file"
+		badge_url="$(jq -r '.stats.ratings.'"$rating"'.badgeUrl' < "$output_json")"
+		wget "$badge_url" --quiet -O "$badge_file"
+	done
 fi
 
 function projvar_get() {
@@ -180,8 +172,16 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "subtitle: '$subtitle'"
 	echo "---"
 	echo
-	echo "![OSH Report]($BADGE_FILE_NAME_REPORT)"
-	echo "![OSH Openness]($BADGE_FILE_NAME_OPENNESS)"
+	for rating in $RATINGS
+	do
+		if $download_badges
+		then
+			badge_file_or_url="$(basename "${badge_file_prefix}${rating}.svg")"
+		else
+			badge_file_or_url="$(jq -r '.stats.ratings.'"$rating"'.badgeUrl' < "$output_json")"
+		fi
+		echo "![OSH - $rating]($badge_file_or_url) \\"
+	done
 	echo
 	echo "## This report in different formats"
 	echo
