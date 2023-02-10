@@ -18,3 +18,4 @@ runs:
     - 'report_gen'
     - '-C'
     - ${{ inputs.repo-path }}
+    - '--download-badges'
