@@ -12,5 +12,60 @@ set -Eeuo pipefail
 #script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 #source "$script_dir/env"
 
-nimble build
+static=false
 
+function print_help() {
+
+	echo "Compiles the main binary of this project."
+	echo
+	echo "Usage:"
+	echo "         $(basename "$0") [OPTIONS]"
+	echo "Options:"
+	echo "          -h, --help         Show this help message"
+	echo "          -s, --static       Compile the binary statically (vs default dynamically)"
+}
+
+# read command-line args
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+	arg="$1"
+	shift # past argument
+
+	case "$arg" in
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		-s|--static)
+			static=true
+			;;
+		*) # non-/unknown option
+			POSITIONAL+=("$arg") # save it in an array for later
+			;;
+	esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+if $static
+then
+    nimble build \
+        -y \
+        --verbose \
+        -d:release \
+        -d:usePcreHeader \
+        --opt:speed \
+        --passL:-static \
+        --passL:-no-pie \
+        --passL:-lpcre \
+        --passL:-lssl \
+        --passL:-lcrypto \
+        --dynlibOverride:ssl \
+        --dynlibOverride:crypto \
+        || (
+            >&2 echo "WARN: Statically linking is only confirmed to work on Alpine Linux!"
+            exit 1
+            )
+else
+    nimble build
+fi
