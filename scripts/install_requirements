@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+# Exit immediately on each error and unset variable;
+# see: https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+#set -Eeu
+
+#script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+#source "$script_dir/env"
+
+if which apk > /dev/null
+then
+	apk \
+		--no-cache add \
+		git \
+		nim \
+		nimble \
+		gcc \
+		musl-dev \
+		pcre-dev \
+		openssl1.1-compat-libs-static
+elif which apt > /dev/null
+then
+	apt \
+		install \
+		-yy \
+		git \
+		nim \
+		gcc \
+		musl-dev \
+		libpcre2-dev \
+		libssl-dev
+else
+	>&2 echo "ERROR: We do not support installing requirements on this platform."
+	exit 1
+fi

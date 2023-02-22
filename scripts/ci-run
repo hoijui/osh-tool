@@ -260,7 +260,7 @@ echo "Creating HTML ('index.html') that links to all the files generated above .
 		fi
 		echo "<li><img alt=\"os_icon\" width=\"64\" src=\"$img_src\"/><a href=\"$file\">$file</a></li>"
 	done
-	find *.{md,html} | sort | while read -r file
+	find ./*.{md,html} | sed -e 's|^\./||' | sort | while read -r file
 	do
 		if [ "$file" = "index.html" ]
 		then
