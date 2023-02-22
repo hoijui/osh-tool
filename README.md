@@ -121,3 +121,26 @@ They also work well in combination with this tool.
 ## License
 
 GNU Affero General Public License version 3
+
+## Funding
+
+This project was funded by:
+
+* the European Union's [Horizon 2020](
+      https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-2020_en)
+  research and innovation program,
+  under grant agreement no. 869984,
+  in the context of the [OPEN!NEXT Project](https://opennext.eu/),
+  from June 2021 (project start)
+  until November 2021.
+
+  ![Logo of the European Union](
+      https://opennext.eu/wp-content/uploads/eulogo_da-1024x676.jpg)
+
+* the European Regional Development Fund (ERDF)
+  in the context of the [INTERFACER Project](https://www.interfacerproject.eu/),
+  from December 2021
+  until March 2023.
+
+  ![Logo of the EU ERDF program](
+      https://cloud.fabcity.hamburg/s/TopenKEHkWJ8j5P/download/logo-eu-erdf.png)
