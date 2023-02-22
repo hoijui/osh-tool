@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -134,8 +134,8 @@ This project was funded by:
   from June 2021 (project start)
   until November 2021.
 
-  ![Logo of the European Union](
-      https://opennext.eu/wp-content/uploads/eulogo_da-1024x676.jpg)
+  ![Logo of the European Commission](
+      https://www.polemermediterranee.com/var/website/storage/images/media/images/european-commission-logo.png/422174-1-fre-FR/european-commission-logo.PNG_reference.png)
 
 * the European Regional Development Fund (ERDF)
   in the context of the [INTERFACER Project](https://www.interfacerproject.eu/),
