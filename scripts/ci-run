@@ -142,23 +142,11 @@ fi
 
 echo
 echo "Compiling the software for Linux ..."
-nimble -y build
+"$script_dir/build"
 
 echo
 echo "Cross-compiling the software for Windows 64 ..."
-nimble -y build \
-	--os:windows \
-	--cpu:amd64 \
-	--gcc.exe:/usr/bin/x86_64-w64-mingw32-gcc \
-	--gcc.linkerexe:/usr/bin/x86_64-w64-mingw32-gcc \
-	-d:release \
-	--app:console \
-	--opt:size \
-	--passL:-static \
-	--opt:speed \
-	--embedsrc \
-	--threads:on \
-	--checks:on
+"$script_dir/build" --windows
 
 bin_win="$(find "$build_dir" -maxdepth 1 -type f -name '*.exe' -printf '%P\n')"
 bin_lin="${bin_win%.exe}"
