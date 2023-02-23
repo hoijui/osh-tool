@@ -14,6 +14,7 @@ set -Eeuo pipefail
 
 if which apk > /dev/null
 then
+	# Alpine Linux
 	apk \
 		--no-cache add \
 		git \
@@ -25,6 +26,7 @@ then
 		openssl1.1-compat-libs-static
 elif which apt > /dev/null
 then
+	# Debian based systems (including Ubuntu)
 	apt \
 		install \
 		-yy \
@@ -34,6 +36,7 @@ then
 		musl-dev \
 		libpcre2-dev \
 		libssl-dev
+	>&2 echo "WARN: The just installed requirements are insufficient! -> TODO Make them sufficient"
 else
 	>&2 echo "ERROR: We do not support installing requirements on this platform."
 	exit 1
