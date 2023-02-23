@@ -62,18 +62,18 @@ method run*(this: UsesDirStdCheck, state: var State): CheckResult =
       env = nil,
       options = {poUsePath})
     let procStdin = process.inputStream()
-    debug "  osh-dir-std: Writing to stdin ..."
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Writing to stdin ..."
     for path in state.listFiles():
       procStdin.writeLine(path)
-    debug "  osh-dir-std: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
     procStdin.close()
-    debug "  osh-dir-std: Ask for exit code and stdout ..."
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines
-    debug "  osh-dir-std: Run finnished; analyze results ..."
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finnished; analyze results ..."
     if exCode == 0:
-      debug "  osh-dir-std: Process output ..."
+      debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Process output ..."
       let jsonLines = lines.join("\n")
-      debug "  osh-dir-std: jsonLines:"
+      debug fmt"  {OSH_DIR_STD_TOOL_CMD}: jsonLines:"
       debug jsonLines
       let jsonRoot = parseJson(jsonLines)
       for std in jsonRoot:
