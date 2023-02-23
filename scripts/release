@@ -70,7 +70,7 @@ then
   exit 2
 fi
 
-nimble_file="$(find -maxdepth 1 -name '*.nimble' | sed -e 's|^\./||')"
+nimble_file="$(find . -maxdepth 1 -name '*.nimble' | sed -e 's|^\./||')"
 nimble_file_regex="$(echo "$nimble_file_regex" | sed -e 's|\.|\\\\.|')"
 
 if [ -z "${nimble_file:-}" ]
