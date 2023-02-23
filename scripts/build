@@ -67,5 +67,6 @@ then
             exit 1
             )
 else
-    nimble build
+    nimble build \
+        -y
 fi
