@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -9,8 +9,48 @@
 set -Eeuo pipefail
 #set -Eeu
 
-#script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-#source "$script_dir/env"
+script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+# shellcheck source=./env
+source "$script_dir/env"
+sudo=$(which sudo && echo "sudo" || echo "")
+
+fetch_submodules=false
+
+function print_help() {
+
+	echo "Installs all requirements for local Linux shared&static building"
+	echo "and Windows 64bit cross compilation on Liunx."
+	echo "This only works partly, and even so"
+	echo "only on Alpine Linux and Debian based distros (including Ubuntu)."
+	echo
+	echo "Usage:"
+	echo "         $(basename "$0") [OPTIONS]"
+	echo "Options:"
+	echo "          -h, --help                  Show this help message"=
+	echo "          -f, --fetch                 Also fetch all git submodules"
+}
+
+# read command-line args
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+	arg="$1"
+	shift # past argument
+
+	case "$arg" in
+		-h|--help)
+			print_help
+			exit 0
+			;;
+		-f|--fetch)
+			fetch_submodules=true
+			;;
+		*) # non-/unknown option
+			POSITIONAL+=("$arg") # save it in an array for later
+			;;
+	esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if which apk > /dev/null
 then
@@ -27,17 +67,93 @@ then
 elif which apt > /dev/null
 then
 	# Debian based systems (including Ubuntu)
-	apt \
-		install \
-		-yy \
-		git \
-		nim \
-		gcc \
-		musl-dev \
-		libpcre2-dev \
-		libssl-dev
-	>&2 echo "WARN: The just installed requirements are insufficient! -> TODO Make them sufficient"
+	apt_updated=false
+	if ! which git > /dev/null || ! which x86_64-w64-mingw32-gcc > /dev/null
+	then
+		echo "Install pre-requisites ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
+		$sudo apt-get install -y -qq curl git # > /dev/null
+	fi
+	if ! which pandoc > /dev/null
+	then
+		echo "Install pandoc ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
+		$sudo apt-get install -y -qq pandoc # > /dev/null
+	fi
+	if ! which gcc > /dev/null
+	then
+		echo "Install gcc ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
+		$sudo apt-get install -y -qq gcc # > /dev/null
+	fi
+
+	mkdir -p "$build_dir"
+	cd "$build_dir"
+
+	if ! which nimble > /dev/null
+	then
+		echo "Install nim and nimble ..."
+		curl "https://nim-lang.org/choosenim/init.sh" \
+			--output "choosenim_init.sh" \
+			-sSf
+		$sudo sh choosenim_init.sh -y
+	fi
+
+	# Fetch cross-compile requirements
+	if ! which x86_64-w64-mingw32-gcc > /dev/null
+	then
+		echo "Install the win64 cross-compiler ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
+		$sudo apt-get install -y -qq mingw-w64 # > /dev/null
+		# HACK We simply try installing these here,
+		#      as this is the least likely to have been installed already,
+		#      so we are less likely to cause an unnecessary `apt update`.
+		#      Downside: We might not install these,
+		#      even though it would be necessary.
+		$sudo apt-get install -y -qq \
+			musl-dev \
+			libpcre2-dev \
+			libssl-dev \
+			# > /dev/null
+	fi
+	if ! [ -d "$nim_win_dir" ] > /dev/null
+	then
+		echo "Download and extract the nim-win64 package (required for the contained libraries) ..."
+		nim_win_arch="nim-${nim_win_version}_x64.zip"
+		curl "https://nim-lang.org/download/$nim_win_arch" \
+			--output "$nim_win_arch" \
+			-sSf
+		unzip "$nim_win_arch"
+	fi
+
+	cd "$proj_dir"
+
+	>&2 echo "WARN: The just installed requirements are insufficient! -> TODO Make them sufficient!"
 else
 	>&2 echo "ERROR: We do not support installing requirements on this platform."
 	exit 1
 fi
+
+if $fetch_submodules
+then
+	echo "Checkout all project sub-modules ..."
+	git submodule update --init --recursive
+fi
+
+echo "done."

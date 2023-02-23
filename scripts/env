@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+# Exit immediately on each error and unset variable;
+# see: https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+#set -Eeu
+
+var_names=()
+set -a # All variables get exported when set, even without 'export' in front
+
+script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+var_names+=("script_dir")
+
+proj_dir="$(cd "$script_dir"/..; pwd)"
+var_names+=("proj_dir")
+
+build_dir="$proj_dir/build"
+var_names+=("build_dir")
+
+package_dir="$proj_dir/public"
+var_names+=("package_dir")
+
+nim_win_version="1.4.8"
+var_names+=("nim_win_version")
+
+# NOTE: NIM_WIN_DIR should be set by the CI container (hoijui/ci-nim:latest)
+nim_win_dir="${NIM_WIN_DIR:-$build_dir/nim-${nim_win_version}}"
+var_names+=("nim_win_dir")
+
+# Environment file
+ENV_FILE="${ENV_FILE:-${GITHUB_ENV:-}}"
+var_names+=("ENV_FILE")
+
+for var_name in "${var_names[@]}"
+do
+  if [ "${OUTPUT:-}" = "true" ]
+  then
+    echo "$var_name=${!var_name}"
+  fi
+  if [ -n "$ENV_FILE" ]
+  then
+    echo "$var_name=${!var_name}" >> "$ENV_FILE"
+  fi
+done
+
+set +a

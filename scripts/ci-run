@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -10,13 +10,8 @@ set -Eeuo pipefail
 #set -Eeu
 
 script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-proj_dir="$(cd "$script_dir"/..; pwd)"
-build_dir="$proj_dir/build"
-package_dir="$proj_dir/public"
-nim_win_version="1.4.8"
-# NOTE: NIM_WIN_DIR should be set by the CI container (hoijui/ci-nim:latest)
-nim_win_dir="${NIM_WIN_DIR:-$build_dir/nim-${nim_win_version}}"
-sudo=$(which sudo && echo "sudo" || echo "")
+# shellcheck source=./env
+source "$script_dir/env"
 
 if [ -z "$(find "$proj_dir" -name '*.nimble')" ]
 then
@@ -46,71 +41,6 @@ function print_help() {
 	echo "          -s, --install-requirements  Install whatever this script needs to run (works only on Debian/Ubuntu)"
 }
 
-function install_requirements() {
-
-	apt_updated=false
-	if ! which git > /dev/null || ! which x86_64-w64-mingw32-gcc > /dev/null
-	then
-		echo "Install pre-requisites ..."
-		if ! $apt_updated
-		then
-			$sudo apt-get update
-			apt_updated=true
-		fi
-		$sudo apt-get install -y -qq curl git # > /dev/null
-	fi
-	if ! which pandoc > /dev/null
-	then
-		echo "Install pandoc ..."
-		if ! $apt_updated
-		then
-			$sudo apt-get update
-			apt_updated=true
-		fi
-		$sudo apt-get install -y -qq pandoc # > /dev/null
-	fi
-
-	mkdir -p "$build_dir"
-	cd "$build_dir"
-
-	if ! which nimble > /dev/null
-	then
-		echo "Install nim and nimble ..."
-		curl "https://nim-lang.org/choosenim/init.sh" \
-			--output "choosenim_init.sh" \
-			-sSf
-		$sudo sh choosenim_init.sh -y
-	fi
-
-	# Fetch cross-compile requirements
-	if ! which x86_64-w64-mingw32-gcc > /dev/null
-	then
-		echo "Install the win64 cross-compiler ..."
-		if ! $apt_updated
-		then
-			$sudo apt-get update
-			apt_updated=true
-		fi
-		$sudo apt-get install -y -qq mingw-w64 # > /dev/null
-	fi
-	if ! [ -d "$nim_win_dir" ] > /dev/null
-	then
-		echo "Download and extract the nim-win64 package (required for the contained libraries) ..."
-		nim_win_arch="nim-${nim_win_version}_x64.zip"
-		curl "https://nim-lang.org/download/$nim_win_arch" \
-			--output "$nim_win_arch" \
-			-sSf
-		unzip "$nim_win_arch"
-	fi
-
-	cd "$proj_dir"
-
-	echo "Checkout all project sub-modules ..."
-	git submodule update --init --recursive
-
-	echo "done."
-}
-
 # read command-line args
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -124,7 +54,7 @@ do
 			exit 0
 			;;
 		-s|--install-requirements)
-			install_requirements
+			"$script_dir/install_requirements" --fetch
 			exit 0
 			;;
 		*) # non-/unknown option
