@@ -12,6 +12,7 @@ set -Eeuo pipefail
 #script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 #source "$script_dir/env"
 
+windows=false
 static=false
 
 function print_help() {
@@ -23,6 +24,7 @@ function print_help() {
 	echo "Options:"
 	echo "          -h, --help         Show this help message"
 	echo "          -s, --static       Compile the binary statically (vs default dynamically)"
+	echo "          -w, --windows      Cross-compile the binary for Windows 64bin"
 }
 
 # read command-line args
@@ -40,6 +42,9 @@ do
 		-s|--static)
 			static=true
 			;;
+		-w|--windows)
+			windows=true
+			;;
 		*) # non-/unknown option
 			POSITIONAL+=("$arg") # save it in an array for later
 			;;
@@ -47,7 +52,23 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if $static
+if $windows
+then
+    # NOTE For windows builds, we ignore the `static` variable
+    nimble -y build \
+        --os:windows \
+        --cpu:amd64 \
+        --gcc.exe:/usr/bin/x86_64-w64-mingw32-gcc \
+        --gcc.linkerexe:/usr/bin/x86_64-w64-mingw32-gcc \
+        -d:release \
+        --app:console \
+        --opt:size \
+        --passL:-static \
+        --opt:speed \
+        --embedsrc \
+        --threads:on \
+        --checks:on
+elif $static
 then
     nimble build \
         -y \
