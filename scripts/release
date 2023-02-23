@@ -66,8 +66,8 @@ fi
 
 if [ -n "$(git diff --cached --numstat)" ]
 then
-  >&2 echo "ERROR: There are staged changes in the repo; aborting release process!"
-  exit 2
+	>&2 echo "ERROR: There are staged changes in the repo; aborting release process!"
+	exit 2
 fi
 
 nimble_file="$(find . -maxdepth 1 -name '*.nimble' | sed -e 's|^\./||')"
@@ -75,16 +75,16 @@ nimble_file_regex="$(echo "$nimble_file_regex" | sed -e 's|\.|\\\\.|')"
 
 if [ -z "${nimble_file:-}" ]
 then
-  >&2 echo "ERROR: No *.nimble file found in the current directory -> CWD is not a Nim projects root dir; aborting release process!"
-  exit 4
+	>&2 echo "ERROR: No *.nimble file found in the current directory -> CWD is not a Nim projects root dir; aborting release process!"
+	exit 4
 fi
 
 # Refreshes the index, so 'git diff-index' will show correct results.
 git update-index --refresh || true > /dev/null
 if git diff-index HEAD -- | grep -q "\s${nimble_file_regex}\$"
 then
-  >&2 echo "ERROR: There are changes in '$nimble_file'; aborting release process!"
-  exit 3
+	>&2 echo "ERROR: There are changes in '$nimble_file'; aborting release process!"
+	exit 3
 fi
 
 # Set new version in *.nimble
@@ -96,11 +96,11 @@ git tag -a -m "Release $project_name version $new_version" "$new_version"
 
 if $push
 then
-  branch_name="$(git symbolic-ref HEAD 2>/dev/null)" \
-    || branch_name="(unnamed branch)" # detached HEAD
-  branch_name="${branch_name##refs/heads/}"
-  git push origin --tags "$branch_name"
+	branch_name="$(git symbolic-ref HEAD 2>/dev/null)" \
+		|| branch_name="(unnamed branch)" # detached HEAD
+	branch_name="${branch_name##refs/heads/}"
+	git push origin --tags "$branch_name"
 else
-  echo "Ready to release with:"
-  echo "git push origin --tags master"
+	echo "Ready to release with:"
+	echo "git push origin --tags master"
 fi
