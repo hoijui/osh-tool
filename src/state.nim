@@ -20,12 +20,19 @@ type
     projVars*: TableRef[string, string]
     projFiles*: Option[seq[string]]
     projFilesL1*: Option[seq[string]]
+    projFilesNonGenerated*: Option[seq[string]]
 
 method listFiles*(this: var State): seq[string] {.base.} =
   ## Returns a list of all the project file names, recursively
   if this.projFiles.isNone:
     this.projFiles = some(tools.listFiles(this.config.projRoot))
   return this.projFiles.get
+
+method listFilesNonGenerated*(this: var State): seq[string] {.base.} =
+  ## Returns a list of all the project file names, recursively
+  if this.projFilesNonGenerated.isNone:
+    this.projFilesNonGenerated = some(filterOutGenerated(this.config.projRoot, this.listFiles()))
+  return this.projFilesNonGenerated.get
 
 method listFilesMatching*(this: var State, regex: Regex): seq[string] {.base.} =
   ## Returns a list of (recursive) project file names

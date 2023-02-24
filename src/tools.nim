@@ -317,6 +317,23 @@ proc toPercentStr*(factor: float32): string =
   ## `assert_eq(toPercentStr(0.956), "95.60")`
   formatFloat(factor*100.0, format=ffDecimal, precision=2)
 
+proc filterOutGenerated*(projRoot: string, unfiltered: seq[string]): seq[string] =
+  try:
+    let args = ["map", "--standard", DIR_STD_NAME]
+    let jsonLines = runOshDirStd(projRoot, args, unfiltered)
+    let jsonRoot = parseJson(jsonLines)
+    for std in jsonRoot:
+      if std["name"].getStr() == DIR_STD_NAME:
+        let genLstJson = std["coverage"]["generated_content"]
+        var genLst = newSeq[string]()
+        for genJson in genLstJson:
+          genLst.add(genJson.getStr())
+        let filtered = unfiltered.filterIt(it notin genLst).toSeq
+        return filtered
+  except OSError as err:
+    raise newException(IOError, fmt("Failed to filter out generated content: {err.msg}"))
+  raise newException(IOError, fmt("Failed to filter out generated content obtained from '{OSH_DIR_STD_TOOL_CMD}'"))
+
 proc listFiles*(dir: string): seq[string] =
   if canTreatAsGitRepo(dir):
     listFilesGit(dir)

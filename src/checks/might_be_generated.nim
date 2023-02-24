@@ -38,7 +38,7 @@ method sourcePath*(this: MightBeGeneratedCheck): string =
 
 method requirements*(this: MightBeGeneratedCheck): CheckReqs =
   return {
-    CheckReq.FilesListRec,
+    CheckReq.FilesListRecNonGen,
   }
 
 method getSignificanceFactors*(this: MightBeGeneratedCheck): CheckSignificance =
@@ -51,7 +51,7 @@ method getSignificanceFactors*(this: MightBeGeneratedCheck): CheckSignificance =
     )
 
 method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
-  let foundFiles = filterPathsMatchingFileName(state.listFiles(), R_GENERATABLE)
+  let foundFiles = filterPathsMatchingFileName(state.listFilesNonGenerated(), R_GENERATABLE)
   return (if foundFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
   else:

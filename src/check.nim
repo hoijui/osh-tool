@@ -64,6 +64,10 @@ type
       ## Requires a connection to the internet
     FilesListRec
       ## Requires the recursive directory tree of the project files
+    FilesListRecNonGen
+      ## Requires the recursive directory tree of the project files,
+      ## plus osh-dir-std to be available to filter files&dirs out,
+      ## which are allowed to be generated
     FilesListL1
       ## Requires the list of files in the root of the project
     FileContent
