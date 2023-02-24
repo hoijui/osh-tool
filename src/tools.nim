@@ -29,6 +29,8 @@ import ./config
 
 const PROJVAR_CMD = "projvar"
 const MLE_CMD = "mle"
+const OSH_DIR_STD_TOOL_CMD* = "osh-dir-std"
+const DIR_STD_NAME* = "unixish"
 
 type
   LinkOcc* = object
@@ -235,6 +237,35 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
       raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}"""))
   except OSError as err:
     raise newException(IOError, fmt("Failed to run '{PROJVAR_CMD}'; make sure it is in your PATH: {err.msg}"))
+
+proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[string]): string =
+  debug fmt"Running {OSH_DIR_STD_TOOL_CMD} ..."
+  try:
+    let process = osproc.startProcess(
+      command = OSH_DIR_STD_TOOL_CMD,
+      workingDir = projRoot,
+      args = args,
+      env = nil,
+      options = {poUsePath})
+    let procStdin = process.inputStream()
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Writing to stdin ..."
+    for path in fileListing:
+      procStdin.writeLine(path)
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
+    procStdin.close()
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
+    let (lines, exCode) = process.readLines
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finnished; analyze results ..."
+    if exCode == 0:
+      debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Process output ..."
+      let jsonLines = lines.join("\n")
+      debug fmt"  {OSH_DIR_STD_TOOL_CMD}: jsonLines:"
+      debug jsonLines
+      return jsonLines
+    else:
+      raise newException(IOError, fmt("""Failed to run '{OSH_DIR_STD_TOOL_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}"""))
+  except OSError as err:
+    raise newException(IOError, fmt("Failed to run '{OSH_DIR_STD_TOOL_CMD}'; make sure it is in your PATH: {err.msg}"))
 
 proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCont =
   try:
