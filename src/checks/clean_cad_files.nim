@@ -44,7 +44,7 @@ method sourcePath*(this: CleanCadFilesCheck): string =
 
 method requirements*(this: CleanCadFilesCheck): CheckReqs =
   return {
-    CheckReq.FilesListRec,
+    CheckReq.FilesListRecNonGen,
   }
 
 method getSignificanceFactors*(this: CleanCadFilesCheck): CheckSignificance =
