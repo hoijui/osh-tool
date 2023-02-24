@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2022 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2022-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -71,7 +71,6 @@ then
 fi
 
 nimble_file="$(find . -maxdepth 1 -name '*.nimble' | sed -e 's|^\./||')"
-nimble_file_regex="$(echo "$nimble_file_regex" | sed -e 's|\.|\\\\.|')"
 
 if [ -z "${nimble_file:-}" ]
 then
@@ -81,6 +80,7 @@ fi
 
 # Refreshes the index, so 'git diff-index' will show correct results.
 git update-index --refresh || true > /dev/null
+nimble_file_regex="${nimble_file/#./\\.}"
 if git diff-index HEAD -- | grep -q "\s${nimble_file_regex}\$"
 then
 	>&2 echo "ERROR: There are changes in '$nimble_file'; aborting release process!"
