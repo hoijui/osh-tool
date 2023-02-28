@@ -26,7 +26,7 @@ import ./tools
 include ./constants
 include ./version
 
-# TODO Try to name&//describe this tool in a shorter, slightly more catchy way.
+# TODO Try to name &// describe this tool in a shorter, slightly more catchy way.
 let doc = fmt"""
 A linter (static analysis tool) for repositories
 which contain technical documentation
@@ -57,7 +57,7 @@ We came to this, through our years of experience in Open Source Software and Har
 As the later is pretty new and still quite "wild" and unorganized,
 there is little solid understanding of it all,
 and these rules are thus partly just guessing.
-We would be happy to get feedback through issues or even pull-reqests at:
+We would be happy to get feedback through issues or even pull-requests at:
 <{OSH_TOOL_REPO}>
 
 The easiest way to understand what this tool does,
@@ -81,14 +81,14 @@ Options:
   -q --quiet         Prevents all logging output, showing only the version number in combination with --version.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
   --offline          Do not access the network/internet.
-  -f --force         Force overwriting of any generatd files, if they are explicitly requested (e.g. with --readme or --license).
+  -f --force         Force overwriting of any generated files, if they are explicitly requested (e.g. with --readme or --license).
   -l --list-checks   Creates a list of all available checks with descriptions in Markdown format and exits.
   --readme           Generate a template README, to be manually adjusted.
   --license          Choose a license from a list, generating a LICENSE file that will be identified by GitLab and GitHub.
-  --report-md-list=<path>  File-path a report in Markdown (list) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
-  --report-md-table=<path> File-path a report in Markdown (table) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
-  --report-csv=<path>      File-path a report in CSV format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
-  --report-json=<path>     File-path a report in JSON format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout&stderr.
+  --report-md-list=<path>  File-path a report in Markdown (list) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout & stderr.
+  --report-md-table=<path> File-path a report in Markdown (table) format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout & stderr.
+  --report-csv=<path>      File-path a report in CSV format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout & stderr.
+  --report-json=<path>     File-path a report in JSON format gets written to; May be used multiple times; if no --report-* argument is given, a report gets written to stdout & stderr.
   -e --electronics   Indicate that the project contains electronics (KiCad)
   --no-electronics   Indicate that the project does not contain electronics (KiCad)
   -m --mechanics     Indicate that the project contains mechanical parts (FreeCAD)
@@ -130,14 +130,14 @@ proc run(config: RunConfig, projVars: TableRef[string, string]) =
   var runState = newState(config, projVars)
   case config.command:
     of Init:
-      debug "Creating the init&update registry ..."
+      debug "Creating the init & update registry ..."
       var registry = newInitUpdatesRegistry()
       debug "Registering init handlers ..."
       registry.registerInitUpdates()
       debug "Running inits ..."
       init(registry, runState)
     of Update:
-      debug "Creating the init&update registry ..."
+      debug "Creating the init & update registry ..."
       var registry = newInitUpdatesRegistry()
       debug "Registering update handlers ..."
       registry.registerInitUpdates()
