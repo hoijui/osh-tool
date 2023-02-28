@@ -10,8 +10,8 @@ SPDX-License-Identifier: CC0-1.0
     https://img.shields.io/badge/License-AGPL%20v3+-blue.svg)](
     https://www.gnu.org/licenses/agpl-3.0)
 [![REUSE status](
-    https://api.reuse.software/badge/gitlab.com/OSEGermany/osh-tool)](
-    https://api.reuse.software/info/gitlab.com/OSEGermany/osh-tool)
+    https://api.reuse.software/badge/github.com/hoijui/osh-tool)](
+    https://api.reuse.software/info/github.com/hoijui/osh-tool)
 
 [![In cooperation with FabCity Hamburg](
     https://custom-icon-badges.demolab.com/badge/-FCHH-dddddd.svg?logo=fc_logo)](
@@ -23,7 +23,7 @@ SPDX-License-Identifier: CC0-1.0
 A command line tool for Open Source Hardware (OSH)
 technical project linting (quality assessment).
 
-[Download binaries](https://osegermany.gitlab.io/osh-tool/)
+[Download binaries](https://hoijui.github.io/osh-tool/)
 (latest build, Linux & Windows, 64bit)
 
 What it can do:

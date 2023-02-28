@@ -161,7 +161,7 @@ echo "Creating HTML ('index.html') that links to all the files generated above .
 	echo '<title>osh-tool - Downloads</title>'
 	echo '</head>'
 	echo "<body>"
-	echo 'Downloadable, generated files from the <a href="https://gitlab.com/OSEGermany/osh-tool">osh-tool repo</a>.'
+	echo 'Downloadable, generated files from the <a href="https://github.com/hoijui/osh-tool">osh-tool repo</a>.'
 	echo "<ul>"
 	# Create HTML links to all the archive files
 	for file in *.zip

@@ -345,7 +345,7 @@ proc getKindColor*(res: CheckResult): string =
 proc calcCompliance*(res: CheckResult): float32 =
   ## Calculates the compliance factor of executing a check.
   ## Explained here (among other things):
-  ## https://gitlab.com/OSEGermany/osh-tool/-/issues/27
+  ## https://github.com/hoijui/osh-tool/issues/27
   let oKind = case res.kind:
     of Perfect:
       1.0
