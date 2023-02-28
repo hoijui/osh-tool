@@ -8,7 +8,7 @@ which contain technical documentation
 of Open Source Hardware (OSH) projects.
 
 Please send feedback here:
-<https://gitlab.com/OSEGermany/osh-tool/-/issues>
+<https://github.com/hoijui/osh-tool/issues>
 
 This tool supports three main commands:
 
