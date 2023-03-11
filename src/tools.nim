@@ -253,6 +253,8 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
       procStdin.writeLine(path)
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
     procStdin.close()
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: And in some cases, this is required to not hang (closing stderr) ... :/"
+    process.errorStream.close()
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finnished; analyze results ..."
