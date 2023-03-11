@@ -12,7 +12,7 @@ import ../check
 import ../state
 import ../tools
 
-let RS_README = "^.*README.*$"
+let RS_README = "(?i)^.*README.*$"
 let R_README = re(RS_README)
 
 type ReadmeExistsCheck = ref object of Check
