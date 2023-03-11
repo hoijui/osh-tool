@@ -31,12 +31,14 @@ type
     projRoot*: string
     projPrefixes*: seq[string]
       ## A list of roots/prefixes (excluding `projRoot`)
-      ## this project might be found at,
-      ## either absolute paths to directories on the local file-system
+      ## this project might be found at.
+      ## This are either absolute paths
+      ## to directories on the local file-system,
       ## or web base-URLs.
       ## Examples:
       ## * /home/user/repos/myProj/
-      ## * https://user.github.com/myProj/
+      ## * https://github.com/user/myProj/
+      ## * NOT: https://user.github.io/myProj/
     reportTargets*: seq[Report]
       ## Where evaluation output gets written to.
       ## Stdout if None, else a file.
