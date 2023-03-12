@@ -16,7 +16,7 @@ ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.4.4
 ARG projvar_release=0.16.2
 ARG mle_release=0.23.0
-ARG osh_dir_std_release=0.5.0
+ARG osh_dir_std_release=0.6.0
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
