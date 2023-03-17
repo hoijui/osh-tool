@@ -157,8 +157,8 @@ function projvar_get_or_default() {
 
 if [ -z "$title" ]
 then
-	proj_name="$(projvar_get_or_default 'NAME' 'Project name N/A')"
-	proj_repo_web_url="$(projvar_get_or_default 'REPO_WEB_URL' '???')"
+	proj_name="$(projvar_get_or_default 'NAME' 'Project name N/A' || true)"
+	proj_repo_web_url="$(projvar_get_or_default 'REPO_WEB_URL' '???' || true)"
 	title="[$proj_name]($proj_repo_web_url) - [OSH](https://en.wikipedia.org/wiki/Open-source_hardware) quality report"
 fi
 subtitle="Produced by the [\`osh\`-tool]($tool_homepage)"
