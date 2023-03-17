@@ -51,9 +51,7 @@ method run*(this: LicenseExistsCheck, state: var State): CheckResult =
       CheckResultKind.Bad,
       CheckIssueSeverity.High,
       some("""No LICENSE (or COPYING) file found in the root directory.
- Please consider adding a LICENSE(.md).
- You might want to choose one from a list
- by issuing `osh init --license`.""")
+ Please consider adding a LICENSE(.md).""")
     )
   )
 
