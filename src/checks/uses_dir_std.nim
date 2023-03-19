@@ -60,15 +60,19 @@ method run*(this: UsesDirStdCheck, state: var State): CheckResult =
           return newCheckResult(CheckResultKind.Perfect)
         elif compFactor >= HIGH_COMPLIANCE:
           return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-              some(fmt"Compliance factor {compFactorRounded} is not perfect, but close, being above the upper expected factor of {HIGH_COMPLIANCE}"))
+              some(fmt"""Compliance factor {compFactorRounded} is not perfect, but close, \
+being above the upper expected factor of {HIGH_COMPLIANCE}"""))
         elif compFactor >= MIN_COMPLIANCE:
           return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-              some(fmt"Compliance factor {compFactorRounded} is above the minimum expected factor of {MIN_COMPLIANCE}; good! :-)"))
+              some(fmt"""Compliance factor {compFactorRounded} is above the minimum expected factor \
+of {MIN_COMPLIANCE}; good! :-)"""))
         else:
           return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle,
-              some(fmt"Compliance factor {compFactorRounded} is low; below the minimum expected factor of {MIN_COMPLIANCE}"))
+              some(fmt"""Compliance factor {compFactorRounded} is low; \
+below the minimum expected factor of {MIN_COMPLIANCE}"""))
     return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
-        some(fmt"Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"))
+        some(fmt"""Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; \
+please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
   except OSError as err:
     return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(err.msg))
 
