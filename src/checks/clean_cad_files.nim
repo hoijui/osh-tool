@@ -34,10 +34,23 @@ method description*(this: CleanCadFilesCheck): string =
   return """Checks that the Mechanical design files - \
 Computer Aided Design (CAD) files - \
 if any, \
-use an open format (good for collaboration), \
-are text-based (good for versioning with e.g. git) \
-and are actual source files, instead of generated \
-(which is required for being open *source*)."""
+use an open format, \
+are text-based \
+and are actual source files (vs generated)."""
+
+method why*(this: CleanCadFilesCheck): string =
+  return """- open format:
+  This is good for collaboration:
+  It is legal and technically easier to create viewers and editors,
+  and it is much more likley that there already are or will be viewers and editors
+  for such formats,
+  which are free themselfs.
+- text-based:
+  This is good for versioning with a [version control system](https://en.wikipedia.org/wiki/Version_control),
+  e.g. git,
+  which makes collaborating and sharing of a design easier.
+- source files:
+  This is required for being Open **Source** in the first place."""
 
 method sourcePath*(this: CleanCadFilesCheck): string =
   return tools.srcFileName()

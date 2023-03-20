@@ -23,6 +23,16 @@ method description*(this: UnwantedFilesExistNotCheck): string =
   return """Checks that no unwanted files are part of the project. \
 These could be backups, caches, IDE/platform specific, and so on."""
 
+method why*(this: UnwantedFilesExistNotCheck): string =
+  return """These files, present in the repo, could cause these issues and inconvieniences:
+
+- potentially inflating the repositories size
+- mess up local settings (e.g. local cache paths of an IDE) by one designer
+  on an other deginers machine
+- make the project appear less clean
+- make the project maintainers look like amateurs to seasoned Open Source people
+- confuse people, as they are around, yet seem to have no usefulness"""
+
 method sourcePath*(this: UnwantedFilesExistNotCheck): string =
   return tools.srcFileName()
 

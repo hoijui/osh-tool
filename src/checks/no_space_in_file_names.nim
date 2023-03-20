@@ -20,8 +20,11 @@ method name*(this: NoSpaceInFileNamesCheck): string =
   return "No space in file names"
 
 method description*(this: NoSpaceInFileNamesCheck): string =
-  return """Checks that no file-names in the project contain white-space, \
-as this makes automatic processing much easier and less error-prone."""
+  return """Checks that no file-names in the project contain white-space."""
+
+method why*(this: NoSpaceInFileNamesCheck): string =
+  return """This makes automatic processing of all the projects files
+much easier and less error-prone."""
 
 method sourcePath*(this: NoSpaceInFileNamesCheck): string =
   return tools.srcFileName()

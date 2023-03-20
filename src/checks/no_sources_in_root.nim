@@ -82,6 +82,11 @@ method description*(this: NoSourceFilesInRootCheck): string =
   return """Checks that no source files appear in the root dir of the project. \
 Make sure to put them all into sub-directories, for example `src/`."""
 
+method why*(this: NoSourceFilesInRootCheck): string =
+  return """Makes the Repo look more clean and more friendly,
+especially for non-coding people
+that might just wnat to browse or edit the documentation."""
+
 method sourcePath*(this: NoSourceFilesInRootCheck): string =
   return tools.srcFileName()
 

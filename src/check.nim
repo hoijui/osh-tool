@@ -395,6 +395,11 @@ method description*(this: Check): string {.base.} =
   ## of what the check checks for.
   return "TODO Override!"
 
+method why*(this: Check): string {.base.} =
+  ## Returns a detailed, human oriented explanation
+  ## for why this check makes sense.
+  return "TODO Override!"
+
 method sourcePath*(this: Check): string {.base.} =
   ## Returns the path to the source file that implements the check,
   ## relative to the root of this tools project root directory.

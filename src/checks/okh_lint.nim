@@ -30,6 +30,15 @@ which contains project meta-data - \
 contains at least the required properties, \
 and that all properties use the correct format."""
 
+method why*(this: OkhLintCheck): string =
+  return """This makes the project much more easily comparable,
+both for huamns and machines/software.
+
+This is useful when dealing with a lot of projects,
+to not waste life- or processing-time,
+trying to figure out a certain,
+commonly useful set of properties about a project."""
+
 method sourcePath*(this: OkhLintCheck): string =
   return tools.srcFileName()
 

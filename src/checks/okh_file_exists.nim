@@ -33,6 +33,15 @@ method description*(this: OkhFileExistsCheck): string =
 which contains project meta-data - \
 exists."""
 
+method why*(this: OkhFileExistsCheck): string =
+  return """If this is actually a hardware project,
+the existence of this file clearly and unmistakingly marks it as such,
+both for humans and machines/software.
+
+This is useful when dealing with a lot of projects,
+to not waste life- or processing-time,
+which likely would still be less exact in its findings."""
+
 method sourcePath*(this: OkhFileExistsCheck): string =
   return tools.srcFileName()
 

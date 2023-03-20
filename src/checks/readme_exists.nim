@@ -24,6 +24,16 @@ method description*(this: ReadmeExistsCheck): string =
   return fmt"""Checks that a README file exists in the projects root dir, \
 using the regex `{RS_README}`."""
 
+method why*(this: ReadmeExistsCheck): string =
+  return """A README file is the main entry point for a human that comes along the project,
+and wants to figure out what it is about, and how to use it.
+
+It is targeted at all potential stakeholders of the project,
+be it designers, manufacturers, sellers, repairers or users.
+
+We might think of it as the most essential,
+basic part of the documentation of the project."""
+
 method sourcePath*(this: ReadmeExistsCheck): string =
   return tools.srcFileName()
 

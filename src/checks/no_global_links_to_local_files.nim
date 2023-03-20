@@ -21,8 +21,13 @@ method name*(this: MdNoGlobalLinksToLocalFilesCheck): string =
 
 method description*(this: MdNoGlobalLinksToLocalFilesCheck): string =
   return """Checks no links to project local files use a 'global' prefix,
-be it a web-hosting URL or an absolute local path. \
-This is in favor of a documentation that is as distributed/distributable as possible."""
+be it a web-hosting URL or an absolute local path."""
+
+method why*(this: MdNoGlobalLinksToLocalFilesCheck): string =
+  return """This is a step towards a documentation that is:
+
+- locally browsable an editable without internet connection
+- showing and linking to the actual, local, correct content"""
 
 method sourcePath*(this: MdNoGlobalLinksToLocalFilesCheck): string =
   return tools.srcFileName()

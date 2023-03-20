@@ -25,9 +25,27 @@ method name*(this: ReuseLintCheck): string =
 
 method description*(this: ReuseLintCheck): string =
   return """Checks that complete SPDX licensing info is given \
-for all files in the project, \
-using the Free Software Foundations REUSE tool.
-Note that this is related to the License exists check."""
+for all files in the project. \
+We do this using the Free Software Foundations REUSE tool.
+
+NOTE: This is related to the License exists check."""
+
+method why*(this: ReuseLintCheck): string =
+  return """Copyright and licensing is difficult,
+especially when reusing software from different projects
+that are released under various different licenses.
+[REUSE](https://reuse.software/) was started by
+the [Free Software Foundation Europe](https://fsfe.org/) (FSFE)
+to provide a set of recommendations to make licensing your Free Software projects easier.
+Not only do these recommendations make it easier for you
+to declare the licenses under which your works are released,
+but they also make it easier for a computer
+to understand how your project is licensed.
+
+Propper licensing information may prevent or help in potential legal disputes.
+It also helps anyone using your source or derivates of it,
+to understand their rights.
+"""
 
 method sourcePath*(this: ReuseLintCheck): string =
   return tools.srcFileName()

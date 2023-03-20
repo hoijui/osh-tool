@@ -30,6 +30,13 @@ method description*(this: UsesDirStdCheck): string =
 for a sufficient amount of files and directories in the project, \
 using the {OSH_DIR_STD_TOOL_CMD} CLI tool."""
 
+method why*(this: UsesDirStdCheck): string =
+  return """1. to be able to extract meta-data:
+    1. easy indexing (and thus finding) of projects
+    2. easy comparing of projects
+    3. allows to write software tools that deal with project repos
+2. find your way around quickly and easily in different projects"""
+
 method sourcePath*(this: UsesDirStdCheck): string =
   return tools.srcFileName()
 

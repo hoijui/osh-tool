@@ -23,12 +23,20 @@ method description*(this: MightBeGeneratedCheck): string =
   return """Checks that no generated files are part of the project. \
 These are usually files that are created using a software \
 that is manually configured and executed by a human. \
-Try instead, to find a way to automate this process. \
-Doing so, both that the projects storage requirement gets lower - \
-usually by a lot -
-and more importantly,
-that the generated files are always up to date with the sources.
-This is one of the more controversial checks,
+Try instead, to find a way to automate this process, \
+and to not store the resulting files in the repository."""
+
+method why*(this: MightBeGeneratedCheck): string =
+  return """1. The projects storage requirements go down - \
+usually by a lot
+2. There are no outdated generated files,
+    because of either of these two reasons:
+
+    - One only gets the files hwen generating them right when required, or
+    - They are regenerated in CI/build-bot and uploaded/hosted on the project pages
+      whenever there is a change (e.g. a git push to to the repo)
+
+NOTE: This is one of the more controversial checks,
 as it often requires writing new software.
 That is sometimes a simple script,
 and sometimes complex software requiring many person-months of development."""

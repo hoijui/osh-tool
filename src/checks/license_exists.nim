@@ -25,6 +25,19 @@ method description*(this: LicenseExistsCheck): string =
 using the regex `{RS_LICENSE}`.
 Note that this is related to the REUSE lint check."""
 
+method why*(this: LicenseExistsCheck): string =
+  return """Before REUSE, this was the standard (and only) way
+to declare which license(s) are used within the project.
+While REUSE is in all ways superior to this approach,
+Many platforms and softwares still purely rely on this way
+to automatically detect the license(s) of a project.
+We thus recommend to keep the "main"
+(according ot your subjective decission)
+license of the project in such a file,
+by first fixing REUSE for the project,
+and then running a command similar to:
+`cp LICENSES/CERN-OHL-S-2.0.txt LICENSE.txt`"""
+
 method sourcePath*(this: LicenseExistsCheck): string =
   return tools.srcFileName()
 
