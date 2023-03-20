@@ -12,7 +12,7 @@ import ../check
 import ../state
 import ../tools
 
-let R_GENERATABLE= re"^.*(jpg|jpeg|gif|png|bmp|pdf|stl)$" # TODO Add much more (PDF, STL, ...) and maybe make this list in a CSV as well
+let R_GENERATABLE= re"^.*(jpg|jpeg|gif|png|bmp|pdf|stl|zip|jar)$" # TODO Add much more, and maybe move this list to a CSV file
 
 type NoGeneratedFilesCheck = ref object of Check
 
