@@ -17,7 +17,7 @@ let R_GENERATABLE= re"^.*(jpg|jpeg|gif|png|bmp|pdf|stl)$" # TODO Add much more (
 type MightBeGeneratedCheck = ref object of Check
 
 method name*(this: MightBeGeneratedCheck): string =
-  return "Might be generated" # TODO Rename this, to be something that is good if the tst passes, e.g. "No possibly generatable files"
+  return "Might be generated" # TODO Rename this, to be something that is good if the test passes, e.g. "No possibly generatable files"
 
 method description*(this: MightBeGeneratedCheck): string =
   return """Checks that no generated files are part of the project. \
