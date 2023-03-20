@@ -46,24 +46,64 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>OKH file exists</td>
-<td>0.70</td>
+<td>No sources in root</td>
+<td>0.10</td>
+<td>0.60</td>
+<td>0.00</td>
+<td>0.80</td>
+<td>0.00</td>
+<td>Checks that no source files appear in the root dir of the project. Make sure to put them all into sub-directories, for example <code>src/</code>.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_sources_in_root.nim"><code>no_sources_in_root.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>No global links to local files</td>
+<td>0.40</td>
+<td>0.80</td>
+<td>0.00</td>
+<td>0.80</td>
+<td>0.80</td>
+<td>Checks no links to project local files use a ‘global’ prefix, be it a web-hosting URL or an absolute local path.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_global_links_to_local_files.nim"><code>no_global_links_to_local_files.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>Clean CAD files</td>
+<td>1.00</td>
 <td>1.00</td>
 <td>1.00</td>
 <td>0.50</td>
 <td>1.00</td>
-<td>Checks that the OKH manifest file - which contains project meta-data - exists.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_file_exists.nim"><code>okh_file_exists.nim</code></a></td>
+<td>Checks that the Mechanical design files - Computer Aided Design (CAD) files - if any, use an open format, are text-based and are actual source files (vs generated).</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_cad_files.nim"><code>clean_cad_files.nim</code></a></td>
 </tr>
 <tr class="even">
-<td>LICENSE exists</td>
-<td>0.20</td>
+<td>No generated files</td>
+<td>0.50</td>
+<td>0.60</td>
+<td>0.00</td>
+<td>0.50</td>
+<td>0.30</td>
+<td>Checks that no generated files are part of the project. These are usually files that are created using a software that is manually configured and executed by a human. Try instead, to find a way to automate this process, and to not store the resulting files in the repository.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_generated_files.nim"><code>no_generated_files.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>REUSE/SPDX Licensing info</td>
+<td>0.50</td>
 <td>1.00</td>
 <td>0.00</td>
-<td>0.05</td>
+<td>0.30</td>
 <td>1.00</td>
-<td>Checks that a LICENSE file exists in the projects root dir, using the regex <code>(?i)^.*(LICEN[SC]E|COPYING).*$</code>. Note that this is related to the REUSE lint check.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/license_exists.nim"><code>license_exists.nim</code></a></td>
+<td>Checks that complete SPDX licensing info is given for all files in the project. We do this using the Free Software Foundations REUSE tool. NOTE: This is related to the License exists check.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/reuse_lint.nim"><code>reuse_lint.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>OKH manifest content</td>
+<td>0.70</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>Checks that the OKH manifest file - which contains project meta-data - contains at least the required properties, and that all properties use the correct format.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_lint.nim"><code>okh_lint.nim</code></a></td>
 </tr>
 <tr class="odd">
 <td>README exists</td>
@@ -76,6 +116,36 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/readme_exists.nim"><code>readme_exists.nim</code></a></td>
 </tr>
 <tr class="even">
+<td>LICENSE exists</td>
+<td>0.20</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>0.05</td>
+<td>1.00</td>
+<td>Checks that a LICENSE file exists in the projects root dir, using the regex <code>(?i)^.*(LICEN[SC]E|COPYING).*$</code>. Note that this is related to the REUSE lint check.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/license_exists.nim"><code>license_exists.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>No space in file names</td>
+<td>0.40</td>
+<td>0.60</td>
+<td>0.00</td>
+<td>0.80</td>
+<td>1.00</td>
+<td>Checks that no file-names in the project contain white-space.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_space_in_file_names.nim"><code>no_space_in_file_names.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>OKH file exists</td>
+<td>0.70</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.50</td>
+<td>1.00</td>
+<td>Checks that the OKH manifest file - which contains project meta-data - exists.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_file_exists.nim"><code>okh_file_exists.nim</code></a></td>
+</tr>
+<tr class="odd">
 <td>No unwanted files</td>
 <td>0.50</td>
 <td>0.60</td>
@@ -85,37 +155,17 @@
 <td>Checks that no unwanted files are part of the project. These could be backups, caches, IDE/platform specific, and so on.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/unwanted_files_exist_not.nim"><code>unwanted_files_exist_not.nim</code></a></td>
 </tr>
-<tr class="odd">
-<td>No space in file names</td>
-<td>0.40</td>
-<td>0.60</td>
-<td>0.00</td>
-<td>0.80</td>
-<td>1.00</td>
-<td>Checks that no file-names in the project contain white-space, as this makes automatic processing much easier and less error-prone.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_space_in_file_names.nim"><code>no_space_in_file_names.nim</code></a></td>
-</tr>
 <tr class="even">
-<td>No global links to local files</td>
-<td>0.40</td>
-<td>0.80</td>
-<td>0.00</td>
-<td>0.80</td>
-<td>0.80</td>
-<td>Checks no links to project local files use a ‘global’ prefix, be it a web-hosting URL or an absolute local path. This is in favor of a documentation that is as distributed/distributable as possible.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_global_links_to_local_files.nim"><code>no_global_links_to_local_files.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>REUSE/SPDX Licensing info</td>
+<td>Clean electronics files</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>1.00</td>
 <td>0.50</td>
 <td>1.00</td>
-<td>0.00</td>
-<td>0.30</td>
-<td>1.00</td>
-<td>Checks that complete SPDX licensing info is given for all files in the project, using the Free Software Foundations REUSE tool. Note that this is related to the License exists check.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/reuse_lint.nim"><code>reuse_lint.nim</code></a></td>
+<td>Checks that the contained Electronics blueprint files - Schematics and PCB designs - if any, use an open format, are text-based and are actual source files (vs generated).</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_electronics_files.nim"><code>clean_electronics_files.nim</code></a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Uses dir standard</td>
 <td>1.00</td>
 <td>1.00</td>
@@ -124,56 +174,6 @@
 <td>1.00</td>
 <td>Checks whether the unixish OSH directory standard is used for a sufficient amount of files and directories in the project, using the osh-dir-std CLI tool.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim"><code>uses_dir_std.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>OKH manifest content</td>
-<td>0.70</td>
-<td>1.00</td>
-<td>0.00</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>Checks that the OKH manifest file - which contains project meta-data - contains at least the required properties, and that all properties use the correct format.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_lint.nim"><code>okh_lint.nim</code></a></td>
-</tr>
-<tr class="even">
-<td>No sources in root</td>
-<td>0.10</td>
-<td>0.60</td>
-<td>0.00</td>
-<td>0.80</td>
-<td>0.00</td>
-<td>Checks that no source files appear in the root dir of the project. Make sure to put them all into sub-directories, for example <code>src/</code>.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_sources_in_root.nim"><code>no_sources_in_root.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>Might be generated</td>
-<td>0.50</td>
-<td>0.60</td>
-<td>0.00</td>
-<td>0.50</td>
-<td>0.30</td>
-<td>Checks that no generated files are part of the project. These are usually files that are created using a software that is manually configured and executed by a human. Try instead, to find a way to automate this process. Doing so, both that the projects storage requirement gets lower - usually by a lot - and more importantly, that the generated files are always up to date with the sources. This is one of the more controversial checks, as it often requires writing new software. That is sometimes a simple script, and sometimes complex software requiring many person-months of development.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/might_be_generated.nim"><code>might_be_generated.nim</code></a></td>
-</tr>
-<tr class="even">
-<td>Clean electronics files</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.50</td>
-<td>1.00</td>
-<td>Checks that the contained Electronics blueprint files - Schematics and PCB designs - if any, use an open format (good for collaboration), are text-based (good for versioning with e.g. git) and are actual source files, instead of generated (which is required for being open <em>source</em>).</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_electronics_files.nim"><code>clean_electronics_files.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>Clean CAD files</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.50</td>
-<td>1.00</td>
-<td>Checks that the Mechanical design files - Computer Aided Design (CAD) files - if any, use an open format (good for collaboration), are text-based (good for versioning with e.g. git) and are actual source files, instead of generated (which is required for being open <em>source</em>).</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_cad_files.nim"><code>clean_cad_files.nim</code></a></td>
 </tr>
 </tbody>
 </table>
