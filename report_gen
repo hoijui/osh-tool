@@ -176,6 +176,8 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo
 	echo "<summary>Badges</summary>"
 	echo
+	echo "| Dimension | Badge | Markdown Code | HTML Code |"
+	echo "| - | -- | ----- | ----- |"
 	for rating in $RATINGS
 	do
 		if $download_badges
@@ -184,8 +186,28 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 		else
 			badge_file_or_url="$(jq -r '.stats.ratings.'"$rating"'.badgeUrl' < "$output_json")"
 		fi
-		echo "![OSH - $rating]($badge_file_or_url) \\"
+		echo -n "| $rating "
+		echo -n "| ![OSH - $rating]($badge_file_or_url) "
+		echo -n "| <code id=\"md-code-$rating\">\`[![OSH - $rating](\$BASE_URL/$badge_file_or_url)](<\$REPORT_URL>)\`</code> "
+		echo -n "| <code id=\"html-code-$rating\">\`<a href=\"\$REPORT_URL\"><img alt=\"OSH - $rating\" src=\"\$BASE_URL/$badge_file_or_url\"/></a>\`</code> "
+		echo "|"
 	done
+	echo
+	echo "<script>"
+	echo "function repl_url(id) {"
+	echo "	let elem = document.getElementById(id);"
+	echo "  let report_url = window.location.href;"
+	echo "  let base_url = report_url.replace(\"/$OUT_FILE_NAME_HTML\", \"\");"
+	echo "  elem.innerHTML = elem.innerHTML.replace(\"\$REPORT_URL\", report_url);"
+	echo "  elem.innerHTML = elem.innerHTML.replace(\"\$BASE_URL\", base_url);"
+	echo "}"
+	for rating in $RATINGS
+	do
+		echo
+		echo "repl_url(\"md-code-$rating\");"
+		echo "repl_url(\"html-code-$rating\");"
+	done
+	echo "</script>"
 	echo
 	echo "</details>"
 	echo
