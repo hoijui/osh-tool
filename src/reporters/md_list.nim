@@ -38,7 +38,9 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
 method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
   strm.writeLine("")
-  strm.writeLine("## Project Statistics")
+  strm.writeLine("<details>")
+  strm.writeLine("")
+  strm.writeLine("<summary>Project Statistics</summary>")
   strm.writeLine("")
   strm.writeLine(fmt"* Checks:")
   strm.writeLine(fmt"  * Run: {stats.checks.run}")
@@ -56,5 +58,7 @@ method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   strm.writeLine(fmt"* is hardware (factor): {stats.ratings.hardware.factor}")
   strm.writeLine(fmt"* Quality: {stats.ratings.quality.percent}% - ![Badge - OSH Quality]({stats.ratings.quality.badgeUrl})")
   strm.writeLine(fmt"* Machine-Readability: {stats.ratings.machineReadability.percent}% - ![Badge - OSH Machine-Readability]({stats.ratings.machineReadability.badgeUrl})")
+  strm.writeLine("")
+  strm.writeLine("</details>")
   # See NOTE in CheckFmt.finalize
   self.repStream.close()

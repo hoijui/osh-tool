@@ -172,6 +172,10 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "subtitle: '$subtitle'"
 	echo "---"
 	echo
+	echo "<details>"
+	echo
+	echo "<summary>Badges</summary>"
+	echo
 	for rating in $RATINGS
 	do
 		if $download_badges
@@ -183,11 +187,17 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 		echo "![OSH - $rating]($badge_file_or_url) \\"
 	done
 	echo
-	echo "## This report in different formats"
+	echo "</details>"
+	echo
+	echo "<details>"
+	echo
+	echo "<summary>This report in different formats</summary>"
 	echo
 	echo "* [Markdown]($OUT_FILE_NAME_MD)"
 	echo "* [HTML]($OUT_FILE_NAME_HTML)"
 	echo "* [JSON]($OUT_FILE_NAME_JSON)"
+	echo
+	echo "</details>"
 	echo
 } >> "$prefix_file"
 cat "$prefix_file" "$output_md" > "$tmp_file"

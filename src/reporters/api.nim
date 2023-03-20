@@ -33,7 +33,10 @@ proc msgFmt*(msg: Option[string]): string =
       ""
 
 proc mdPrelude*(strm: File, prelude: ReportPrelude) =
-  strm.writeLine("## Project meta-data")
+  strm.writeLine("")
+  strm.writeLine("<details>")
+  strm.writeLine("")
+  strm.writeLine("<summary>Project meta-data</summary>")
   strm.writeLine("")
   strm.writeLine("| | |")
   strm.writeLine("| --- | -------- |")
@@ -43,7 +46,11 @@ proc mdPrelude*(strm: File, prelude: ReportPrelude) =
   strm.writeLine(fmt"""| _report build date_ | {prelude.projVars.getOrDefault("BUILD_DATE", "N/A")} |""")
   strm.writeLine(fmt"""| _licenses_ | {prelude.projVars.getOrDefault("LICENSES", "N/A")} |""")
   strm.writeLine("")
-  strm.writeLine("## Report tools")
+  strm.writeLine("</details>")
+  strm.writeLine("")
+  strm.writeLine("<details>")
+  strm.writeLine("")
+  strm.writeLine("<summary>Report tools</summary>")
   strm.writeLine("")
   strm.writeLine("| [CLI](https://en.wikipedia.org/wiki/Command-line_interface) tool | version |")
   strm.writeLine("| --- | -------- |")
@@ -54,12 +61,16 @@ proc mdPrelude*(strm: File, prelude: ReportPrelude) =
   strm.writeLine(fmt"| [`mle`](https://github.com/hoijui/mle/) | {prelude.tool_versions.mle} |")
   strm.writeLine(fmt"| [`osh-dir-std`](https://github.com/hoijui/osh-dir-std/) | {prelude.tool_versions.osh_dir_std} |")
   strm.writeLine("")
+  strm.writeLine("</details>")
+  strm.writeLine("")
   strm.writeLine("## Report")
   strm.writeLine("")
 
 proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle: bool = false) =
   strm.writeLine("")
-  strm.writeLine("## Project meta-data (by projvar)")
+  strm.writeLine("<details>")
+  strm.writeLine("")
+  strm.writeLine("<summary>Project meta-data (by projvar)</summary>")
   strm.writeLine("")
   strm.writeLine("| key | value |")
   strm.writeLine("| --- | -------- |")
@@ -73,6 +84,9 @@ proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle:
     for (key, val) in prelude.projVars.pairs:
       strm.writeLine(fmt"{key}='{val}'")
     strm.writeLine("```")
+  strm.writeLine("")
+  strm.writeLine("</details>")
+  strm.writeLine("")
 
 method init*(self: CheckFmt, prelude: ReportPrelude) {.base.} =
   quit "to override!"
