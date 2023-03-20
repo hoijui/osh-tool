@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -14,19 +14,19 @@ import ../tools
 
 let R_GENERATABLE= re"^.*(jpg|jpeg|gif|png|bmp|pdf|stl)$" # TODO Add much more (PDF, STL, ...) and maybe make this list in a CSV as well
 
-type MightBeGeneratedCheck = ref object of Check
+type NoGeneratedFilesCheck = ref object of Check
 
-method name*(this: MightBeGeneratedCheck): string =
-  return "Might be generated" # TODO Rename this, to be something that is good if the test passes, e.g. "No possibly generatable files"
+method name*(this: NoGeneratedFilesCheck): string =
+  return "No generated files"
 
-method description*(this: MightBeGeneratedCheck): string =
+method description*(this: NoGeneratedFilesCheck): string =
   return """Checks that no generated files are part of the project. \
 These are usually files that are created using a software \
 that is manually configured and executed by a human. \
 Try instead, to find a way to automate this process, \
 and to not store the resulting files in the repository."""
 
-method why*(this: MightBeGeneratedCheck): string =
+method why*(this: NoGeneratedFilesCheck): string =
   return """1. The projects storage requirements go down - \
 usually by a lot
 2. There are no outdated generated files,
@@ -41,15 +41,15 @@ as it often requires writing new software.
 That is sometimes a simple script,
 and sometimes complex software requiring many person-months of development."""
 
-method sourcePath*(this: MightBeGeneratedCheck): string =
+method sourcePath*(this: NoGeneratedFilesCheck): string =
   return tools.srcFileName()
 
-method requirements*(this: MightBeGeneratedCheck): CheckReqs =
+method requirements*(this: NoGeneratedFilesCheck): CheckReqs =
   return {
     CheckReq.FilesListRecNonGen,
   }
 
-method getSignificanceFactors*(this: MightBeGeneratedCheck): CheckSignificance =
+method getSignificanceFactors*(this: NoGeneratedFilesCheck): CheckSignificance =
   return CheckSignificance(
     weight: 0.5,
     openness: 0.6, # because the repo could be less heavy and thus easier to host/share/exchange
@@ -58,7 +58,7 @@ method getSignificanceFactors*(this: MightBeGeneratedCheck): CheckSignificance =
     machineReadability: 0.3,
     )
 
-method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
+method run*(this: NoGeneratedFilesCheck, state: var State): CheckResult =
   let foundFiles = filterPathsMatchingFileName(state.listFilesNonGenerated(), R_GENERATABLE)
   return (if foundFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
@@ -74,4 +74,4 @@ method run*(this: MightBeGeneratedCheck, state: var State): CheckResult =
   )
 
 proc createDefault*(): Check =
-  MightBeGeneratedCheck()
+  NoGeneratedFilesCheck()
