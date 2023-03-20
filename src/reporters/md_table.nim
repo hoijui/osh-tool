@@ -17,14 +17,24 @@ import ./api
 type
   MdTableCheckFmt* = ref object of CheckFmt
     prelude: ReportPrelude
+    debug: bool
 
 method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   self.prelude = prelude
+  self.debug = false # TODO Make this configurable somehow
   mdPrelude(strm, prelude)
-  strm.writeLine(fmt"| Passed | Status | Compliance Factor | Weight | Weighted Comp. Fac. | Check | Severity - Issue |")
+  let tblOptHeader = if self.debug:
+    " | Weight | Weighted Comp. Fac."
+  else:
+    ""
+  let tblOptDelim = if self.debug:
+    " | - | -"
+  else:
+    ""
+  strm.writeLine(fmt"| Passed | Status | Compliance Factor" & tblOptHeader & " | Check | Severity - Issue |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine(fmt"| - | -- | - | - | - | --- | ----- |")
+  strm.writeLine(fmt"| - | -- | -" & tblOptDelim & " | ----- | ---------------- |")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let strm = self.getStream(res)
@@ -50,7 +60,11 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
-  strm.writeLine(fmt"| {passedStr} | {kindStr} | {round(compFac)} | {round(weight)} | {round(weightedComp)} | {check.name()} | {msg} |")
+  let tblOptVals = if self.debug:
+    fmt" | {round(weight)} | {round(weightedComp)}"
+  else:
+    ""
+  strm.writeLine(fmt"| {passedStr} | {kindStr} | {round(compFac)}" & tblOptVals & fmt" | {check.name()} | {msg} |")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
