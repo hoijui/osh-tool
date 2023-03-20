@@ -56,27 +56,36 @@ method getSignificanceFactors*(this: UsesDirStdCheck): CheckSignificance =
 
 method run*(this: UsesDirStdCheck, state: var State): CheckResult =
   try:
-    let args = ["rate", "--standard", DIR_STD_NAME]
+    let args = ["rate", "--standard", DIR_STD_NAME, "--include-coverage"]
     let jsonLines = runOshDirStd(state.config.projRoot, args, state.listFiles())
     let jsonRoot = parseJson(jsonLines)
     for std in jsonRoot:
-      if std["name"].getStr() == DIR_STD_NAME:
-        let compFactor = float32(std["factor"].getFloat())
+      if std["rating"]["name"].getStr() == DIR_STD_NAME:
+        let compFactor = float32(std["rating"]["factor"].getFloat())
+        var notInStdFiles = newSeq[string]()
+        for notInStdFile in std["coverage"]["out"]:
+          notInStdFiles.add(notInStdFile.getStr())
+        let notInStdFilesStr = """
+
+
+files not covered by the standard:
+
+- """ & notInStdFiles.join("\n- ")
         let compFactorRounded = round(compFactor)
         if compFactor == 1.0:
           return newCheckResult(CheckResultKind.Perfect)
         elif compFactor >= HIGH_COMPLIANCE:
           return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is not perfect, but close, \
-being above the upper expected factor of {HIGH_COMPLIANCE}"""))
+being above the upper expected factor of {HIGH_COMPLIANCE}""" & notInStdFilesStr))
         elif compFactor >= MIN_COMPLIANCE:
           return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is above the minimum expected factor \
-of {MIN_COMPLIANCE}; good! :-)"""))
+of {MIN_COMPLIANCE}; good! :-)""" & notInStdFilesStr))
         else:
           return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is low; \
-below the minimum expected factor of {MIN_COMPLIANCE}"""))
+below the minimum expected factor of {MIN_COMPLIANCE}""" & notInStdFilesStr))
     return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
         some(fmt"""Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; \
 please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
