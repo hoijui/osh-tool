@@ -32,7 +32,7 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
     " | -: | -:"
   else:
     ""
-  strm.writeLine(fmt"| Passed | Status | Compliance Factor" & tblOptHeader & " | Check | Severity - Issue |")
+  strm.writeLine(fmt"| Passed | Status | Compliance" & tblOptHeader & " | Check | Severity - Issue |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
   strm.writeLine(fmt"| - | -- | -:" & tblOptDelim & " | ----- | ---------------- |")
 
@@ -52,6 +52,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let kindColor = res.getKindColor()
   let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
   let compFac = res.calcCompliance()
+  let comp = tools.toPercentStr(compFac)
   let weight = check.getSignificanceFactors().weight
   let weightedComp = compFac * weight
   let msg = res.issues
@@ -64,19 +65,19 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     fmt" | {round(weight)} | {round(weightedComp)}"
   else:
     ""
-  strm.writeLine(fmt"| {passedStr} | {kindStr} | {round(compFac)}" & tblOptVals & fmt" | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| {passedStr} | {kindStr} | {comp}%" & tblOptVals & fmt" | {check.name()} | {msg} |")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
   let strm = self.repStream
-  let tblOptSums = if self.debug:
-    fmt"| {round(stats.checks.weightsSum)}/__{round(stats.checks.weightsSum / float(stats.checks.run))}__ " &
-    fmt"| {round(stats.ratings.compliance.factor * float(stats.checks.run))}/__{round(stats.ratings.compliance.factor)}__ "
+  let tblOptAvers = if self.debug:
+    fmt" | __{tools.toPercentStr(stats.checks.weightsSum / float(stats.checks.run))}%__" &
+    fmt" | __{tools.toPercentStr(stats.ratings.compliance.factor)}%__"
   else:
     ""
   strm.writeLine("| | " &
-    fmt"| {round(stats.checks.complianceSum)}/__{round(stats.checks.complianceSum / float(stats.checks.run))}__ " &
-    tblOptSums &
-    "| Sum/__Average__ | |")
+    fmt"| __{tools.toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__" &
+    tblOptAvers &
+    " | __Average__ | |")
   strm.writeLine("")
   strm.writeLine("<details>")
   strm.writeLine("")
