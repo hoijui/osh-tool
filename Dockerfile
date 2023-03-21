@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: Unlicense
 
-FROM nimlang/nim:1.6.4
+FROM nimlang/nim:1.6.10
 
 # Set parameters like so:
 # docker build \
