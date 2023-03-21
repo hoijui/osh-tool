@@ -21,7 +21,7 @@ const REUSE_TOOL_URL = "https://reuse.software/"
 type ReuseLintCheck = ref object of Check
 
 method name*(this: ReuseLintCheck): string =
-  return "REUSE/SPDX Licensing info"
+  return "REUSE Licensing info"
 
 method description*(this: ReuseLintCheck): string =
   return """Checks that complete SPDX licensing info is given \
