@@ -29,12 +29,12 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   else:
     ""
   let tblOptDelim = if self.debug:
-    " | - | -"
+    " | -: | -:"
   else:
     ""
   strm.writeLine(fmt"| Passed | Status | Compliance Factor" & tblOptHeader & " | Check | Severity - Issue |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine(fmt"| - | -- | -" & tblOptDelim & " | ----- | ---------------- |")
+  strm.writeLine(fmt"| - | -- | -:" & tblOptDelim & " | ----- | ---------------- |")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
   let strm = self.getStream(res)
