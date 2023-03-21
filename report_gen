@@ -222,6 +222,11 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "</details>"
 	echo
 } >> "$prefix_file"
+
+# Splice-in pandoc and its version into the tools section
+pandoc_version="$(pandoc --version | head -n 1 | sed -e 's/^pandoc //')"
+sed -i -e 's/| \[`osh-dir-std`\](/| [`pandoc`](https:\/\/pandoc.org) | '"$pandoc_version"' |\n| [`osh-dir-std`](/' "$output_md"
+
 cat "$prefix_file" "$output_md" > "$tmp_file"
 mv "$tmp_file" "$output_md"
 echo "INFO Written Markdown report file '$output_md'."
@@ -235,7 +240,7 @@ pandoc \
 	-o "$OUT_FILE_NAME_HTML" \
 	--standalone \
 	--self-contained \
-	 -f markdown-smart \
+	-f markdown-smart \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
 	"$OUT_FILE_NAME_MD"
