@@ -8,6 +8,7 @@
 import options
 import regex
 import strformat
+import strutils
 import system
 import ../check
 import ../config
@@ -17,6 +18,8 @@ import std/osproc
 
 const REUSE_CMD = "reuse"
 const REUSE_TOOL_URL = "https://reuse.software/"
+const HIGH_COMPLIANCE = 0.7
+const MIN_COMPLIANCE = 0.2
 
 type ReuseLintCheck = ref object of Check
 
@@ -74,21 +77,69 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)
     else:
-      var msg_lines = ""
-      msg_lines &= "For more details then this list, and help with fixing these issues,\n"
-      msg_lines &= "please use the REUSE tool, available in as Linux package `reuse`,\n"
-      msg_lines &= fmt"or under <{REUSE_TOOL_URL}>." & "\n"
-      msg_lines &= "\n"
-      var summary = false
+      var msg_lines = newSeq[string]()
+      msg_lines.add("For more details then this list, and help with fixing these issues,")
+      msg_lines.add("please use the REUSE tool, available in as Linux package `reuse`,")
+      msg_lines.add(fmt"or under <{REUSE_TOOL_URL}>.")
+      msg_lines.add("")
+      var secSummary = false
+      var secMissingInfo = false
+      var issues = newSeq[CheckIssue]()
       var m: RegexMatch
+      var coverage = 0.0
+      var coverageDimensions = 0
       for line in lines:
-        if summary:
+        if secSummary:
           if match(line, re"^[*] (.*: .+)$", m):
-            msg_lines = fmt("{msg_lines}{m.group(0, line)[0]}\n")
-        if not summary and line == "# SUMMARY":
-          summary = true
-      let msg = some(msg_lines)
-      newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
+            let mainLinePart = m.group(0, line)[0];
+            msg_lines.add(mainLinePart)
+            # Samples for interesting instances of mainLinePart:
+            # - "Files with copyright information: 30 / 31"
+            # - "Files with license information: 30 / 31"
+            if match(mainLinePart, re"^Files with (copyright|license) information: (\d+) / (\d+)$", m):
+              let haveInfo = parseInt(m.group(1, mainLinePart)[0]);
+              let total = parseInt(m.group(2, mainLinePart)[0]);
+              coverage += haveInfo.float / total.float
+              coverageDimensions += 1
+        elif secMissingInfo:
+          if match(line, re"^[*] (.+)$", m):
+            let file = m.group(0, line)[0];
+            issues.add(CheckIssue(
+              severity: CheckIssueSeverity.Low,
+              msg: some(fmt"File with missing copyright and/or license info: {file}")
+            ))
+        if match(line, re"^# (.+)$", m):
+          # Section header
+          let name = m.group(0, line)[0];
+          secSummary = false
+          secMissingInfo = false
+          if not secSummary and name == "SUMMARY":
+            secSummary = true
+          if not secMissingInfo and name == "MISSING COPYRIGHT AND LICENSING INFORMATION":
+            secMissingInfo = true
+      if coverageDimensions > 0:
+        coverage = coverage / coverageDimensions.float
+      msg_lines.add("")
+      msg_lines.add(fmt"Total coverage (roughly): {tools.toPercentStr(coverage)}%")
+      msg_lines.add("")
+      msg_lines.add("Please get to a perfect REUSE state by using the REUSE-tool locally")
+      msg_lines.add(fmt"(after installing): `{REUSE_CMD} lint`")
+      let msg = some(msg_lines.join("\n"))
+      let kind = if coverage < MIN_COMPLIANCE:
+          CheckResultKind.Bad
+        elif coverage < HIGH_COMPLIANCE:
+          CheckResultKind.Acceptable
+        else:
+          CheckResultKind.Ok
+      issues.insert(CheckIssue(
+        severity: CheckIssueSeverity.Middle,
+        msg: msg
+      ), 0)
+      CheckResult(
+        kind: kind,
+        issues: issues
+      )
+
   except OSError as err:
     let msg = fmt("Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
