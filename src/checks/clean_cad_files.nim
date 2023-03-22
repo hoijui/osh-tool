@@ -14,7 +14,7 @@ import ../tools
 import ../file_ext_meta
 import std/tables
 
-const EXT_FILE = "resources/osh-file-types/file_extension_formats-cad.csv"
+const EXT_FILE = "resources/osh-file-types/res/data/cad.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
 const EXT_FILE_ABS = staticExec("pwd") & "/" & EXT_FILE_REL

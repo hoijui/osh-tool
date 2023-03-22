@@ -58,7 +58,7 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
   ## when splitting each extension with '.'.
   ## Finally, `FILE_EXTENSIONS_MAP` contains the aforementioned mapping
   ## from "ext" to `(open, text, source)`.
-  var exts: seq[(string, int, int, int)] = @[]
+  var exts: seq[(string, int, int, int, string)] = @[]
   var maxParts = 0
 
   var lineNum = 0
@@ -73,9 +73,10 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
     var openStr: string
     var textStr: string
     var sourceStr: string
-    if not scanf(line, "$*,$*,$*,$*", ext, openStr, textStr, sourceStr):
+    var name: string
+    if not scanf(line, "$*,$*,$*,$*,$*", ext, openStr, textStr, sourceStr, name):
       # debugError "Invalid line format", lineNum, line # TODO FIXME Do not know how to raise an error at compile-time :/
-      echo("Failed to scan extensions line, should be 'string,string,string,string', but is: '" & line & "', on line:")
+      echo("Failed to scan extensions line, should be 'string,string,string,string,string', but is: '" & line & "', on line:")
       echo lineNum
       quit 66
     if not ((ext == "pdf") or (ext == "html")):
@@ -84,7 +85,7 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
       let source = parseTriValue(sourceStr, "source?", "source", "export", "unknown", "both", lineNum, 3)
       maxParts = max(maxParts, ext.count('.') + 1)
       if not ext.isEmptyOrWhitespace():
-        exts.add((ext.toLower(), open, text, source))
+        exts.add((ext.toLower(), open, text, source, name))
     # NOTE Use this to see how code can be created in AST (required below)
     # dumpAstGen:
       # const one5 = (1, 3, 4)
@@ -93,7 +94,7 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
   result = newStmtList()
   let listStmt = newNimNode(nnkBracket)
   let tableStmt = newNimNode(nnkTableConstr)
-  for (ext, open, text, source) in exts:
+  for (ext, open, text, source, name) in exts:
     listStmt.add(newStrLitNode(ext))
 
     tableStmt.add(
@@ -103,6 +104,7 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
           newLit(open),
           newLit(text),
           newLit(source),
+          newStrLitNode(name),
         )
       )
     )
@@ -144,7 +146,7 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
   # Use this for debugging:
   #echo toStrLit(result)
 
-proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string], fileExtsMaxParts: int, fileExtsMap: Table[string, (int, int, int)]): CheckResult =
+proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string], fileExtsMaxParts: int, fileExtsMap: Table[string, (int, int, int, string)]): CheckResult =
   if configVal == YesNoAuto.No:
     return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("Configured to always skip"))
   let matchingFiles = filterByExtensions(state.listFilesNonGenerated(), fileExts, fileExtsMaxParts)
@@ -163,7 +165,7 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
     let exts = extractFileExts(mFile, fileExtsMaxParts)
     for ext in exts:
       if fileExtsMap.hasKey(ext):
-        let (open, text, source) = fileExtsMap[ext]
+        let (open, text, source, name) = fileExtsMap[ext]
         var fileIssues: seq[string] = @[]
         if not (Duo.Good in toDuoSet(open)):
           fileIssues.add("not Open")
