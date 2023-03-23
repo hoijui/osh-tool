@@ -43,6 +43,7 @@ method sourcePath*(this: UsesDirStdCheck): string =
 method requirements*(this: UsesDirStdCheck): CheckReqs =
   return {
     CheckReq.FilesListRec,
+    CheckReq.ExternalTool,
   }
 
 method getSignificanceFactors*(this: UsesDirStdCheck): CheckSignificance =

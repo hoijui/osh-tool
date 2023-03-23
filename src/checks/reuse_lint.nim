@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2022 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2022-2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -54,7 +54,9 @@ method sourcePath*(this: ReuseLintCheck): string =
   return tools.srcFileName()
 
 method requirements*(this: ReuseLintCheck): CheckReqs =
-  return {}
+  return {
+    CheckReq.ExternalTool,
+  }
 
 method getSignificanceFactors*(this: ReuseLintCheck): CheckSignificance =
   return CheckSignificance(
