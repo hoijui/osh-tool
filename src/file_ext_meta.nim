@@ -177,7 +177,7 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
           issues.add(
             CheckIssue(
               severity: CheckIssueSeverity.Low,
-              msg: some(fmt"File-format issue(s) with '{mFile}': " & fileIssues.join(", "))
+              msg: some(fmt"File-format issue(s) with '{mFile}' (assumed type: {name}): " & fileIssues.join(", "))
             )
           )
 
