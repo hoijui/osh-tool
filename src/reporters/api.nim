@@ -6,6 +6,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import options
+import re
 import strformat
 import strutils
 import system/io
@@ -75,7 +76,11 @@ proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle:
   strm.writeLine("| key | value |")
   strm.writeLine("| --- | -------- |")
   for (key, val) in prelude.projVars.pairs:
-    strm.writeLine(fmt"| {key} | {val} |")
+    let valMd = if match(val, re"^(https?|mailto):"):
+        fmt"<{val}>"
+      else:
+        fmt"`{val}`"
+    strm.writeLine(fmt"| `{key}` | {valMd} |")
   if bashStyle:
     strm.writeLine("")
     strm.writeLine("### BASH style")
