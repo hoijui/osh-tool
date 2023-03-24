@@ -44,6 +44,7 @@ method sourcePath*(this: OkhLintCheck): string =
 
 method requirements*(this: OkhLintCheck): CheckReqs =
   return {
+    CheckReq.FileContent,
     CheckReq.ExternalTool,
   }
 
