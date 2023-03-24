@@ -60,13 +60,13 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
   if not os.fileExists(okhFile(state.config)):
     return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(fmt"Main OKH manifest file {OKH_FILE} not found"))
   try:
-    let okhProc = osproc.startProcess(
+    let process = osproc.startProcess(
       command = OKH_CMD,
       workingDir = state.config.projRoot,
       args = ["val", "--recursive", "--okh-version", "losh", "."],
       env = nil,
       options = {poUsePath})
-    let (lines, exCode) = okhProc.readLines
+    let (lines, exCode) = process.readLines
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)
     else:
