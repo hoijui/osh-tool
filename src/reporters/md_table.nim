@@ -85,7 +85,7 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} 
   strm.writeLine("")
   strm.writeLine("| Property | Value |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine("| --- | -- |")
+  strm.writeLine("| --- | --: |")
   strm.writeLine(fmt"| Checks Run | {stats.checks.run} |")
   strm.writeLine(fmt"| Checks Skipped | {stats.checks.skipped} |")
   strm.writeLine(fmt"| Checks Passed | {stats.checks.passed} |")

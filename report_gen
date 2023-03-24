@@ -177,7 +177,7 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "<summary>Badges</summary>"
 	echo
 	echo "| Dimension | Badge | Markdown Code | HTML Code |"
-	echo "| - | -- | ----- | ----- |"
+	echo "| - | --: | ----- | ----- |"
 	for rating in $RATINGS
 	do
 		if $download_badges
