@@ -53,14 +53,15 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
 proc list*(registry: ChecksRegistry) =
   echo(fmt"# Checks")
   echo(fmt"")
-  echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Source Code |")
-  echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- | ------ |")
+  echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Why | Source Code |")
+  echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
   for check in registry.checks:
     let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>")
+    let singleLineWhy = check.why().replace("\\\n", "<br/>").replace("\n", "<br/>")
     let checkSign = check.getSignificanceFactors()
     let srcCodePath = check.sourcePath()
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
-    echo(fmt"| {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {srcText} |")
+    echo(fmt"| {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
 
 proc check*(registry: ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()
