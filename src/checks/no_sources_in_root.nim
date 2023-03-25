@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import sequtils
 import strutils
 import options
 import os
@@ -108,7 +109,17 @@ method getSignificanceFactors*(this: NoSourceFilesInRootCheck): CheckSignificanc
     )
 
 method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
-  let rootSourceFiles = filterByExtensions(state.listFilesL1(), SOURCE_EXTENSIONS, SOURCE_EXTENSIONS_MAX_PARTS)
+  let rootSourceFiles = filterByExtensions(
+    state.listFilesL1(),
+    SOURCE_EXTENSIONS,
+    SOURCE_EXTENSIONS_MAX_PARTS).filter(
+      proc(item: string): bool =
+        # This removes DOT-files from the list,
+        # which usually have a fixed location and file-name
+        # under which they have to be available,
+        # so the repo maintainer does not have the option to move them.
+        not item.startsWith('.')
+    )
   # TODO Only fail if more then 2 files with the same extension are found
   return (if rootSourceFiles.len == 0:
     newCheckResult(CheckResultKind.Perfect)
@@ -119,6 +130,7 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
       some(
         "Source files found in root. Please consider moving them into a sub directory:\n\n- " &
         rootSourceFiles.join("\n- ")
+        # TODO Rather make one issue per each rootSourceFiles instead
       )
     )
   )
