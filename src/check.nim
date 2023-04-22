@@ -72,6 +72,11 @@ type
       ## Requires the list of files in the root of the project
     FileContent
       ## Requires access to the contents of one or more files in the project
+    ProjMetaData
+      ## Requires access to the the projects meta-data, like:
+      ## name, git-clone URL, current version, ...
+      ## This will be fetched with 'projvar',
+      ## and then be available through [`state.projVars`].
     ExternalTool
       ## Requires executing an external tool, for example `reuse lint`
   CheckReqs* = set[CheckReq]
