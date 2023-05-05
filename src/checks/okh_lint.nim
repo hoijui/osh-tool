@@ -69,7 +69,8 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
       args = ["val", "--recursive", "--okh-version", "losh", "."],
       env = nil,
       options = {poUsePath})
-    let (lines, exCode) = process.readLines
+    let (lines, exCode) = process.readLines()
+    process.close()
     debug fmt"'{OKH_CMD}' run done."
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)

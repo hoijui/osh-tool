@@ -77,7 +77,8 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
       args = ["lint"],
       env = nil,
       options = {poUsePath})
-    let (lines, exCode) = process.readLines
+    let (lines, exCode) = process.readLines()
+    process.close()
     debug fmt"'{REUSE_CMD}' run done."
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)

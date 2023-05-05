@@ -194,7 +194,8 @@ proc toolVersion*(binName: string, args: varargs[string]): string =
       args = args.toSeq(),
       env = newStringTable(), # nil => inherit from parent process
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
-    let (lines, exCode) = process.readLines
+    let (lines, exCode) = process.readLines()
+    process.close()
     debug fmt"'{binName}' version check done."
     if exCode == 0:
       let firstLine = lines[0]
@@ -257,7 +258,8 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: And in some cases, this is required to not hang (closing stderr) ... :/"
     process.errorStream.close()
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
-    let (lines, exCode) = process.readLines
+    let (lines, exCode) = process.readLines()
+    process.close()
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finnished; analyze results ..."
     if exCode == 0:
       debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Process output ..."
@@ -285,7 +287,8 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
       args = args,
       env = nil,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
-    let (lines, exCode) = process.readLines
+    let (lines, exCode) = process.readLines()
+    process.close()
     debug fmt"'{MLE_CMD}' run done."
     if exCode == 0:
       var links = newSeq[LinkOcc]()
