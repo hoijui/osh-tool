@@ -23,14 +23,15 @@
 <h1 id="checks">Checks</h1>
 <table>
 <colgroup>
-<col style="width: 13%" />
-<col style="width: 8%" />
-<col style="width: 8%" />
-<col style="width: 8%" />
-<col style="width: 8%" />
-<col style="width: 8%" />
-<col style="width: 29%" />
-<col style="width: 16%" />
+<col style="width: 10%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 12%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -41,10 +42,33 @@
 <th>Quality</th>
 <th>Machine-Readability</th>
 <th>Description</th>
+<th>Why</th>
 <th>Source Code</th>
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td>Clean electronics files</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.50</td>
+<td>1.00</td>
+<td>Checks that the contained Electronics blueprint files - <br/>Schematics and PCB designs - <br/>if any, <br/>use an open format, <br/>are text-based <br/>and are actual source files (vs generated).</td>
+<td>- open format:<br/> This is good for collaboration:<br/> It is legal and technically easier to create viewers and editors,<br/> and it is much more likley that there already are or will be viewers and editors<br/> for such formats,<br/> which are free themselfs.<br/>- text-based:<br/> This is good for versioning with a <a href="https://en.wikipedia.org/wiki/Version_control">version control system</a>,<br/> e.g. git,<br/> which makes collaborating and sharing of a design easier.<br/>- source files:<br/> This is required for being Open <strong>Source</strong> in the first place.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_electronics_files.nim"><code>clean_electronics_files.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>REUSE Licensing info</td>
+<td>0.50</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>0.30</td>
+<td>1.00</td>
+<td>Checks that complete SPDX licensing info is given <br/>for all files in the project. <br/>We do this using the Free Software Foundations REUSE tool.<br/><br/>NOTE: This is related to the License exists check.</td>
+<td>Copyright and licensing is difficult,<br/>especially when reusing software from different projects<br/>that are released under various different licenses.<br/><a href="https://reuse.software/">REUSE</a> was started by<br/>the <a href="https://fsfe.org/">Free Software Foundation Europe</a> (FSFE)<br/>to provide a set of recommendations to make licensing your Free Software projects easier.<br/>Not only do these recommendations make it easier for you<br/>to declare the licenses under which your works are released,<br/>but they also make it easier for a computer<br/>to understand how your project is licensed.<br/><br/>Propper licensing information may prevent or help in potential legal disputes.<br/>It also helps anyone using your source or derivates of it,<br/>to understand their rights.<br/></td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/reuse_lint.nim"><code>reuse_lint.nim</code></a></td>
+</tr>
 <tr class="odd">
 <td>No sources in root</td>
 <td>0.10</td>
@@ -52,18 +76,86 @@
 <td>0.00</td>
 <td>0.80</td>
 <td>0.00</td>
-<td>Checks that no source files appear in the root dir of the project. Make sure to put them all into sub-directories, for example <code>src/</code>.</td>
+<td>Checks that no source files appear in the root dir of the project. <br/>Make sure to put them all into sub-directories, for example <code>src/</code>.</td>
+<td>Makes the Repo look more clean and more friendly,<br/>especially for non-coding people<br/>that might just wnat to browse or edit the documentation.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_sources_in_root.nim"><code>no_sources_in_root.nim</code></a></td>
 </tr>
 <tr class="even">
+<td>OKH manifest content</td>
+<td>0.70</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>Checks that the OKH manifest file - <br/>which contains project meta-data - <br/>contains at least the required properties, <br/>and that all properties use the correct format.</td>
+<td>This makes the project much more easily comparable,<br/>both for humans and machines/software.<br/><br/>This is useful when dealing with a lot of projects,<br/>to not waste life- or processing-time,<br/>trying to figure out a certain,<br/>commonly useful set of properties about a project.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_lint.nim"><code>okh_lint.nim</code></a></td>
+</tr>
+<tr class="odd">
 <td>No global links to local files</td>
 <td>0.40</td>
 <td>0.80</td>
 <td>0.00</td>
 <td>0.80</td>
 <td>0.80</td>
-<td>Checks no links to project local files use a ‘global’ prefix, be it a web-hosting URL or an absolute local path.</td>
+<td>Checks no links to project local files use a ‘global’ prefix,<br/>be it a web-hosting URL or an absolute local path.</td>
+<td>This is a step towards a documentation that is:<br/><br/>- locally browsable an editable without internet connection<br/>- showing and linking to the actual, local, correct content</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_global_links_to_local_files.nim"><code>no_global_links_to_local_files.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>No space in file names</td>
+<td>0.40</td>
+<td>0.60</td>
+<td>0.00</td>
+<td>0.80</td>
+<td>1.00</td>
+<td>Checks that no file-names in the project contain white-space.</td>
+<td>This makes automatic processing of all the projects files<br/>much easier and less error-prone.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_space_in_file_names.nim"><code>no_space_in_file_names.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>Uses dir standard</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.30</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>Checks whether the unixish OSH directory standard is used <br/>for a sufficient amount of files and directories in the project, <br/>using the osh-dir-std CLI tool.</td>
+<td>1. to be able to extract meta-data:<br/> 1. easy indexing (and thus finding) of projects<br/> 2. easy comparing of projects<br/> 3. allows to write software tools that deal with project repos<br/>2. find your way around quickly and easily in different projects</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim"><code>uses_dir_std.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>README exists</td>
+<td>0.20</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>0.10</td>
+<td>0.50</td>
+<td>Checks that a README file exists in the projects root dir, <br/>using the regex <code>(?i)^.*README.*$</code>.</td>
+<td>A README file is the main entry point for a human that comes along the project,<br/>and wants to figure out what it is about, and how to use it.<br/><br/>It is targeted at all potential stakeholders of the project,<br/>be it designers, manufacturers, sellers, repairers or users.<br/><br/>We might think of it as the most essential,<br/>basic part of the documentation of the project.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/readme_exists.nim"><code>readme_exists.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>OKH file exists</td>
+<td>0.70</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.50</td>
+<td>1.00</td>
+<td>Checks that the OKH manifest file - <br/>which contains project meta-data - <br/>exists.</td>
+<td>If this is actually a hardware project,<br/>the existence of this file clearly and unmistakingly marks it as such,<br/>both for humans and machines/software.<br/><br/>This is useful when dealing with a lot of projects,<br/>to not waste life- or processing-time,<br/>which likely would still be less exact in its findings.</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_file_exists.nim"><code>okh_file_exists.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>LICENSE exists</td>
+<td>0.20</td>
+<td>1.00</td>
+<td>0.00</td>
+<td>0.05</td>
+<td>1.00</td>
+<td>Checks that a LICENSE file exists in the projects root dir, <br/>using the regex <code>(?i)^.*(LICEN[SC]E|COPYING).*$</code>.<br/>Note that this is related to the REUSE lint check.</td>
+<td>Before REUSE, this was the standard (and only) way<br/>to declare which license(s) are used within the project.<br/>While REUSE is in all ways superior to this approach,<br/>Many platforms and softwares still purely rely on this way<br/>to automatically detect the license(s) of a project.<br/>We thus recommend to keep the “main”<br/>(according ot your subjective decission)<br/>license of the project in such a file,<br/>by first fixing REUSE for the project,<br/>and then running a command similar to:<br/><code>cp LICENSES/CERN-OHL-S-2.0.txt LICENSE.txt</code></td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/license_exists.nim"><code>license_exists.nim</code></a></td>
 </tr>
 <tr class="odd">
 <td>Clean CAD files</td>
@@ -72,7 +164,8 @@
 <td>1.00</td>
 <td>0.50</td>
 <td>1.00</td>
-<td>Checks that the Mechanical design files - Computer Aided Design (CAD) files - if any, use an open format, are text-based and are actual source files (vs generated).</td>
+<td>Checks that the Mechanical design files - <br/>Computer Aided Design (CAD) files - <br/>if any, <br/>use an open format, <br/>are text-based <br/>and are actual source files (vs generated).</td>
+<td>- open format:<br/> This is good for collaboration:<br/> It is legal and technically easier to create viewers and editors,<br/> and it is much more likley that there already are or will be viewers and editors<br/> for such formats,<br/> which are free themselfs.<br/>- text-based:<br/> This is good for versioning with a <a href="https://en.wikipedia.org/wiki/Version_control">version control system</a>,<br/> e.g. git,<br/> which makes collaborating and sharing of a design easier.<br/>- source files:<br/> This is required for being Open <strong>Source</strong> in the first place.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_cad_files.nim"><code>clean_cad_files.nim</code></a></td>
 </tr>
 <tr class="even">
@@ -82,68 +175,9 @@
 <td>0.00</td>
 <td>0.50</td>
 <td>0.30</td>
-<td>Checks that no generated files are part of the project. These are usually files that are created using a software that is manually configured and executed by a human. Try instead, to find a way to automate this process, and to not store the resulting files in the repository.</td>
+<td>Checks that no generated files are part of the project. <br/>These are usually files that are created using a software <br/>that is manually configured and executed by a human. <br/>Try instead, to find a way to automate this process, <br/>and to not store the resulting files in the repository.</td>
+<td>1. The projects storage requirements go down - <br/>usually by a lot<br/>2. There are no outdated generated files,<br/> because of either of these two reasons:<br/><br/> - One only gets the files hwen generating them right when required, or<br/> - They are regenerated in CI/build-bot and uploaded/hosted on the project pages<br/> whenever there is a change (e.g. a git push to to the repo)<br/><br/>NOTE: This is one of the more controversial checks,<br/>as it often requires writing new software.<br/>That is sometimes a simple script,<br/>and sometimes complex software requiring many person-months of development.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_generated_files.nim"><code>no_generated_files.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>REUSE Licensing info</td>
-<td>0.50</td>
-<td>1.00</td>
-<td>0.00</td>
-<td>0.30</td>
-<td>1.00</td>
-<td>Checks that complete SPDX licensing info is given for all files in the project. We do this using the Free Software Foundations REUSE tool. NOTE: This is related to the License exists check.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/reuse_lint.nim"><code>reuse_lint.nim</code></a></td>
-</tr>
-<tr class="even">
-<td>OKH manifest content</td>
-<td>0.70</td>
-<td>1.00</td>
-<td>0.00</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>Checks that the OKH manifest file - which contains project meta-data - contains at least the required properties, and that all properties use the correct format.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_lint.nim"><code>okh_lint.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>README exists</td>
-<td>0.20</td>
-<td>1.00</td>
-<td>0.00</td>
-<td>0.10</td>
-<td>0.50</td>
-<td>Checks that a README file exists in the projects root dir, using the regex <code>(?i)^.*README.*$</code>.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/readme_exists.nim"><code>readme_exists.nim</code></a></td>
-</tr>
-<tr class="even">
-<td>LICENSE exists</td>
-<td>0.20</td>
-<td>1.00</td>
-<td>0.00</td>
-<td>0.05</td>
-<td>1.00</td>
-<td>Checks that a LICENSE file exists in the projects root dir, using the regex <code>(?i)^.*(LICEN[SC]E|COPYING).*$</code>. Note that this is related to the REUSE lint check.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/license_exists.nim"><code>license_exists.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>No space in file names</td>
-<td>0.40</td>
-<td>0.60</td>
-<td>0.00</td>
-<td>0.80</td>
-<td>1.00</td>
-<td>Checks that no file-names in the project contain white-space.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_space_in_file_names.nim"><code>no_space_in_file_names.nim</code></a></td>
-</tr>
-<tr class="even">
-<td>OKH file exists</td>
-<td>0.70</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.50</td>
-<td>1.00</td>
-<td>Checks that the OKH manifest file - which contains project meta-data - exists.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_file_exists.nim"><code>okh_file_exists.nim</code></a></td>
 </tr>
 <tr class="odd">
 <td>No unwanted files</td>
@@ -152,28 +186,9 @@
 <td>0.00</td>
 <td>0.50</td>
 <td>0.30</td>
-<td>Checks that no unwanted files are part of the project. These could be backups, caches, IDE/platform specific, and so on.</td>
+<td>Checks that no unwanted files are part of the project. <br/>These could be backups, caches, IDE/platform specific, and so on.</td>
+<td>These files, present in the repo, could cause these issues and inconvieniences:<br/><br/>- potentially inflating the repositories size<br/>- mess up local settings (e.g. local cache paths of an IDE) by one designer<br/> on an other deginers machine<br/>- make the project appear less clean<br/>- make the project maintainers look like amateurs to seasoned Open Source people<br/>- confuse people, as they are around, yet seem to have no usefulness</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/unwanted_files_exist_not.nim"><code>unwanted_files_exist_not.nim</code></a></td>
-</tr>
-<tr class="even">
-<td>Clean electronics files</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.50</td>
-<td>1.00</td>
-<td>Checks that the contained Electronics blueprint files - Schematics and PCB designs - if any, use an open format, are text-based and are actual source files (vs generated).</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_electronics_files.nim"><code>clean_electronics_files.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td>Uses dir standard</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.30</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>Checks whether the unixish OSH directory standard is used for a sufficient amount of files and directories in the project, using the osh-dir-std CLI tool.</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim"><code>uses_dir_std.nim</code></a></td>
 </tr>
 </tbody>
 </table>
