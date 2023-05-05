@@ -32,7 +32,7 @@ and that all properties use the correct format."""
 
 method why*(this: OkhLintCheck): string =
   return """This makes the project much more easily comparable,
-both for huamns and machines/software.
+both for humans and machines/software.
 
 This is useful when dealing with a lot of projects,
 to not waste life- or processing-time,
