@@ -118,7 +118,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
     # Tracks the maximum achievable sum value of all sub-ratings,
     # if all checks would pass with 100% compliance
     maxScoreSum += weightedFactors
-    # Tracks the actually achieves sum of compliance of all sub-ratings.
+    # Tracks the actually achieved sum of compliance of all sub-ratings.
     scoreSum += weightedFactors * compliance
     complianceSum += compliance
     weightsSum += checkSigFacs.weight
