@@ -226,7 +226,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
       workingDir = projRoot,
       args = args,
       env = nil, # nil => inherit from parent process
-      options = {poUsePath, poParentStreams}) # NOTE Add for debugging: poParentStreams
+      options = {poUsePath}) # NOTE Add for debugging: poParentStreams
     debug "Waiting for 'projvar' run to end ..."
     process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
