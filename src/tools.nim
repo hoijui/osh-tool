@@ -194,6 +194,8 @@ proc toolVersion*(binName: string, args: varargs[string]): string =
       args = args.toSeq(),
       env = newStringTable(), # nil => inherit from parent process
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
+    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     let (lines, exCode) = process.readLines()
     process.close()
     debug fmt"'{binName}' version check done."
@@ -226,7 +228,10 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
       env = nil, # nil => inherit from parent process
       options = {poUsePath, poParentStreams}) # NOTE Add for debugging: poParentStreams
     debug "Waiting for 'projvar' run to end ..."
+    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     let exCode = osproc.waitForExit(process)
+    process.close()
     debug fmt"'{PROJVAR_CMD}' run done."
     if exCode == 0:
       let jsonRoot = parseJson(newFileStream(outFilePath), outFilePath)
@@ -254,9 +259,9 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
     for path in fileListing:
       procStdin.writeLine(path)
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
-    procStdin.close()
+    procStdin.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: And in some cases, this is required to not hang (closing stderr) ... :/"
-    process.errorStream.close()
+    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines()
     process.close()
@@ -287,6 +292,8 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
       args = args,
       env = nil,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
+    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     let (lines, exCode) = process.readLines()
     process.close()
     debug fmt"'{MLE_CMD}' run done."

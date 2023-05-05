@@ -16,6 +16,7 @@ import ../state
 import ../tools
 import std/logging
 import std/osproc
+import std/streams
 
 const REUSE_CMD = "reuse"
 const REUSE_TOOL_URL = "https://reuse.software/"
@@ -77,6 +78,8 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
       args = ["lint"],
       env = nil,
       options = {poUsePath})
+    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     let (lines, exCode) = process.readLines()
     process.close()
     debug fmt"'{REUSE_CMD}' run done."

@@ -15,6 +15,7 @@ import ../state
 import ../tools
 import std/logging
 import std/osproc
+import std/streams
 import std/strutils
 import ./okh_file_exists
 
@@ -69,6 +70,8 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
       args = ["val", "--recursive", "--okh-version", "losh", "."],
       env = nil,
       options = {poUsePath})
+    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     let (lines, exCode) = process.readLines()
     process.close()
     debug fmt"'{OKH_CMD}' run done."
