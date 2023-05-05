@@ -13,6 +13,7 @@ import ../check
 import ../config
 import ../state
 import ../tools
+import std/logging
 import std/osproc
 import std/strutils
 import ./okh_file_exists
@@ -61,6 +62,7 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
   if not os.fileExists(okhFile(state.config)):
     return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(fmt"Main OKH manifest file {OKH_FILE} not found"))
   try:
+    debug fmt"Now running '{OKH_CMD}' ..."
     let process = osproc.startProcess(
       command = OKH_CMD,
       workingDir = state.config.projRoot,
@@ -68,6 +70,7 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
       env = nil,
       options = {poUsePath})
     let (lines, exCode) = process.readLines
+    debug fmt"'{OKH_CMD}' run done."
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)
     else:

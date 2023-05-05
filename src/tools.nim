@@ -195,6 +195,7 @@ proc toolVersion*(binName: string, args: varargs[string]): string =
       env = newStringTable(), # nil => inherit from parent process
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
     let (lines, exCode) = process.readLines
+    debug fmt"'{binName}' version check done."
     if exCode == 0:
       let firstLine = lines[0]
       let words = firstLine.split(' ')
@@ -216,7 +217,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     args.add("--file-out=" & outFilePath)
     args.add("--raw-panic")
     args.add("--log-level=trace")
-    debug "Now running 'projvar' ..."
+    debug fmt"Now running '{PROJVAR_CMD}' ..."
     let process = osproc.startProcess(
       command = PROJVAR_CMD,
       workingDir = projRoot,
@@ -225,7 +226,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
       options = {poUsePath, poParentStreams}) # NOTE Add for debugging: poParentStreams
     debug "Waiting for 'projvar' run to end ..."
     let exCode = osproc.waitForExit(process)
-    debug "Running 'projvar' done."
+    debug fmt"'{PROJVAR_CMD}' run done."
     if exCode == 0:
       let jsonRoot = parseJson(newFileStream(outFilePath), outFilePath)
       var vars = newTable[string, string]()
@@ -277,6 +278,7 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
     args.add("--result-format=json")
     for mdFile in mdFiles:
       args.add(mdFile)
+    debug fmt"Now running '{MLE_CMD}' ..."
     let process = osproc.startProcess(
       command = MLE_CMD,
       workingDir = config.projRoot,
@@ -284,6 +286,7 @@ proc extractMarkdownLinks*(config: RunConfig, mdFiles: seq[string]) : LinkOccsCo
       env = nil,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
     let (lines, exCode) = process.readLines
+    debug fmt"'{MLE_CMD}' run done."
     if exCode == 0:
       var links = newSeq[LinkOcc]()
       if lines.len() > 0:
