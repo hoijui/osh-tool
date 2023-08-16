@@ -32,6 +32,7 @@ RUN \
         pandoc \
         python3.9 \
         python3-pip \
+        ruby-mdl \
         wget \
         jq \
         bc \
