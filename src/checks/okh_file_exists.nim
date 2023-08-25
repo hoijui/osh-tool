@@ -19,6 +19,7 @@ const OKH_FILE* = "okh.toml"
 let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
 let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
 const OKH_TEMPLATE_TOML_URL = "https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/sample_data/okh-TEMPLATE.toml"
+const OKH_TOOL_URL = "https://github.com/OPEN-NEXT/LOSH-OKH-tool/"
 
 proc okhFile*(config: RunConfig): string =
   return os.joinPath(config.proj_root, OKH_FILE)
@@ -78,7 +79,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
         return newCheckResult(
           CheckResultKind.Bad,
           CheckIssueSeverity.Middle,
-          some(fmt("While you have an OKH v1 meta-data file ({presentYamls}),\nit is prefferable to use the new OKH LOSH standard,\nwhich would result in having an '{OKH_FILE}'."))
+          some(fmt("While you have an OKH v1 meta-data file ({presentYamls}),\nit is prefferable to use the new OKH LOSH standard.\nYou may want to use the okh-tool (<{OKH_TOOL_URL}>) to convert your OKH v1 '{presentYamls}' to an OKH-LOSH '{OKH_FILE}'."))
         )
       else:
         return newCheckResult(
