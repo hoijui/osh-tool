@@ -78,15 +78,15 @@ files not covered by the standard:
         elif compFactor >= HIGH_COMPLIANCE:
           return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is not perfect, but close, \
-being above the upper expected factor of {HIGH_COMPLIANCE}""" & notInStdFilesStr))
+being above the high compliance margin of {HIGH_COMPLIANCE}""" & notInStdFilesStr))
         elif compFactor >= MIN_COMPLIANCE:
           return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
-              some(fmt"""Compliance factor {compFactorRounded} is above the minimum expected factor \
+              some(fmt"""Compliance factor {compFactorRounded} is above the minimum compliance margin \
 of {MIN_COMPLIANCE}; good! :-)""" & notInStdFilesStr))
         else:
           return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is low; \
-below the minimum expected factor of {MIN_COMPLIANCE}""" & notInStdFilesStr))
+below the minimum compliance margin of {MIN_COMPLIANCE}""" & notInStdFilesStr))
     return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
         some(fmt"""Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; \
 please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
