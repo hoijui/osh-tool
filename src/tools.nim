@@ -188,11 +188,16 @@ proc toolVersion*(binName: string, args: varargs[string]): string =
   var version = "-0.0.0"
   try:
     debug fmt"Trying to find version for tool '{binName}' ..."
+    let parent_env = true # This is required for 'reuse', at least
+    let env = if parent_env:
+        nil # => Inherit from parent process
+      else:
+        newStringTable() # => Use an empty environment
     let process = osproc.startProcess(
       command = binName,
       workingDir = "",
       args = args.toSeq(),
-      env = newStringTable(), # nil => inherit from parent process
+      env = env,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
     process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
