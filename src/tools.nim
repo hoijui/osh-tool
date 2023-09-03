@@ -187,7 +187,7 @@ proc listFilesGit(dir: string): seq[string] =
 proc toolVersion*(binName: string, args: varargs[string]): string =
   var version = "-0.0.0"
   try:
-    debug fmt"Trying to find version for tool '{binName}' run to end ..."
+    debug fmt"Trying to find version for tool '{binName}' ..."
     let process = osproc.startProcess(
       command = binName,
       workingDir = "",
