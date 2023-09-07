@@ -225,6 +225,7 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 
 # Splice-in pandoc and its version into the tools section
 pandoc_version="$(pandoc --version | head -n 1 | sed -e 's/^pandoc //')"
+# shellcheck disable=SC2016
 sed -i -e 's/| \[`osh-dir-std`\](/| [`pandoc`](https:\/\/pandoc.org) | '"$pandoc_version"' |\n| [`osh-dir-std`](/' "$output_md"
 
 cat "$prefix_file" "$output_md" > "$tmp_file"
