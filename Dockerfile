@@ -16,6 +16,7 @@ ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.4.4
 ARG projvar_release=0.16.2
 ARG mle_release=0.23.0
+ARG mlc_release=0.14.3
 ARG osh_dir_std_release=0.7.0
 
 # Installs the FSF REUSE CLI tool
@@ -98,6 +99,14 @@ RUN wget --quiet "$MLE_DL" ; \
     mv $MLE_PKG/mle ./ ; \
     rm $MLE_PKG.tar.gz ; \
     rm -Rf $MLE_PKG
+
+ENV MLC_PKG="mlc-${mlc_release}-x86_64-unknown-linux-musl"
+ENV MLC_DL="https://github.com/hoijui/mlc/releases/download/$mlc_release/$MLC_PKG.tar.gz"
+RUN wget --quiet "$MLC_DL" ; \
+    tar xf $MLC_PKG.tar.gz ; \
+    mv $MLC_PKG/mlc ./ ; \
+    rm $MLC_PKG.tar.gz ; \
+    rm -Rf $MLC_PKG
 
 ENV OSH_DIR_STD_PKG="osh-dir-std-${osh_dir_std_release}-x86_64-unknown-linux-musl"
 ENV OSH_DIR_STD_DL="https://github.com/hoijui/osh-dir-std-rs/releases/download/$osh_dir_std_release/$OSH_DIR_STD_PKG.tar.gz"

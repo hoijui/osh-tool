@@ -60,6 +60,7 @@ proc mdPrelude*(strm: File, prelude: ReportPrelude) =
   strm.writeLine(fmt"| [`reuse`](https://github.com/fsfe/reuse-tool/) | {prelude.tool_versions.reuse} |")
   strm.writeLine(fmt"| [`projvar`](https://github.com/hoijui/projvar/) | {prelude.tool_versions.projvar} |")
   strm.writeLine(fmt"| [`mle`](https://github.com/hoijui/mle/) | {prelude.tool_versions.mle} |")
+  strm.writeLine(fmt"| [`mlc`](https://github.com/hoijui/mlc/) | {prelude.tool_versions.mlc} |")
   strm.writeLine(fmt"| [`osh-dir-std`](https://github.com/hoijui/osh-dir-std/) | {prelude.tool_versions.osh_dir_std} |")
   strm.writeLine("")
   strm.writeLine("</details>")

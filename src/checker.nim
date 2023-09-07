@@ -73,6 +73,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
       okh: toolVersion("okh-tool", "--version", "--quiet"),
       reuse: toolVersion("reuse", "--version"),
       projvar: toolVersion("projvar", "--version", "--quiet"),
+      mlc: toolVersion("mlc", "--version", "--quiet"),
       mle: toolVersion("mle", "--version", "--quiet"),
       osh_dir_std: toolVersion("osh-dir-std", "--version", "--quiet"),
   )
