@@ -33,7 +33,7 @@ RUN \
         pandoc \
         python3.9 \
         python3-pip \
-        ruby-rubygems \
+        rubygems \
         wget \
         jq \
         bc \
