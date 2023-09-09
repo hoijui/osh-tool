@@ -33,7 +33,7 @@ RUN \
         pandoc \
         python3.9 \
         python3-pip \
-        ruby-mdl \
+        ruby-rubygems \
         wget \
         jq \
         bc \
@@ -41,6 +41,12 @@ RUN \
     rm -rf /var/lib/apt/lists/*
 #        libssl-dev \
 #        reuse \
+#        ruby-mdl \
+
+# HACK This seems to be required because of an old Docker base image (Ubuntu) of this image (nimlang/nim).
+#      Otherwise we could just install ruby-mdl with apt (previous RUN command),
+#      and remove ruby-rubygems as well there.
+RUN gem install mdl
 
 # We need to use Python 3.9 (default is 3.8) because of this REUSE bug:
 # https://github.com/fsfe/reuse-tool/issues/587
