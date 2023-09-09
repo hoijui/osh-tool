@@ -9,7 +9,6 @@ import options
 import strutils
 import std/json
 import std/jsonutils
-import system/io
 import tables
 import ../check
 import ./api
@@ -31,7 +30,7 @@ type
 method init(self: JsonCheckFmt, prelude: ReportPrelude) =
   self.prelude = prelude
 
-method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
+method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let passed = isGood(res)
   var issues = newSeq[tuple[severity: string, msg: string]]()
   for issue in res.issues:
@@ -47,7 +46,7 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, in
     issues: issues,
     ))
 
-method finalize(self: JsonCheckFmt, stats: ReportStats) {.locks: "unknown".} =
+method finalize(self: JsonCheckFmt, stats: ReportStats) =
   let strm = self.repStream
   strm.writeLine((prelude: self.prelude, checks: self.checks, stats: stats).toJson)
   self.repStream.close()

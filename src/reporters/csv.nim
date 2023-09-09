@@ -8,7 +8,6 @@
 import sequtils
 import strformat
 import strutils
-import system/io
 import ../check
 import ./api
 import csvtools
@@ -29,7 +28,7 @@ method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   strm.writeLine("\"Passed\", \"Status\", \"Compliance Factor\", \"Weight\", \"Weighted Comp. Fac.\", \"Check\", \"Severity - Issue\"")
 
-method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
+method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let passed = isGood(res)
   let passedStr = if passed: "true" else: "false"
   let compliance = res.calcCompliance()
@@ -49,7 +48,7 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
     name: check.name(),
     msg: msg))
 
-method finalize(self: CsvCheckFmt, stats: ReportStats) {.locks: "unknown".} =
+method finalize(self: CsvCheckFmt, stats: ReportStats) =
   var strm = self.repStream
   self.checks.writeToCsv(strm)
   self.repStream.close()

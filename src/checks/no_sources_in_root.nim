@@ -35,7 +35,7 @@ macro parseInjectExts(): untyped =
   let sources_list = staticRead(EXT_FILE_REL)
   for line in sources_list.split('\n'):
     # retain only the first CSV column
-    let ext = line.replace(re",.*$", "")
+    let ext = line.replace(re2",.*$", "")
     maxParts = max(maxParts, ext.count('.') + 1)
     if not ext.isEmptyOrWhitespace():
       sourceExts.add(ext)

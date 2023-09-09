@@ -10,7 +10,6 @@ import options
 import strformat
 import strutils
 import logging
-import system/io
 import tables
 import ./config
 import ./check
@@ -33,7 +32,7 @@ proc initStreams(report: Report, state: State): (File, File) =
       if not state.config.force and fileExists(reportFileName):
         error fmt"Report file '{reportFileName}' exists, and --force was not specified; aborting."
         quit 1
-      let file = io.open(reportFileName, fmWrite)
+      let file = open(reportFileName, fmWrite)
       (file, file)
     else:
       (stdout, stderr)

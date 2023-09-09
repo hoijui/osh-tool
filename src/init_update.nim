@@ -38,7 +38,7 @@ proc logLevel*(this: ResultKind): Level =
 method name*(this: InitUpdate): string {.base.} =
   return "TODO Override!"
 
-method init*(this: InitUpdate, state: var State): InitResult {.base, locks: "unknown".} =
+method init*(this: InitUpdate, state: var State): InitResult {.base.} =
   return InitResult(kind: Error, msg: some("Not implemented for specific check!"))
 
 method update*(this: InitUpdate, state: var State): UpdateResult {.base.} =

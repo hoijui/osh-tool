@@ -427,7 +427,7 @@ method getSignificanceFactors*(this: Check): CheckSignificance {.base.} =
   echo "TODO Override!"
   quit 98
 
-method run*(this: Check, state: var State): CheckResult {.base, locks: "unknown".} =
+method run*(this: Check, state: var State): CheckResult {.base.} =
   ## Runs this check on a specific project.
   return CheckResult(
     kind: CheckResultKind.Bad,

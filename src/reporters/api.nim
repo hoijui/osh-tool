@@ -9,7 +9,6 @@ import options
 import re
 import strformat
 import strutils
-import system/io
 import tables
 import ../check
 
@@ -97,10 +96,10 @@ proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle:
 method init*(self: CheckFmt, prelude: ReportPrelude) {.base.} =
   quit "to override!"
 
-method report*(self: CheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.base, locks: "unknown".} =
+method report*(self: CheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.base.} =
   quit "to override!"
 
-method finalize*(self: CheckFmt, stats: ReportStats)  {.base, locks: "unknown".} =
+method finalize*(self: CheckFmt, stats: ReportStats)  {.base.} =
   self.repStream.close()
   # NOTE This is not required,
   # because stderr does not need to be closed,

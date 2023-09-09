@@ -8,7 +8,6 @@
 import sequtils
 import strformat
 import strutils
-import system/io
 import tables
 from ../tools import round
 import ../check
@@ -36,7 +35,7 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   # NOTE In some renderers, number of dashes are used to determine relative column width
   strm.writeLine(fmt"| - | -- | -:" & tblOptDelim & " | ----- | ---------------- |")
 
-method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) {.locks: "unknown".} =
+method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let strm = self.getStream(res)
   # See:
   # * <https://en.wikipedia.org/wiki/Check_mark>
@@ -67,7 +66,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     ""
   strm.writeLine(fmt"| {passedStr} | {kindStr} | {comp}%" & tblOptVals & fmt" | {check.name()} | {msg} |")
 
-method finalize(self: MdTableCheckFmt, stats: ReportStats) {.locks: "unknown".} =
+method finalize(self: MdTableCheckFmt, stats: ReportStats) =
   let strm = self.repStream
   let tblOptAvers = if self.debug:
     fmt" | __{tools.toPercentStr(stats.checks.weightsSum / float(stats.checks.run))}%__" &

@@ -94,32 +94,32 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
       var secSummary = false
       var secMissingInfo = false
       var issues = newSeq[CheckIssue]()
-      var m: RegexMatch
+      var m: RegexMatch2
       var coverage = 0.0
       var coverageDimensions = 0
       for line in lines:
         if secSummary:
-          if match(line, re"^[*] (.*: .+)$", m):
-            let mainLinePart = m.group(0, line)[0];
+          if match(line, re2"^[*] (.*: .+)$", m):
+            let mainLinePart = line[m.group(0)];
             msg_lines.add(mainLinePart)
             # Samples for interesting instances of mainLinePart:
             # - "Files with copyright information: 30 / 31"
             # - "Files with license information: 30 / 31"
-            if match(mainLinePart, re"^Files with (copyright|license) information: (\d+) / (\d+)$", m):
-              let haveInfo = parseInt(m.group(1, mainLinePart)[0]);
-              let total = parseInt(m.group(2, mainLinePart)[0]);
+            if match(mainLinePart, re2"^Files with (copyright|license) information: (\d+) / (\d+)$", m):
+              let haveInfo = parseInt(mainLinePart[m.group(1)]);
+              let total = parseInt(mainLinePart[m.group(2)]);
               coverage += haveInfo.float / total.float
               coverageDimensions += 1
         elif secMissingInfo:
-          if match(line, re"^[*] (.+)$", m):
-            let file = m.group(0, line)[0];
+          if match(line, re2"^[*] (.+)$", m):
+            let file = line[m.group(0)];
             issues.add(CheckIssue(
               severity: CheckIssueSeverity.Low,
               msg: some(fmt"File with missing copyright and/or license info: {file}")
             ))
-        if match(line, re"^# (.+)$", m):
+        if match(line, re2"^# (.+)$", m):
           # Section header
-          let name = m.group(0, line)[0];
+          let name = line[m.group(0)];
           secSummary = false
           secMissingInfo = false
           if not secSummary and name == "SUMMARY":

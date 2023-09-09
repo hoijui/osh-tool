@@ -8,7 +8,6 @@
 import sequtils
 import strformat
 import strutils
-import system/io
 import tables
 from ../tools import round
 import ./api
@@ -35,7 +34,7 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
     .join("")
   strm.writeLine(fmt"- [{passedStr}] (compliance: {round(res.calcCompliance())}) {check.name()}{msg}")
 
-method finalize(self: MdListCheckFmt, stats: ReportStats) {.locks: "unknown".} =
+method finalize(self: MdListCheckFmt, stats: ReportStats) =
   let strm = self.repStream
   strm.writeLine("")
   strm.writeLine("<details>")
