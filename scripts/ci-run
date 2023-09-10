@@ -22,7 +22,7 @@ fi
 function version() {
 	git describe \
 		--tags \
-		--dirty \
+		--dirty='-modified' \
 		--broken \
 		--always \
 		--long \
