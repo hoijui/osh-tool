@@ -10,10 +10,11 @@ FROM nimlang/nim:2.0.0
 # Set parameters like so:
 # docker build \
 #     --build-arg reuse_tool_release="1.0.0" \
-#     --build-arg okh_tool_release="0.3.1" \
+#     --build-arg okh_tool_bin="build/okh-tool" \
 #     .
 ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.4.4
+ARG okh_tool_bin=okh-tool
 ARG projvar_release=0.16.2
 ARG mle_release=0.23.0
 ARG mlc_release=0.14.3
@@ -77,7 +78,12 @@ WORKDIR /osh-tool
 #          * a file-that-always-exists (config.nims),
 #      to be able to conditionally COPY the binary,
 #      only if it exists.
-COPY build/okh-tool* config.nims ./
+#      Note however, that if the *dir* of the binary does not exist,
+#      this *will* fail the docker build,
+#      and thus we reffer to the CWD by default,
+#      but allow to overwrite this variable (okh_tool_bin);
+#      see the start of the file for how to.
+COPY "$okh_tool_bin"* config.nims ./
 ENV OKH_TOOL_PKG="okh-tool-$okh_tool_release-x86_64-unknown-linux-musl"
 ENV OKH_TOOL_DL="https://github.com/OPEN-NEXT/LOSH-OKH-tool/releases/download/$okh_tool_release/$OKH_TOOL_PKG.tar.gz"
 RUN rm config.nims ; \

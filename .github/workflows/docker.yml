@@ -16,9 +16,6 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
-      - name: Tiny hack for the docker build not to fail
-        run: mkdir -p build
-
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
