@@ -17,7 +17,7 @@ ARG okh_tool_release=0.4.4
 ARG okh_tool_bin=okh-tool
 ARG projvar_release=0.16.2
 ARG mle_release=0.23.0
-ARG mlc_release=0.14.3
+ARG mlc_release=0.17.1
 ARG osh_dir_std_release=0.7.0
 
 # Installs the FSF REUSE CLI tool
