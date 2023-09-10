@@ -27,7 +27,7 @@ ARG osh_dir_std_release=0.7.0
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
-    apt-get update ; \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         mercurial \
@@ -38,7 +38,7 @@ RUN \
         wget \
         jq \
         bc \
-        ; \
+        && \
     rm -rf /var/lib/apt/lists/*
 #        libssl-dev \
 #        reuse \
@@ -52,8 +52,8 @@ RUN gem install mdl
 # We need to use Python 3.9 (default is 3.8) because of this REUSE bug:
 # https://github.com/fsfe/reuse-tool/issues/587
 RUN \
-    rm -Rf /usr/bin/python3 /usr/bin/python ; \
-    ln -sf /usr/bin/python3.9 /usr/bin/python3 ; \
+    rm -Rf /usr/bin/python3 /usr/bin/python && \
+    ln -sf /usr/bin/python3.9 /usr/bin/python3 && \
     ln -sf /usr/bin/python3 /usr/bin/python
 
 ENV PATH="${PATH}:${HOME}/.local/bin"
@@ -63,8 +63,8 @@ ENV HOME="/root"
 # NOTE Solution from:
 # https://www.mail-archive.com/nim-general@lists.nim-lang.org/msg19329.html
 #RUN \
-#     wget --quiet http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb ; \
-#     dpkg -i libssl1.1_*.deb ; \
+#     wget --quiet http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && \
+#     dpkg -i libssl1.1_*.deb && \
 #     rm /libssl1.1_*.deb
 
 RUN mkdir /osh-tool
@@ -86,71 +86,71 @@ WORKDIR /osh-tool
 COPY "$okh_tool_bin"* config.nims ./
 ENV OKH_TOOL_PKG="okh-tool-$okh_tool_release-x86_64-unknown-linux-musl"
 ENV OKH_TOOL_DL="https://github.com/OPEN-NEXT/LOSH-OKH-tool/releases/download/$okh_tool_release/$OKH_TOOL_PKG.tar.gz"
-RUN rm config.nims ; \
+RUN rm config.nims && \
     if ! [ -f okh-tool ] ; \
     then \
-        wget --quiet "$OKH_TOOL_DL" ; \
-        tar xf $OKH_TOOL_PKG.tar.gz ; \
-        mv $OKH_TOOL_PKG/okh-tool ./ ; \
-        rm $OKH_TOOL_PKG.tar.gz ; \
+        wget --quiet "$OKH_TOOL_DL" && \
+        tar xf $OKH_TOOL_PKG.tar.gz && \
+        mv $OKH_TOOL_PKG/okh-tool ./ && \
+        rm $OKH_TOOL_PKG.tar.gz && \
         rm -Rf $OKH_TOOL_PKG ; \
     fi
 
 ENV PROJVAR_PKG="projvar-${projvar_release}-x86_64-unknown-linux-musl"
 ENV PROJVAR_DL="https://github.com/hoijui/projvar/releases/download/$projvar_release/$PROJVAR_PKG.tar.gz"
-RUN wget --quiet "$PROJVAR_DL" ; \
-    tar xf $PROJVAR_PKG.tar.gz ; \
-    mv $PROJVAR_PKG/projvar ./ ; \
-    rm $PROJVAR_PKG.tar.gz ; \
+RUN wget --quiet "$PROJVAR_DL" && \
+    tar xf $PROJVAR_PKG.tar.gz && \
+    mv $PROJVAR_PKG/projvar ./ && \
+    rm $PROJVAR_PKG.tar.gz && \
     rm -Rf $PROJVAR_PKG
 
 ENV MLE_PKG="mle-${mle_release}-x86_64-unknown-linux-musl"
 ENV MLE_DL="https://github.com/hoijui/mle/releases/download/$mle_release/$MLE_PKG.tar.gz"
-RUN wget --quiet "$MLE_DL" ; \
-    tar xf $MLE_PKG.tar.gz ; \
-    mv $MLE_PKG/mle ./ ; \
-    rm $MLE_PKG.tar.gz ; \
+RUN wget --quiet "$MLE_DL" && \
+    tar xf $MLE_PKG.tar.gz && \
+    mv $MLE_PKG/mle ./ && \
+    rm $MLE_PKG.tar.gz && \
     rm -Rf $MLE_PKG
 
 ENV MLC_PKG="mlc-${mlc_release}-x86_64-unknown-linux-musl"
 ENV MLC_DL="https://github.com/hoijui/mlc/releases/download/$mlc_release/$MLC_PKG.tar.gz"
-RUN wget --quiet "$MLC_DL" ; \
-    tar xf $MLC_PKG.tar.gz ; \
-    mv $MLC_PKG/mlc ./ ; \
-    rm $MLC_PKG.tar.gz ; \
+RUN wget --quiet "$MLC_DL" && \
+    tar xf $MLC_PKG.tar.gz && \
+    mv $MLC_PKG/mlc ./ && \
+    rm $MLC_PKG.tar.gz && \
     rm -Rf $MLC_PKG
 
 ENV OSH_DIR_STD_PKG="osh-dir-std-${osh_dir_std_release}-x86_64-unknown-linux-musl"
 ENV OSH_DIR_STD_DL="https://github.com/hoijui/osh-dir-std-rs/releases/download/$osh_dir_std_release/$OSH_DIR_STD_PKG.tar.gz"
-RUN wget --quiet "$OSH_DIR_STD_DL" ; \
-    tar xf $OSH_DIR_STD_PKG.tar.gz ; \
-    mv $OSH_DIR_STD_PKG/osh-dir-std ./ ; \
-    rm $OSH_DIR_STD_PKG.tar.gz ; \
+RUN wget --quiet "$OSH_DIR_STD_DL" && \
+    tar xf $OSH_DIR_STD_PKG.tar.gz && \
+    mv $OSH_DIR_STD_PKG/osh-dir-std ./ && \
+    rm $OSH_DIR_STD_PKG.tar.gz && \
     rm -Rf $OSH_DIR_STD_PKG
 
 ENV IS_PUB_NAME="is-git-forge-public"
 #ENV IS_PUB_CLONE_URL="https://github.com/hoijui/is-git-forge-public.git"
 ENV IS_PUB_DL="https://raw.githubusercontent.com/hoijui/is-git-forge-public/master/src/software/$IS_PUB_NAME"
-RUN wget "$IS_PUB_DL" ; \
+RUN wget "$IS_PUB_DL" && \
     chmod +x "$IS_PUB_NAME"
 
 # Ensures the `osh` tool is in PATH
 ENV OSH_TOOL_CLONE_URL="https://github.com/hoijui/osh-tool.git"
 RUN \
     # Checkout all the osh-tool sources \
-    git clone --recurse-submodules $OSH_TOOL_CLONE_URL sources ; \
-    cd /osh-tool/sources ; \
-    git submodule update --init ; \
+    git clone --recurse-submodules $OSH_TOOL_CLONE_URL sources && \
+    cd /osh-tool/sources && \
+    git submodule update --init && \
     # Builds the `osh` tool
-    nimble -y build && cp build/osh ../ ; \
+    nimble -y build && cp build/osh ../ && \
     cd ..
 
 ENV IS_GIT_FORGE_PUBLIC_CLONE_URL="https://github.com/hoijui/is-git-forge-public.git"
 ENV IS_GIT_FORGE_PUBLIC_NAME="is-git-forge-public"
 RUN \
     # Checkout all the osh-tool sources \
-    git clone --recurse-submodules "$IS_GIT_FORGE_PUBLIC_CLONE_URL" "$IS_GIT_FORGE_PUBLIC_NAME" ; \
-    cp "$IS_GIT_FORGE_PUBLIC_NAME/src/software/$IS_GIT_FORGE_PUBLIC_NAME" /osh-tool/ ; \
+    git clone --recurse-submodules "$IS_GIT_FORGE_PUBLIC_CLONE_URL" "$IS_GIT_FORGE_PUBLIC_NAME" && \
+    cp "$IS_GIT_FORGE_PUBLIC_NAME/src/software/$IS_GIT_FORGE_PUBLIC_NAME" /osh-tool/ && \
     chmod +x "/osh-tool/$IS_GIT_FORGE_PUBLIC_NAME"
 
 # NOTE This fixes a bug; see:
