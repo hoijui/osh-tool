@@ -13,7 +13,7 @@ script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 # shellcheck source=./env
 source "$script_dir/env"
 
-if [ -z "$(find "$proj_dir" -name '*.nimble')" ]
+if [ -z "$(find "$proj_dir" -mindepth 1 -maxdepth 1 -name '*.nimble')" ]
 then
 	>&2 echo "ERROR: please run this script from the project root directory (containing the .nimble file)!"
 	exit 1
@@ -78,7 +78,7 @@ echo
 echo "Cross-compiling the software for Windows 64 ..."
 "$script_dir/build" --windows
 
-bin_win="$(find "$build_dir" -maxdepth 1 -type f -name '*.exe' -printf '%P\n')"
+bin_win="$(find "$build_dir" -mindepth 1 -maxdepth 1 -type f -name '*.exe' -printf '%P\n')"
 bin_lin="${bin_win%.exe}"
 
 echo
