@@ -32,13 +32,15 @@ function version() {
 
 function print_help() {
 
-	echo "Run all we want to be done in our CI."
+	echo "Runs all we want to be done in our CI."
 	echo
 	echo "Usage:"
 	echo "         $(basename "$0") [OPTIONS]"
 	echo "Options:"
-	echo "          -h, --help                  Show this help message"=
-	echo "          -s, --install-requirements  Install whatever this script needs to run (works only on Debian/Ubuntu)"
+	echo "  -h, --help"
+	echo "     Show this help message"
+	echo "  -s, --install-requirements"
+	echo "     Install whatever this script needs to run (works only on Debian/Ubuntu)"
 }
 
 # read command-line args
