@@ -145,14 +145,6 @@ RUN \
     nimble -y build && cp build/osh ../ && \
     cd ..
 
-ENV IS_GIT_FORGE_PUBLIC_CLONE_URL="https://github.com/hoijui/is-git-forge-public.git"
-ENV IS_GIT_FORGE_PUBLIC_NAME="is-git-forge-public"
-RUN \
-    # Checkout all the osh-tool sources \
-    git clone --recurse-submodules "$IS_GIT_FORGE_PUBLIC_CLONE_URL" "$IS_GIT_FORGE_PUBLIC_NAME" && \
-    cp "$IS_GIT_FORGE_PUBLIC_NAME/src/software/$IS_GIT_FORGE_PUBLIC_NAME" /osh-tool/ && \
-    chmod +x "/osh-tool/$IS_GIT_FORGE_PUBLIC_NAME"
-
 # NOTE This fixes a bug; see:
 #      https://github.com/actions/runner/issues/2033
 RUN git config --global --add safe.directory /github/workspace
