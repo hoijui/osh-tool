@@ -10,6 +10,7 @@ import strformat
 import system
 import ../check
 import ../config
+import ../file_ext_meta
 import ../state
 import ../tools
 import std/logging
@@ -18,6 +19,7 @@ import std/streams
 import std/strutils
 
 const MDL_CMD = "mdl"
+const OK_NUM_ISSUES_PER_FILE = 5
 
 type MarkdownLintCheck = ref object of Check
 
@@ -101,11 +103,38 @@ method run*(this: MarkdownLintCheck, state: var State): CheckResult =
     if exCode == 0:
       newCheckResult(CheckResultKind.Perfect)
     else:
-      let msg = if len(lines) > 0:
-          some(lines.join("\n"))
+      var issues: seq[CheckIssue] = @[]
+      var explLines: seq[string] = @[]
+      var issuesPart = true
+      for line in lines:
+        if line.len() == 0:
+          issuesPart = false
+          continue
+        if issuesPart:
+          issues.add(CheckIssue(
+              severity: CheckIssueSeverity.Low,
+              msg: some(line)
+            ))
         else:
-          none(string)
-      newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
+          explLines.add(line)
+      if len(explLines) > 0:
+        let msg = some(explLines.join("\n"))
+        issues.add(CheckIssue(
+            severity: CheckIssueSeverity.Info,
+            msg: msg
+          ))
+      let fileExts = @["md", "markdown"]
+      let fileExtsMaxParts = 1
+      let matchingFiles = filterByExtensions(state.listFilesNonGenerated(), fileExts, fileExtsMaxParts)
+      let numFiles = matchingFiles.len()
+      let kind = if issues.len() > OK_NUM_ISSUES_PER_FILE * numFiles:
+          CheckResultKind.Ok
+        else:
+          CheckResultKind.Acceptable
+      CheckResult(
+        kind: kind,
+        issues: issues
+      )
   except OSError as err:
     let msg = fmt("ERROR Failed to run '{MDL_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
