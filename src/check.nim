@@ -35,7 +35,7 @@ type
     Inapplicable
 
   CheckIssueSeverity* {.pure.} = enum
-    ## The result of a check run can come with `CheckIssue`,
+    ## The result of a check run can come with `CheckIssue`s,
     ## which further describe what would have to change in the project
     ## to get a better rating according to that check.
     DeveloperFailure, High, Middle, Low
