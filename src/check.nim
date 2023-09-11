@@ -38,7 +38,7 @@ type
     ## The result of a check run can come with `CheckIssue`s,
     ## which further describe what would have to change in the project
     ## to get a better rating according to that check.
-    DeveloperFailure, High, Middle, Low
+    DeveloperFailure, High, Middle, Low, Info
 
   CheckIssue* = object
     ## The result of a checks run may include 0, 1 or more instnaces of this.
@@ -312,6 +312,7 @@ proc toColor*(severity: CheckIssueSeverity): string =
     of High: "Red"
     of Middle: "Orange"
     of Low: "LightBlue"
+    of Info: "Black"
 
 type Check* = ref object of RootObj
 
@@ -372,6 +373,8 @@ proc calcCompliance*(res: CheckResult): float32 =
   var oIssues = 1.0
   for issue in res.issues:
     let severity = case issue.severity:
+      of Info:
+        0.0
       of Low:
         dedLow /= 2
         dedLow * 2
