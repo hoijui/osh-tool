@@ -111,6 +111,28 @@ then
 		$sudo sh choosenim_init.sh -y
 	fi
 
+	# Fetch MUSL
+	if ! which ld-musl-config || ! which musl-gcc > /dev/null
+	then
+		echo "Install the MUSL (static building) tools ..."
+		if ! $apt_updated
+		then
+			$sudo apt-get update
+			apt_updated=true
+		fi
+		$sudo apt-get install -y -qq musl musl-dev musl-tools # > /dev/null
+		# HACK We simply try installing these here,
+		#      as this is the least likely to have been installed already,
+		#      so we are less likely to cause an unnecessary `apt update`.
+		#      Downside: We might not install these,
+		#      even though it would be necessary.
+		$sudo apt-get install -y -qq \
+			musl-dev \
+			libpcre2-dev \
+			libssl-dev \
+			# > /dev/null
+	fi
+
 	# Fetch cross-compile requirements
 	if ! which x86_64-w64-mingw32-gcc > /dev/null
 	then
