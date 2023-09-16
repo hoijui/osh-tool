@@ -55,8 +55,8 @@ proc list*(registry: ChecksRegistry) =
   echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Why | Source Code |")
   echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
   for check in registry.checks:
-    let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>")
-    let singleLineWhy = check.why().replace("\\\n", "<br/>").replace("\n", "<br/>")
+    let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
+    let singleLineWhy = check.why().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let checkSign = check.getSignificanceFactors()
     let srcCodePath = check.sourcePath()
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
