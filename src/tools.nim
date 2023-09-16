@@ -64,7 +64,7 @@ macro importAll*(dir: static[string]): untyped =
 
 macro registerAll*(dir: static[string]): untyped =
   var commands = newStmtList()
-  for x in walkDir("./src/" & dir, true): # TODO Sort this first, to get a predictable order -- or altenratibvely, make the checks serf-order, and use an ordering data structure (i.e. TreeSet in Java)
+  for x in walkDir("./src/" & dir, true): # TODO Sort this first, to get a predictable order -- or alternatively, implement sort-order for checks, and use an ordering data structure (i.e. TreeSet in Java)
     if(x.kind == pcFile):
       let split = x.path.splitFile()
       if(split.ext == ".nim"):
