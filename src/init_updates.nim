@@ -17,6 +17,9 @@ type
 method register*(this: var InitUpdatesRegistry, initUpdate: InitUpdate) {.base.} =
   this.initUpdates.add(initUpdate)
 
+method sort*(this: var InitUpdatesRegistry) {.base.} =
+  discard
+
 method registerInitUpdates*(this: var InitUpdatesRegistry) {.base.} =
   registerAll("init_update")
 

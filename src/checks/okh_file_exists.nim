@@ -26,6 +26,9 @@ proc okhFile*(config: RunConfig): string =
 
 type OkhFileExistsCheck = ref object of Check
 
+method id*(this: OkhFileExistsCheck): seq[string] =
+  return @["oe", "okhex", "okh_file_exists"]
+
 method name*(this: OkhFileExistsCheck): string =
   return "OKH file exists"
 

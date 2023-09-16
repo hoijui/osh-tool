@@ -19,6 +19,9 @@ let R_BOM = re(RS_BOM)
 
 type BomExistsCheck = ref object of Check
 
+method id*(this: BomExistsCheck): seq[string] =
+  return @["bomex", "be", "bom_exists"]
+
 method name(this: BomExistsCheck): string =
   return "BoM exists"
 

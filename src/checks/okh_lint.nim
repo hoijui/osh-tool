@@ -23,6 +23,9 @@ const OKH_CMD = "okh-tool"
 
 type OkhLintCheck = ref object of Check
 
+method id*(this: OkhLintCheck): seq[string] =
+  return @["ol", "okh_lint"]
+
 method name*(this: OkhLintCheck): string =
   return "OKH manifest content"
 

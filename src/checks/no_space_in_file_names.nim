@@ -16,6 +16,9 @@ let R_SPACE = re".*\s.*"
 
 type NoSpaceInFileNamesCheck = ref object of Check
 
+method id*(this: NoSpaceInFileNamesCheck): seq[string] =
+  return @["nsifn", "nospace", "no_space", "no_space_in_file_names"]
+
 method name*(this: NoSpaceInFileNamesCheck): string =
   return "No space in file names"
 

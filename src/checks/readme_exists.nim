@@ -17,6 +17,9 @@ let R_README = re(RS_README)
 
 type ReadmeExistsCheck = ref object of Check
 
+method id*(this: ReadmeExistsCheck): seq[string] =
+  return @["re", "rdmex", "readme_exists"]
+
 method name(this: ReadmeExistsCheck): string =
   return "README exists"
 

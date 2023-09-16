@@ -22,6 +22,9 @@ const MIN_COMPLIANCE = 0.6
 
 type UsesDirStdCheck = ref object of Check
 
+method id*(this: UsesDirStdCheck): seq[string] =
+  return @["dss", "dirstd", "dir_std", "dir_std_used"]
+
 method name*(this: UsesDirStdCheck): string =
   return "Uses dir standard"
 

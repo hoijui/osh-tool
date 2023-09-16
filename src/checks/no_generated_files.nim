@@ -16,6 +16,9 @@ let R_GENERATABLE= re"^.*[.](jpg|jpeg|gif|png|bmp|pdf|stl|zip|jar)$" # TODO Add 
 
 type NoGeneratedFilesCheck = ref object of Check
 
+method id*(this: NoGeneratedFilesCheck): seq[string] =
+  return @["ngf", "nogenf", "no_generated_files"]
+
 method name*(this: NoGeneratedFilesCheck): string =
   return "No generated files"
 

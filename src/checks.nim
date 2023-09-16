@@ -7,20 +7,24 @@
 
 import ./check
 import ./tools
+import tables
 
 importAll("checks")
 
 type
   ChecksRegistry* = object
-    checks*: seq[Check]
+    checks*: OrderedTable[string, Check]
 
 method register*(this: var ChecksRegistry, check: Check) {.base.} =
-  this.checks.add(check)
+  this.checks[check.id()[0]] = check
+
+method sort*(this: var ChecksRegistry) {.base.} =
+  this.checks.sort(proc (x, y: (string, Check)): int = cmp(x[0], y[0]))
 
 method registerChecks*(this: var ChecksRegistry) {.base.} =
   registerAll("checks")
 
 proc newChecksRegistry*(): ChecksRegistry =
   return ChecksRegistry(
-    checks: @[],
+    checks: initOrderedTable[string, Check](),
     )

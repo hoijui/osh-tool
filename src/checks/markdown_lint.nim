@@ -23,6 +23,9 @@ const OK_NUM_ISSUES_PER_FILE = 5
 
 type MarkdownLintCheck = ref object of Check
 
+method id*(this: MarkdownLintCheck): seq[string] =
+  return @["ml", "mdl", "mdlint", "md_lint", "markdown_lint"]
+
 method name*(this: MarkdownLintCheck): string =
   return "Markdown content"
 

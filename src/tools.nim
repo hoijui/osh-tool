@@ -82,6 +82,14 @@ macro registerAll*(dir: static[string]): untyped =
             )
           )
         )
+  commands.add(
+    newNimNode(nnkCall).add(
+      newNimNode(nnkDotExpr).add(
+        ident("this"),
+        ident("sort"),
+      )
+    )
+  )
   commands
 
 proc download*(file: string, link: string, overwrite: bool = false) =

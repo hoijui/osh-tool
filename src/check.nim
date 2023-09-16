@@ -393,6 +393,12 @@ proc calcCompliance*(res: CheckResult): float32 =
 
   return oKind * oIssues
 
+method id*(this: Check): seq[string] {.base.} =
+  ## Returns a list of short, human&machine oriented, unique ids/names
+  ## of the check.
+  ## These are used to reffer to the check in configuration.
+  return @["TODO Override!"]
+
 method name*(this: Check): string {.base.} =
   ## Returns the name of the check.
   ## This might often be a description,

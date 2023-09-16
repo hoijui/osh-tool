@@ -16,6 +16,9 @@ let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trash
 
 type UnwantedFilesExistNotCheck = ref object of Check
 
+method id*(this: UnwantedFilesExistNotCheck): seq[string] =
+  return @["nuf", "nounwanted", "no_unwanted", "no_unwanted_files"]
+
 method name*(this: UnwantedFilesExistNotCheck): string =
   return "No unwanted files"
 

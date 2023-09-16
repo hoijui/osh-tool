@@ -21,6 +21,9 @@ const MLC_CMD = "mlc"
 
 type MarkupLinkCheck = ref object of Check
 
+method id*(this: MarkupLinkCheck): seq[string] =
+  return @["mul", "mulinks", "mu_links", "markup_links"]
+
 method name*(this: MarkupLinkCheck): string =
   return "Markup link check"
 

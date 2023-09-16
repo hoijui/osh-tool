@@ -27,6 +27,9 @@ parseInjectExtsAndMap(staticRead(EXT_FILE_REL))
 
 type CleanCadFilesCheck = ref object of Check
 
+method id*(this: CleanCadFilesCheck): seq[string] =
+  return @["ccf", "ccadf", "clean_cad_files"]
+
 method name*(this: CleanCadFilesCheck): string =
   return "Clean CAD files"
 

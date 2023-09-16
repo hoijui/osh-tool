@@ -17,6 +17,9 @@ let R_LICENSE = re(RS_LICENSE)
 
 type LicenseExistsCheck = ref object of Check
 
+method id*(this: LicenseExistsCheck): seq[string] =
+  return @["le", "licex", "license_exists"]
+
 method name*(this: LicenseExistsCheck): string =
   return "LICENSE exists"
 

@@ -27,6 +27,9 @@ parseInjectExtsAndMap(staticRead(EXT_FILE_ABS))
 
 type CleanElectronicsFilesCheck = ref object of Check
 
+method id*(this: CleanElectronicsFilesCheck): seq[string] =
+  return @["cef", "celef", "clean_electronics_files"]
+
 method name*(this: CleanElectronicsFilesCheck): string =
   return "Clean electronics files"
 

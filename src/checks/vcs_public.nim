@@ -25,6 +25,9 @@ const PV_URL_KEY = "REPO_WEB_URL"
 
 type VcsPublicCheck = ref object of Check
 
+method id*(this: VcsPublicCheck): seq[string] =
+  return @["vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
+
 method name*(this: VcsPublicCheck): string =
   return "VCS public"
 

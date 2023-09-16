@@ -25,6 +25,9 @@ const MIN_COMPLIANCE = 0.2
 
 type ReuseLintCheck = ref object of Check
 
+method id*(this: ReuseLintCheck): seq[string] =
+  return @["rl", "reusel", "reuse_lint"]
+
 method name*(this: ReuseLintCheck): string =
   return "REUSE Licensing info"
 

@@ -35,6 +35,9 @@ const STORE_FILE_OR_DIR_NAMES = [
 
 type VcsUsedCheck = ref object of Check
 
+method id*(this: VcsUsedCheck): seq[string] =
+  return @["vu", "vcsu", "vcs_used"]
+
 method name*(this: VcsUsedCheck): string =
   return "VCS is used"
 

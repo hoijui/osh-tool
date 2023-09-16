@@ -52,15 +52,18 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
 proc list*(registry: ChecksRegistry) =
   echo(fmt"# Checks")
   echo(fmt"")
-  echo(fmt"| Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Why | Source Code |")
-  echo(fmt"| ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
-  for check in registry.checks:
+  echo(fmt"| IDs | Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Why | Source Code |")
+  echo(fmt"| --- | ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
+  for mainId, check in registry.checks:
+    var ids = check.id()
+    ids[0] = fmt"**{ids[0]}**"
+    let idsFormatted = ids.join(", ")
     let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let singleLineWhy = check.why().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let checkSign = check.getSignificanceFactors()
     let srcCodePath = check.sourcePath()
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
-    echo(fmt"| {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
+    echo(fmt"| {idsFormatted} | {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
 
 proc check*(registry: ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()
@@ -96,7 +99,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var weightedComplianceSum = 0.0
   var maxScoreSum = CheckSignificance()
   var scoreSum = CheckSignificance()
-  for check in registry.checks:
+  for mainId, check in registry.checks:
     let res = check.run(state)
     if isGood(res):
       passedChecks += 1

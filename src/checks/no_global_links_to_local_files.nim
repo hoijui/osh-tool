@@ -16,6 +16,9 @@ import ../tools
 
 type MdNoGlobalLinksToLocalFilesCheck = ref object of Check
 
+method id*(this: MdNoGlobalLinksToLocalFilesCheck): seq[string] =
+  return @["mdngltlf", "mdnogloblinks", "md_no_global_links", "md_no_global_links_to_local_files"]
+
 method name*(this: MdNoGlobalLinksToLocalFilesCheck): string =
   return "No global links to local files"
 

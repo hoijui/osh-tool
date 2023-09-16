@@ -76,6 +76,9 @@ parseInjectExts()
 
 type NoSourceFilesInRootCheck = ref object of Check
 
+method id*(this: NoSourceFilesInRootCheck): seq[string] =
+  return @["nsfir", "no_sources_in_root", "no_source_files_in_root"]
+
 method name*(this: NoSourceFilesInRootCheck): string =
   return "No sources in root"
 
