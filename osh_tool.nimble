@@ -12,9 +12,7 @@ binDir = "build"
 
 requires "nim >= 2.0.0"
 requires "csvtools"
-# HACK Until our fix for nim 2 gets merged and released into upstream docopt, we use our own repo
-#requires "docopt"
-requires "https://github.com/hoijui/docopt.nim#3e8130e"
+requires "docopt"
 requires "shell"
 requires "regex"
 requires "result"
