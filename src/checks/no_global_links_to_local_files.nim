@@ -5,19 +5,19 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import os
 import options
-import strutils
-import strformat
+import os
 import std/uri
+import strformat
+import strutils
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
+import ../util/run
 
 type MdNoGlobalLinksToLocalFilesCheck = ref object of Check
-
-method id*(this: MdNoGlobalLinksToLocalFilesCheck): seq[string] =
-  return @["mdngltlf", "mdnogloblinks", "md_no_global_links", "md_no_global_links_to_local_files"]
+type MdNoGlobalLinksToLocalFilesCheckGenerator = ref object of CheckGenerator
 
 method name*(this: MdNoGlobalLinksToLocalFilesCheck): string =
   return "No global links to local files"
@@ -33,7 +33,7 @@ method why*(this: MdNoGlobalLinksToLocalFilesCheck): string =
 - showing and linking to the actual, local, correct content"""
 
 method sourcePath*(this: MdNoGlobalLinksToLocalFilesCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: MdNoGlobalLinksToLocalFilesCheck): CheckReqs =
   return {
@@ -55,7 +55,7 @@ method getSignificanceFactors*(this: MdNoGlobalLinksToLocalFilesCheck): CheckSig
 method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResult =
   let mdFiles = filterByExtensions(state.listfiles(), @["md", "markdown"]) # TODO Make case-insensitive
   let links = try:
-    extractMarkdownLinks(state.config, mdFiles)
+    extractMarkdownLinks(state.config.projRoot, mdFiles)
   except IOError as err:
     let msg = fmt("Failed to extract Markdown links from docu: {err.msg}")
     return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
@@ -87,5 +87,12 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
       kind: CheckResultKind.Bad,
       issues: issues)
 
-proc createDefault*(): Check =
+method id*(this: MdNoGlobalLinksToLocalFilesCheckGenerator): seq[string] =
+  return @["mdngltlf", "mdnogloblinks", "md_no_global_links", "md_no_global_links_to_local_files"]
+
+method generate*(this: MdNoGlobalLinksToLocalFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   MdNoGlobalLinksToLocalFilesCheck()
+
+proc createGenerator*(): CheckGenerator =
+  MdNoGlobalLinksToLocalFilesCheckGenerator()

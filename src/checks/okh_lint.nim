@@ -10,9 +10,9 @@ import os
 import strformat
 import system
 import ../check
-import ../config
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 import std/logging
 import std/osproc
 import std/streams
@@ -22,9 +22,7 @@ import ./okh_file_exists
 const OKH_CMD = "okh-tool"
 
 type OkhLintCheck = ref object of Check
-
-method id*(this: OkhLintCheck): seq[string] =
-  return @["ol", "okh_lint"]
+type OkhLintCheckGenerator = ref object of CheckGenerator
 
 method name*(this: OkhLintCheck): string =
   return "OKH manifest content"
@@ -45,7 +43,7 @@ trying to figure out a certain,
 commonly useful set of properties about a project."""
 
 method sourcePath*(this: OkhLintCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: OkhLintCheck): CheckReqs =
   return {
@@ -90,5 +88,12 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
     let msg = fmt("ERROR Failed to run '{OKH_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-proc createDefault*(): Check =
+method id*(this: OkhLintCheckGenerator): seq[string] =
+  return @["ol", "okh_lint"]
+
+method generate*(this: OkhLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   OkhLintCheck()
+
+proc createGenerator*(): CheckGenerator =
+  OkhLintCheckGenerator()

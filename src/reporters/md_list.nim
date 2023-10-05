@@ -9,7 +9,7 @@ import sequtils
 import strformat
 import strutils
 import tables
-from ../tools import round
+from ../util/leightweight import round
 import ./api
 import ../check
 

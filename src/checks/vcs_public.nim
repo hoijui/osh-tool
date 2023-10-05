@@ -11,8 +11,10 @@ import options
 import strformat
 import system
 import ../check
+import ../check_config
+import ../config_cmd_check
 import ../state
-import ../tools
+import ../util/fs
 import ./vcs_used
 import std/logging
 import std/osproc
@@ -24,9 +26,7 @@ const NOT_YOUR_FAULT = "This is not your fault; please report it!"
 const PV_URL_KEY = "REPO_WEB_URL"
 
 type VcsPublicCheck = ref object of Check
-
-method id*(this: VcsPublicCheck): seq[string] =
-  return @["vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
+type VcsPublicCheckGenerator = ref object of CheckGenerator
 
 method name*(this: VcsPublicCheck): string =
   return "VCS public"
@@ -49,7 +49,7 @@ without a good way of sharing the fruits of labout of that process.
 """
 
 method sourcePath*(this: VcsPublicCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: VcsPublicCheck): CheckReqs =
   return {
@@ -66,20 +66,23 @@ method getSignificanceFactors*(this: VcsPublicCheck): CheckSignificance =
     )
 
 method run*(this: VcsPublicCheck, state: var State): CheckResult =
-  let vcsUsedResult = vcs_used.createDefault().run(state)
+  let vcsUsedGen = vcs_used.createGenerator()
+  let vcsUsedId = vcsUsedGen.id()[0]
+  let vcsUsedConfig = ConfigCmdCheck(state.config).checks.getOrDefault(vcsUsedId, CheckConfig(id: vcsUsedId, json: none[string]()))
+  let vcsUsedResult = vcsUsedGen.generate(vcsUsedConfig).run(state)
   if not vcsUsedResult.isGood():
     let msg = fmt"""Project does not use a VCS, \
 so it could not possibly be publicly hosted."""
     return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(msg))
   # TODO Support other VCS then git
-  if not state.projVars.hasKey(PV_URL_KEY):
+  if not state.config.projVars.hasKey(PV_URL_KEY):
     let msg = fmt"""Project meta-data property '{PV_URL_KEY}' is not available; \
 You might not be using a local and public git repo to host this project, \
 or the projvar tool fails to find it for some reason.
 We currently only support the git VCS in this check."""
     return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(msg))
-  let publicGitRepoWebUrl = state.projVars[PV_URL_KEY]
-  try:
+  let publicGitRepoWebUrl = state.config.projVars[PV_URL_KEY]
+  try: # TODO Move ths to ./util/run
     debug fmt"Now running '{IS_PUB_CMD}' ..."
     let process = osproc.startProcess(
       command = IS_PUB_CMD,
@@ -125,5 +128,12 @@ error message:
 """ & NOT_YOUR_FAULT
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-proc createDefault*(): Check =
+method id*(this: VcsPublicCheckGenerator): seq[string] =
+  return @["vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
+
+method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   VcsPublicCheck()
+
+proc createGenerator*(): CheckGenerator =
+  VcsPublicCheckGenerator()

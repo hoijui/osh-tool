@@ -6,23 +6,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import options
-import strformat
-import system
-import ../check
-import ../config
-import ../state
-import ../tools
 import std/logging
 import std/osproc
 import std/streams
 import std/strutils
+import strformat
+import system
+import ../check
+import ../check_config
+import ../state
+import ../util/fs
 
 const MLC_CMD = "mlc"
 
 type MarkupLinkCheck = ref object of Check
-
-method id*(this: MarkupLinkCheck): seq[string] =
-  return @["mul", "mulinks", "mu_links", "markup_links"]
+type MarkupLinkCheckGenerator = ref object of CheckGenerator
 
 method name*(this: MarkupLinkCheck): string =
   return "Markup link check"
@@ -48,7 +46,7 @@ without having to rely on users
 reporting each link individually."""
 
 method sourcePath*(this: MarkupLinkCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: MarkupLinkCheck): CheckReqs =
   return {
@@ -104,5 +102,12 @@ method run*(this: MarkupLinkCheck, state: var State): CheckResult =
     let msg = fmt("ERROR Failed to run '{MLC_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-proc createDefault*(): Check =
+method id*(this: MarkupLinkCheckGenerator): seq[string] =
+  return @["mul", "mulinks", "mu_links", "markup_links"]
+
+method generate*(this: MarkupLinkCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   MarkupLinkCheck()
+
+proc createGenerator*(): CheckGenerator =
+  MarkupLinkCheckGenerator()

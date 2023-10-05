@@ -5,20 +5,19 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import re
 import options
+import re
 import strformat
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 let RS_LICENSE = "(?i)^.*(LICEN[SC]E|COPYING).*$"
 let R_LICENSE = re(RS_LICENSE)
 
 type LicenseExistsCheck = ref object of Check
-
-method id*(this: LicenseExistsCheck): seq[string] =
-  return @["le", "licex", "license_exists"]
+type LicenseExistsCheckGenerator = ref object of CheckGenerator
 
 method name*(this: LicenseExistsCheck): string =
   return "LICENSE exists"
@@ -42,7 +41,7 @@ and then running a command similar to:
 `cp LICENSES/CERN-OHL-S-2.0.txt LICENSE.txt`"""
 
 method sourcePath*(this: LicenseExistsCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: LicenseExistsCheck): CheckReqs =
   return {
@@ -71,5 +70,12 @@ method run*(this: LicenseExistsCheck, state: var State): CheckResult =
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: LicenseExistsCheckGenerator): seq[string] =
+  return @["le", "licex", "license_exists"]
+
+method generate*(this: LicenseExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   LicenseExistsCheck()
+
+proc createGenerator*(): CheckGenerator =
+  LicenseExistsCheckGenerator()

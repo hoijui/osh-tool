@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021-2022 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -11,11 +11,13 @@ import strformat
 import strutils
 import logging
 import tables
-import ./config
+import ./config_common
+import ./config_cmd_check
 import ./check
-import ./checks
+import ./checks_registry
 import ./state
-import ./tools
+import ./util/leightweight
+import ./util/run
 import ./reporters/api
 import ./reporters/csv
 import ./reporters/md_list
@@ -49,13 +51,14 @@ proc initCheckFmt(report: Report, state: State): CheckFmt =
     of OutputFormat.MdList:
       return MdListCheckFmt(repStream: repStream, repStreamErr: repStreamErr)
 
-proc list*(registry: ChecksRegistry) =
+proc list*(registry: var ChecksRegistry) =
   echo(fmt"# Checks")
   echo(fmt"")
   echo(fmt"| IDs | Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Why | Source Code |")
   echo(fmt"| --- | ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
-  for mainId, check in registry.checks:
-    var ids = check.id()
+  for primaryId, checkGenerator in registry.index:
+    var check = checkGenerator.generate()
+    var ids = checkGenerator.id()
     ids[0] = fmt"**{ids[0]}**"
     let idsFormatted = ids.join(", ")
     let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
@@ -65,11 +68,10 @@ proc list*(registry: ChecksRegistry) =
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
     echo(fmt"| {idsFormatted} | {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
 
-proc check*(registry: ChecksRegistry, state: var State) =
+proc check*(registry: var ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()
   for report in state.config.reportTargets:
     reports.add(initCheckFmt(report, state))
-  let numChecks = len(registry.checks)
   let tool_versions = (
       osh: VERSION,
       okh: toolVersion("okh-tool", "--version", "--quiet"),
@@ -81,7 +83,7 @@ proc check*(registry: ChecksRegistry, state: var State) =
   )
   let prelude = ReportPrelude(
     homepage: OSH_TOOL_REPO,
-    projVars: state.projVars,
+    projVars: state.config.projVars,
     tool_versions: tool_versions
     )
   for checkFmt in reports:
@@ -99,7 +101,10 @@ proc check*(registry: ChecksRegistry, state: var State) =
   var weightedComplianceSum = 0.0
   var maxScoreSum = CheckSignificance()
   var scoreSum = CheckSignificance()
-  for mainId, check in registry.checks:
+  let checksConfigs = state.config.checks
+  let allChecks = registry.getChecks(some(checksConfigs))
+  let numChecks = len(allChecks)
+  for primaryId, check in allChecks:
     let res = check.run(state)
     if isGood(res):
       passedChecks += 1

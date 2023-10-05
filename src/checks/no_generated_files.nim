@@ -6,18 +6,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from strutils import join
-import re
 import options
+import re
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 let R_GENERATABLE= re"^.*[.](jpg|jpeg|gif|png|bmp|pdf|stl|zip|jar)$" # TODO Add much more, and maybe move this list to a CSV file
 
 type NoGeneratedFilesCheck = ref object of Check
-
-method id*(this: NoGeneratedFilesCheck): seq[string] =
-  return @["ngf", "nogenf", "no_generated_files"]
+type NoGeneratedFilesCheckGenerator = ref object of CheckGenerator
 
 method name*(this: NoGeneratedFilesCheck): string =
   return "No generated files"
@@ -45,7 +44,7 @@ That is sometimes a simple script,
 and sometimes complex software requiring many person-months of development."""
 
 method sourcePath*(this: NoGeneratedFilesCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: NoGeneratedFilesCheck): CheckReqs =
   return {
@@ -76,5 +75,12 @@ method run*(this: NoGeneratedFilesCheck, state: var State): CheckResult =
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: NoGeneratedFilesCheckGenerator): seq[string] =
+  return @["ngf", "nogenf", "no_generated_files"]
+
+method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   NoGeneratedFilesCheck()
+
+proc createGenerator*(): CheckGenerator =
+  NoGeneratedFilesCheckGenerator()

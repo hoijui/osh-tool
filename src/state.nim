@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -10,14 +10,12 @@ import os
 import re
 import sequtils
 import strutils
-import tables
-import ./config
-import ./tools as tools
+import ./config_cmd_check
+import ./util/fs as fs
 
 type
   State* = object
-    config*: RunConfig
-    projVars*: TableRef[string, string]
+    config*: ConfigCmdCheck
     projFiles*: Option[seq[string]]
     projFilesL1*: Option[seq[string]]
     projFilesNonGenerated*: Option[seq[string]]
@@ -25,7 +23,7 @@ type
 method listFiles*(this: var State): seq[string] {.base.} =
   ## Returns a list of all the project file names, recursively
   if this.projFiles.isNone:
-    this.projFiles = some(tools.listFiles(this.config.projRoot))
+    this.projFiles = some(fs.listFiles(this.config.projRoot))
   return this.projFiles.get
 
 method listFilesNonGenerated*(this: var State): seq[string] {.base.} =
@@ -63,10 +61,8 @@ method listFilesL1Contains*(this: var State, regex: Regex): seq[string] {.base.}
   ## of which a part matches ``regex``
   return toSeq(this.listFilesL1().filterIt(it.contains(regex)))
 
-proc newState*(config: RunConfig, projVars: TableRef[string, string]): State =
+proc newState*(config: ConfigCmdCheck): State =
   return State(
     config: config,
-    projVars: projVars,
-    #projFiles: none[seq[string]],
     projFiles: none(seq[string])
     )

@@ -9,8 +9,9 @@ import re
 import options
 import strformat
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 let RS_EDITABLE= "^.*(csv|tsv|odp|xls|xslx|md|markdown)$" # TODO Should/Could we add more here? .. or rahter use the osh-file-types repo right away?
 let R_EDITABLE= re(RS_EDITABLE) # The Open-o-Meter requires the BoM (and other things) to be present in an editable format; thus we should check that at some point
@@ -18,9 +19,7 @@ let RS_BOM = "(?i)^(BoM|BillOfMaterials|Bill_of_Materials|Bill-of-Materials).*$"
 let R_BOM = re(RS_BOM)
 
 type BomExistsCheck = ref object of Check
-
-method id*(this: BomExistsCheck): seq[string] =
-  return @["bomex", "be", "bom_exists"]
+type BomExistsCheckGenerator = ref object of CheckGenerator
 
 method name(this: BomExistsCheck): string =
   return "BoM exists"
@@ -41,7 +40,7 @@ and potential candidates that could become a supply problem.
 ... plus probably many other uses."""
 
 method sourcePath*(this: BomExistsCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: BomExistsCheck): CheckReqs =
   return {
@@ -70,5 +69,12 @@ Please consider adding e.g. a 'BoM.csv'.""")
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: BomExistsCheckGenerator): seq[string] =
+  return @["bomex", "be", "bom_exists"]
+
+method generate*(this: BomExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   BomExistsCheck()
+
+proc createGenerator*(): CheckGenerator =
+  BomExistsCheckGenerator()

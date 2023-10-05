@@ -11,9 +11,10 @@ import strformat
 import strutils
 import system
 import ../check
-import ../config
+import ../check_config
 import ../state
-import ../tools
+import ../util/leightweight
+import ../util/fs
 import std/logging
 import std/osproc
 import std/streams
@@ -24,9 +25,7 @@ const HIGH_COMPLIANCE = 0.7
 const MIN_COMPLIANCE = 0.2
 
 type ReuseLintCheck = ref object of Check
-
-method id*(this: ReuseLintCheck): seq[string] =
-  return @["rl", "reusel", "reuse_lint"]
+type ReuseLintCheckGenerator = ref object of CheckGenerator
 
 method name*(this: ReuseLintCheck): string =
   return "REUSE Licensing info"
@@ -56,7 +55,7 @@ to understand their rights.
 """
 
 method sourcePath*(this: ReuseLintCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: ReuseLintCheck): CheckReqs =
   return {
@@ -132,7 +131,7 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
       if coverageDimensions > 0:
         coverage = coverage / coverageDimensions.float
       msg_lines.add("")
-      msg_lines.add(fmt"Total coverage (roughly): {tools.toPercentStr(coverage)}%")
+      msg_lines.add(fmt"Total coverage (roughly): {toPercentStr(coverage)}%")
       msg_lines.add("")
       msg_lines.add("Please get to a perfect REUSE state by using the REUSE-tool locally")
       msg_lines.add(fmt"(after installing): `{REUSE_CMD} lint`")
@@ -156,5 +155,12 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
     let msg = fmt("Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-proc createDefault*(): Check =
+method id*(this: ReuseLintCheckGenerator): seq[string] =
+  return @["rl", "reusel", "reuse_lint"]
+
+method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   ReuseLintCheck()
+
+proc createGenerator*(): CheckGenerator =
+  ReuseLintCheckGenerator()

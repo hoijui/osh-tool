@@ -7,21 +7,18 @@
 
 import docopt
 import results
-import os
 import options
 import strformat
 import std/logging
-import std/sequtils
 import std/strutils
-import std/sets
 import std/tables
-import ./config
-import ./checks
+import ./config_common
+import ./config_cmd_check
+import ./check_config
+import ./checks_registry
 import ./checker
-import ./init_update
-import ./init_updates
 import ./state
-import ./tools
+import ./util/leightweight
 
 include ./constants
 include ./version
@@ -69,9 +66,9 @@ This just reads files and writes to stdout.
 It neither deletes, changes nor creates files.
 
 Usage:
-  osh [-C <path>] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
-  osh [-C <path>] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
+  osh [-C <path>] [-c=<path>] [--config=<path>] [--default-config=<path>] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
+  osh [-C <path>] [-c=<path>] [--config=<path>] [--default-config=<path>] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C <path>] [-c=<path>] [--config=<path>] [--default-config=<path>] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -80,6 +77,8 @@ Options:
   -V --version       Show this tools version and exit.
   -q --quiet         Prevents all logging output, showing only the version number in combination with --version.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
+  -c --config <path> Load config from the given path; see --default-config.
+  --default-config <path> Path to a to-be-created JSON file, holding the default configuration.
   --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generated files, if they are explicitly requested (e.g. with --readme or --license).
   -l --list-checks   Creates a list of all available checks with descriptions in Markdown format and exits.
@@ -105,80 +104,89 @@ Examples:
   osh --list-checks
 """
 
-proc init*(registry: InitUpdatesRegistry, state: var State) =
-  info "Initializing OSH project directory ..."
+type
+  Command* = enum
+    Check
+    # Init
+    # Update
 
-  for iu in registry.initUpdates:
-    let res = iu.init(state)
-    if res.msg.isNone():
-      log(res.kind.logLevel(), fmt"Init - {iu.name()}? - {res.kind}")
-    else:
-      log(res.kind.logLevel(), fmt"Init - {iu.name()}? - {res.kind}: {res.msg.get()}")
+# proc init*(registry: var InitUpdatesRegistry, state: var State) =
+#   info "Initializing OSH project directory ..."
 
-proc update*(registry: InitUpdatesRegistry, state: var State) =
-  info "Updating OSH project directory to the latest guidelines ..."
+#   for primaryId, iu in registry.getAllInitUpdates(state.config.initUpdates):
+#     let res = iu.init(state)
+#     if res.msg.isNone():
+#       log(res.kind.logLevel(), fmt"Init - {iu.name()}? - {res.kind}")
+#     else:
+#       log(res.kind.logLevel(), fmt"Init - {iu.name()}? - {res.kind}: {res.msg.get()}")
 
-  for iu in registry.initUpdates:
-    let res = iu.update(state)
-    if res.msg.isNone():
-      log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}")
-    else:
-      log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}: {res.msg.get()}")
+# proc update*(registry: var InitUpdatesRegistry, state: var State) =
+#   info "Updating OSH project directory to the latest guidelines ..."
 
-proc run(config: RunConfig, projVars: TableRef[string, string]) =
+#   for primaryId, iu in registry.getAllInitUpdates(state.config.initUpdates):
+#     let res = iu.update(state)
+#     if res.msg.isNone():
+#       log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}")
+#     else:
+#       log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}: {res.msg.get()}")
+
+proc run(command: Command, config: ConfigCmdCheck) =
   debug "Creating the state ..."
-  var runState = newState(config, projVars)
-  case config.command:
-    of Init:
-      debug "Creating the init & update registry ..."
-      var registry = newInitUpdatesRegistry()
-      debug "Registering init handlers ..."
-      registry.registerInitUpdates()
-      debug "Running inits ..."
-      init(registry, runState)
-    of Update:
-      debug "Creating the init & update registry ..."
-      var registry = newInitUpdatesRegistry()
-      debug "Registering update handlers ..."
-      registry.registerInitUpdates()
-      debug "Running updates ..."
-      update(registry, runState)
+  var runState = newState(config)
+  case command:
+    # of Init:
+    #   debug "Creating the init & update registry ..."
+    #   var registry = newInitUpdatesRegistry()
+    #   debug "Registering init handlers ..."
+    #   registry.registerGenerators()
+    #   debug "Running inits ..."
+    #   init(registry, runState)
+    # of Update:
+    #   debug "Creating the init & update registry ..."
+    #   var registry = newInitUpdatesRegistry()
+    #   debug "Registering update handlers ..."
+    #   registry.registerGenerators()
+    #   debug "Running updates ..."
+    #   update(registry, runState)
     of Check:
       debug "Creating the checks registry ..."
-      var registry = newChecksRegistry()
+      var registry = ChecksRegistry.new()
       debug "Registering checks ..."
-      registry.registerChecks()
+      registry.registerGenerators()
       debug "Running checks ..."
       checker.check(registry, runState)
 
-proc extract_command(args: Table[string, Value]): Command =
+proc extractCommand(args: Table[string, Value]): Command =
   if args["init"]:
-    return Command.Init
+    # return Command.Init
+    raise newException(Defect, "Not implemented")
   elif args["update"]:
-    return Command.Init
+    # return Command.Update
+    raise newException(Defect, "Not implemented")
   elif args["check"]:
     return Command.Check
   else:
     info "No valid/known command given, defaultingto 'check'"
     return Command.Check
 
+proc extractCfgFile(args: Table[string, Value]): Option[string] =
+  if args["--config"]:
+    debug "Using config file:"
+    let cfgFile = $args["--config"]
+    debug cfgFile
+    some(cfgFile)
+  else:
+    none[string]()
+
 proc listChecks() =
   debug "Creating the checks registry ..."
-  var registry = newChecksRegistry()
+  var registry = ChecksRegistry.new()
   debug "Registering checks ..."
-  registry.registerChecks()
+  registry.registerGenerators()
   debug "Listing checks ..."
   registry.list()
 
 type CliRes = Result[void, string]
-
-const POSSIBLE_PV_PROJ_PREFIX_KEYS = [
-  # "BUILD_HOSTING_URL",
-  "REPO_RAW_VERSIONED_PREFIX_URL",
-  "REPO_VERSIONED_DIR_PREFIX_URL",
-  # "REPO_VERSIONED_FILE_PREFIX_URL",
-  "REPO_WEB_URL",
-]
 
 proc cli(): CliRes =
 
@@ -192,75 +200,56 @@ proc cli(): CliRes =
     listChecks()
     quit(0)
 
-  let projRoot =
-    if args["-C"]:
-      $args["-C"]
-    else:
-      os.getCurrentDir()
-  debug "Running projvar ..."
-  let projVars = runProjvar(projRoot)
-  debug "Projvar fetched vars:"
-  debug projVars
-  var projPrefixesSet = newSeq[string]()
-  projPrefixesSet.add(if projRoot == "." or projRoot == "": "./" else: projRoot)
-  projPrefixesSet.add(os.absolutePath(projRoot))
-  for prefixVar in POSSIBLE_PV_PROJ_PREFIX_KEYS:
-    if projVars.contains(prefixVar):
-      projPrefixesSet.add(projVars[prefixVar])
-  # Removes duplicates
-  let projPrefixes = projPrefixesSet.toHashSet().toSeq()
-  debug "Project prefixes:"
-  debug projPrefixes.join("\n\t")
-  debug "Creating config value 'reportTargets' ..."
-  var reportTargets = newSeq[Report]()
-  for rep in  args["--report-csv"]:
-    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.Csv))
-  for rep in args["--report-md-list"]:
-    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.MdList))
-  for rep in  args["--report-md-table"]:
-    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.MdTable))
-  for rep in  args["--report-json"]:
-    reportTargets.add(Report(path: some(rep), outputFormat: OutputFormat.Json))
-  let reportPaths = reportTargets.mapIt(it.path).filterIt(it.isSome).mapIt(it.get()).toHashSet()
-  if reportTargets.len() > reportPaths.len():
-    error "Duplicate report paths supplied; Please use each path only once!"
-    raise newException(Defect, "Duplicate report paths supplied")
-  if reportTargets.len() == 0:
-    reportTargets.add(Report(path: none(string), outputFormat: OutputFormat.MdList))
-  debug "Creating config value 'electronics' ..."
-  let electronics: YesNoAuto =
-    if args["--electronics"]:
-      Yes
-    elif args["--no-electronics"]:
-      No
-    else:
-      Auto
-  debug "Creating config value 'mechanics' ..."
-  let mechanics =
-    if args["--mechanics"]:
-      Yes
-    elif args["--no-mechanics"]:
-      No
-    else:
-      Auto
   debug "Creating config value 'command' ..."
-  let command = extract_command(args)
+  let command = extractCommand(args)
 
-  debug "Creating configuration ..."
-  let config = RunConfig(
-    command: command,
-    projRoot: projRoot,
-    projPrefixes: projPrefixes,
-    reportTargets: reportTargets,
-    force: args["--force"],
-    readme: args["--readme"],
-    license: args["--license"],
-    offline: args["--offline"],
-    electronics: electronics,
-    mechanics: mechanics,
-    )
+  if args["--default-config"]:
+    let configFile = $args["--default-config"]
+    case command
+      of Command.Check:
+        var cfg = ConfigCmdCheckOpt.new()
+        var registry = ChecksRegistry.new()
+        let config = cfg.extendWithDefaults(registry.getAllChecksDefaultConfig())
+        var configOpt = config.toOpt()
+        configOpt.projPrefixes = none[seq[string]]()
+        configOpt.writeJson(configFile)
+    quit(0)
 
-  run(config, projVars)
+  let configFile = extractCfgFile(args)
+
+  case command
+    of Command.Check:
+      var cfg = ConfigCmdCheckOpt.fromArgs(args)
+      debug ""
+      debug "Config (check) parsed from CLI arguments:"
+      debug "######################################################################"
+      debug cfg.toJsonStr()
+      debug "######################################################################"
+      debug ""
+      if configFile.isSome():
+        let cfgFromFile = ConfigCmdCheckOpt.parseJsonFile(configFile.get())
+        debug ""
+        debug "Config (check) parsed from config file:"
+        debug "######################################################################"
+        debug  cfgFromFile.toJsonStr()
+        debug "######################################################################"
+        debug ""
+        cfg.extendWith(cfgFromFile)
+      var registry = ChecksRegistry.new()
+      let config = cfg.extendWithDefaults(registry.getAllChecksDefaultConfig())
+      debug ""
+      debug "Config (check) combined from CLI, config-file (if used) and extended with defaults where necessary:"
+      debug "######################################################################"
+      debug  config.toOpt().toJsonStr()
+      debug "######################################################################"
+      debug ""
+      run(command, config)
+    # of Command.Init:
+      # ConfigCmdInitOpt.fromArgs(args)
+      # raise newException(Defect, "TODO implement")
+    # of Command.Update:
+      # ConfigCmdUpdateOpt.fromArgs(args)
+      # raise newException(Defect, "TODO implement")
 
   return ok()
 

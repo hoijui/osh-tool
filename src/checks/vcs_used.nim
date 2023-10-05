@@ -10,8 +10,9 @@ import os
 import strformat
 import system
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 type
   Vcs = tuple
@@ -20,6 +21,8 @@ type
       ## Dir or file name of the store/cache
     distributed: bool
       ## Whether this describes a distributed (vs centralized) VCS
+
+const IDS* = @["vu", "vcsu", "vcs_used"]
 
 ## The cache dir/file name for different VCS,
 ## and an indication whehter that VCS is distributed.
@@ -34,9 +37,7 @@ const STORE_FILE_OR_DIR_NAMES = [
 ]
 
 type VcsUsedCheck = ref object of Check
-
-method id*(this: VcsUsedCheck): seq[string] =
-  return @["vu", "vcsu", "vcs_used"]
+type VcsUsedCheckGenerator = ref object of CheckGenerator
 
 method name*(this: VcsUsedCheck): string =
   return "VCS is used"
@@ -88,7 +89,7 @@ Textual documentation can be edited online.
 """
 
 method sourcePath*(this: VcsUsedCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: VcsUsedCheck): CheckReqs =
   return {
@@ -132,5 +133,12 @@ Please consider using one,
 for example [git](https://git-scm.com/).""")
       )
 
-proc createDefault*(): Check =
+method id*(this: VcsUsedCheckGenerator): seq[string] =
+  return IDS
+
+method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   VcsUsedCheck()
+
+proc createGenerator*(): CheckGenerator =
+  VcsUsedCheckGenerator()

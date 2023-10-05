@@ -6,18 +6,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from strutils import join
-import re
 import options
+import re
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 let R_SPACE = re".*\s.*"
 
 type NoSpaceInFileNamesCheck = ref object of Check
-
-method id*(this: NoSpaceInFileNamesCheck): seq[string] =
-  return @["nsifn", "nospace", "no_space", "no_space_in_file_names"]
+type NoSpaceInFileNamesCheckGenerator = ref object of CheckGenerator
 
 method name*(this: NoSpaceInFileNamesCheck): string =
   return "No space in file names"
@@ -30,7 +29,7 @@ method why*(this: NoSpaceInFileNamesCheck): string =
 much easier and less error-prone."""
 
 method sourcePath*(this: NoSpaceInFileNamesCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: NoSpaceInFileNamesCheck): CheckReqs =
   return {
@@ -60,5 +59,12 @@ method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: NoSpaceInFileNamesCheckGenerator): seq[string] =
+  return @["nsifn", "nospace", "no_space", "no_space_in_file_names"]
+
+method generate*(this: NoSpaceInFileNamesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   NoSpaceInFileNamesCheck()
+
+proc createGenerator*(): CheckGenerator =
+  NoSpaceInFileNamesCheckGenerator()

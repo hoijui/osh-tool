@@ -5,20 +5,19 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import re
 import options
+import re
 import strformat
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 let RS_README = "(?i)^.*README.*$"
 let R_README = re(RS_README)
 
 type ReadmeExistsCheck = ref object of Check
-
-method id*(this: ReadmeExistsCheck): seq[string] =
-  return @["re", "rdmex", "readme_exists"]
+type ReadmeExistsCheckGenerator = ref object of CheckGenerator
 
 method name(this: ReadmeExistsCheck): string =
   return "README exists"
@@ -38,7 +37,7 @@ We might think of it as the most essential,
 basic part of the documentation of the project."""
 
 method sourcePath*(this: ReadmeExistsCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: ReadmeExistsCheck): CheckReqs =
   return {
@@ -66,5 +65,12 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: ReadmeExistsCheckGenerator): seq[string] =
+  return @["re", "rdmex", "readme_exists"]
+
+method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   ReadmeExistsCheck()
+
+proc createGenerator*(): CheckGenerator =
+  ReadmeExistsCheckGenerator()

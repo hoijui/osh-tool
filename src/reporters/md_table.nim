@@ -9,7 +9,7 @@ import sequtils
 import strformat
 import strutils
 import tables
-from ../tools import round
+from ../util/leightweight import round, toPercentStr
 import ../check
 import ./api
 
@@ -51,7 +51,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let kindColor = res.getKindColor()
   let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
   let compFac = res.calcCompliance()
-  let comp = tools.toPercentStr(compFac)
+  let comp = toPercentStr(compFac)
   let weight = check.getSignificanceFactors().weight
   let weightedComp = compFac * weight
   let msg = res.issues
@@ -69,12 +69,12 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
 method finalize(self: MdTableCheckFmt, stats: ReportStats) =
   let strm = self.repStream
   let tblOptAvers = if self.debug:
-    fmt" | __{tools.toPercentStr(stats.checks.weightsSum / float(stats.checks.run))}%__" &
-    fmt" | __{tools.toPercentStr(stats.ratings.compliance.factor)}%__"
+    fmt" | __{toPercentStr(stats.checks.weightsSum / float(stats.checks.run))}%__" &
+    fmt" | __{toPercentStr(stats.ratings.compliance.factor)}%__"
   else:
     ""
   strm.writeLine("| | " &
-    fmt"| __{tools.toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__" &
+    fmt"| __{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__" &
     tblOptAvers &
     " | __Average__ | |")
   strm.writeLine("")

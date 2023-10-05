@@ -5,14 +5,15 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import options
 import os
+import std/tables
 import system
 import ../check
-import ../config
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 import ../file_ext_meta
-import std/tables
 
 const EXT_FILE = "resources/osh-file-types/res/data/pcb.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
@@ -26,9 +27,7 @@ static:
 parseInjectExtsAndMap(staticRead(EXT_FILE_ABS))
 
 type CleanElectronicsFilesCheck = ref object of Check
-
-method id*(this: CleanElectronicsFilesCheck): seq[string] =
-  return @["cef", "celef", "clean_electronics_files"]
+type CleanElectronicsFilesCheckGenerator = ref object of CheckGenerator
 
 method name*(this: CleanElectronicsFilesCheck): string =
   return "Clean electronics files"
@@ -56,7 +55,7 @@ method why*(this: CleanElectronicsFilesCheck): string =
   This is required for being Open **Source** in the first place."""
 
 method sourcePath*(this: CleanElectronicsFilesCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: CleanElectronicsFilesCheck): CheckReqs =
   return {
@@ -75,5 +74,12 @@ method getSignificanceFactors*(this: CleanElectronicsFilesCheck): CheckSignifica
 method run*(this: CleanElectronicsFilesCheck, state: var State): CheckResult =
   extCheckRun(state, state.config.electronics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
-proc createDefault*(): Check =
+method id*(this: CleanElectronicsFilesCheckGenerator): seq[string] =
+  return @["cef", "celef", "clean_electronics_files"]
+
+method generate*(this: CleanElectronicsFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   CleanElectronicsFilesCheck()
+
+proc createGenerator*(): CheckGenerator =
+  CleanElectronicsFilesCheckGenerator()

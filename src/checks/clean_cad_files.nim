@@ -5,14 +5,15 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import options
 import os
+import std/tables
 import system
 import ../check
-import ../config
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 import ../file_ext_meta
-import std/tables
 
 const EXT_FILE = "resources/osh-file-types/res/data/cad.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
@@ -26,9 +27,7 @@ static:
 parseInjectExtsAndMap(staticRead(EXT_FILE_REL))
 
 type CleanCadFilesCheck = ref object of Check
-
-method id*(this: CleanCadFilesCheck): seq[string] =
-  return @["ccf", "ccadf", "clean_cad_files"]
+type CleanCadFilesCheckGenerator = ref object of CheckGenerator
 
 method name*(this: CleanCadFilesCheck): string =
   return "Clean CAD files"
@@ -56,7 +55,7 @@ method why*(this: CleanCadFilesCheck): string =
   This is required for being Open **Source** in the first place."""
 
 method sourcePath*(this: CleanCadFilesCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: CleanCadFilesCheck): CheckReqs =
   return {
@@ -75,5 +74,12 @@ method getSignificanceFactors*(this: CleanCadFilesCheck): CheckSignificance =
 method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
   extCheckRun(state, state.config.mechanics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
-proc createDefault*(): Check =
+method id*(this: CleanCadFilesCheckGenerator): seq[string] =
+  return @["ccf", "ccadf", "clean_cad_files"]
+
+method generate*(this: CleanCadFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   CleanCadFilesCheck()
+
+proc createGenerator*(): CheckGenerator =
+  CleanCadFilesCheckGenerator()

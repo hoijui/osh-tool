@@ -10,10 +10,11 @@ from strutils import join
 import os
 import options
 import re
-import ../config
+import ../config_cmd_check
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 const OKH_FILE* = "okh.toml"
 let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
@@ -21,13 +22,11 @@ let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
 const OKH_TEMPLATE_TOML_URL = "https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/sample_data/okh-TEMPLATE.toml"
 const OKH_TOOL_URL = "https://github.com/OPEN-NEXT/LOSH-OKH-tool/"
 
-proc okhFile*(config: RunConfig): string =
-  return os.joinPath(config.proj_root, OKH_FILE)
+proc okhFile*(config: ConfigCmdCheck): string =
+  return os.joinPath(config.projRoot, OKH_FILE)
 
 type OkhFileExistsCheck = ref object of Check
-
-method id*(this: OkhFileExistsCheck): seq[string] =
-  return @["oe", "okhex", "okh_file_exists"]
+type OkhFileExistsCheckGenerator = ref object of CheckGenerator
 
 method name*(this: OkhFileExistsCheck): string =
   return "OKH file exists"
@@ -47,7 +46,7 @@ to not waste life- or processing-time,
 which likely would still be less exact in its findings."""
 
 method sourcePath*(this: OkhFileExistsCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: OkhFileExistsCheck): CheckReqs =
   return {
@@ -91,5 +90,12 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
           some(fmt("Open Know-How meta-data file ({OKH_FILE}) not found.\nPlease consider creating it, if this is an OSH project.\nSee <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
         )
 
-proc createDefault*(): Check =
+method id*(this: OkhFileExistsCheckGenerator): seq[string] =
+  return @["oe", "okhex", "okh_file_exists"]
+
+method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   OkhFileExistsCheck()
+
+proc createGenerator*(): CheckGenerator =
+  OkhFileExistsCheckGenerator()

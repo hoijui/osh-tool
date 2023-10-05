@@ -5,17 +5,17 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import strutils
 import options
 import macros
-import strformat
-import system
 import std/strscans
-import ./tools
-import ./check
-import ./config
-import ./state
 import std/tables
+import strformat
+import strutils
+import system
+import ./check
+import ./state
+import ./util/leightweight
+import ./util/fs
 
 type
   Duo* {.size: sizeof(cint).} = enum

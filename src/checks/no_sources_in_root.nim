@@ -13,8 +13,9 @@ import macros
 import system
 import regex
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 const EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
@@ -75,9 +76,7 @@ static:
 parseInjectExts()
 
 type NoSourceFilesInRootCheck = ref object of Check
-
-method id*(this: NoSourceFilesInRootCheck): seq[string] =
-  return @["nsfir", "no_sources_in_root", "no_source_files_in_root"]
+type NoSourceFilesInRootCheckGenerator = ref object of CheckGenerator
 
 method name*(this: NoSourceFilesInRootCheck): string =
   return "No sources in root"
@@ -92,7 +91,7 @@ especially for non-coding people
 that might just wnat to browse or edit the documentation."""
 
 method sourcePath*(this: NoSourceFilesInRootCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: NoSourceFilesInRootCheck): CheckReqs =
   return {
@@ -138,5 +137,12 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: NoSourceFilesInRootCheckGenerator): seq[string] =
+  return @["nsfir", "no_sources_in_root", "no_source_files_in_root"]
+
+method generate*(this: NoSourceFilesInRootCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   NoSourceFilesInRootCheck()
+
+proc createGenerator*(): CheckGenerator =
+  NoSourceFilesInRootCheckGenerator()

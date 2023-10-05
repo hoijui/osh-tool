@@ -11,9 +11,11 @@ import strformat
 import strutils
 import system
 import ../check
-import ../config
+import ../check_config
 import ../state
-import ../tools
+import ../util/leightweight
+import ../util/fs
+import ../util/run
 
 include ../constants
 
@@ -21,9 +23,7 @@ const HIGH_COMPLIANCE = 0.9
 const MIN_COMPLIANCE = 0.6
 
 type UsesDirStdCheck = ref object of Check
-
-method id*(this: UsesDirStdCheck): seq[string] =
-  return @["dss", "dirstd", "dir_std", "dir_std_used"]
+type UsesDirStdCheckGenerator = ref object of CheckGenerator
 
 method name*(this: UsesDirStdCheck): string =
   return "Uses dir standard"
@@ -41,7 +41,7 @@ method why*(this: UsesDirStdCheck): string =
 2. find your way around quickly and easily in different projects"""
 
 method sourcePath*(this: UsesDirStdCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: UsesDirStdCheck): CheckReqs =
   return {
@@ -96,5 +96,12 @@ please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
   except OSError as err:
     return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(err.msg))
 
-proc createDefault*(): Check =
+method id*(this: UsesDirStdCheckGenerator): seq[string] =
+  return @["dss", "dirstd", "dir_std", "dir_std_used"]
+
+method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   UsesDirStdCheck()
+
+proc createGenerator*(): CheckGenerator =
+  UsesDirStdCheckGenerator()

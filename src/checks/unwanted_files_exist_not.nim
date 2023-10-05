@@ -6,18 +6,17 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 from strutils import join
-import re
 import options
+import re
 import ../check
+import ../check_config
 import ../state
-import ../tools
+import ../util/fs
 
 let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trashes|ehthumbs\.db|Thumbs\.db|.*~|.*\.orig|.*\.swp|.*\.kate-swp|.*\.fcstd1)$"
 
 type UnwantedFilesExistNotCheck = ref object of Check
-
-method id*(this: UnwantedFilesExistNotCheck): seq[string] =
-  return @["nuf", "nounwanted", "no_unwanted", "no_unwanted_files"]
+type UnwantedFilesExistNotCheckGenerator = ref object of CheckGenerator
 
 method name*(this: UnwantedFilesExistNotCheck): string =
   return "No unwanted files"
@@ -37,7 +36,7 @@ method why*(this: UnwantedFilesExistNotCheck): string =
 - confuse people, as they are around, yet seem to have no usefulness"""
 
 method sourcePath*(this: UnwantedFilesExistNotCheck): string =
-  return tools.srcFileName()
+  return fs.srcFileName()
 
 method requirements*(this: UnwantedFilesExistNotCheck): CheckReqs =
   return {
@@ -65,5 +64,12 @@ method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
     )
   )
 
-proc createDefault*(): Check =
+method id*(this: UnwantedFilesExistNotCheckGenerator): seq[string] =
+  return @["nuf", "nounwanted", "no_unwanted", "no_unwanted_files"]
+
+method generate*(this: UnwantedFilesExistNotCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+  this.ensureNonConfig(config)
   UnwantedFilesExistNotCheck()
+
+proc createGenerator*(): CheckGenerator =
+  UnwantedFilesExistNotCheckGenerator()
