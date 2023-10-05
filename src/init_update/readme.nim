@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -12,12 +12,16 @@ import re
 import ../config
 import ../tools
 import ../init_update
+import ../init_update_config
+import ../invalid_config_exception
 import ../state
 
 const README_TEMPLATE_URL = "https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/BLANK_README.md"
 let R_README = re".*README.*"
+const IDS* = @["re", "readme"]
 
 type ReadmeInitUpdate = ref object of InitUpdate
+type ReadmeInitUpdateGenerator = ref object of InitUpdateGenerator
 
 method name(this: ReadmeInitUpdate): string =
   return "README"
@@ -38,5 +42,13 @@ method init(this: ReadmeInitUpdate, state: var State): InitResult =
 method update(this: ReadmeInitUpdate, state: var State): UpdateResult =
   return UpdateResult(kind: Error, msg: some("Not yet implemented!")) # TODO
 
-proc createDefault*(): InitUpdate =
+method id*(this: ReadmeInitUpdateGenerator): seq[string] =
+  return IDS
+
+method generate*(this: ReadmeInitUpdateGenerator, config: Option[InitUpdateConfig] = none[InitUpdateConfig]()): InitUpdate =
+  if config.isSome:
+    raise InvalidConfigException.newException("This init&update does not take any configuration")
   ReadmeInitUpdate()
+
+proc createGenerator*(): InitUpdateGenerator =
+  ReadmeInitUpdateGenerator()
