@@ -59,10 +59,12 @@ type
     offline*: Option[bool]
       ## Whether to do everything without accessing the internet,
       ## and skip everything that does not work without it.
-    electronics*: Option[bool]
+    # electronics*: Option[bool]
+    electronics*: Option[YesNoAuto]
       ## Whether to treat the project as an electronics project -
       ## meaning, one that contains schematics and PCB designs.
-    mechanics*: Option[bool]
+    # mechanics*: Option[bool]
+    mechanics*: Option[YesNoAuto]
 
   CommonConfig* = ref object
     ## Same like `CommonConfigOpt`, but with certainty.
@@ -83,8 +85,10 @@ proc new*(configType: typedesc[CommonConfigOpt]): CommonConfigOpt =
     reportTargets: none[seq[Report]](),
     force: none[bool](),
     offline: none[bool](),
-    electronics: none[bool](),
-    mechanics: none[bool](),
+    # electronics: none[bool](),
+    # mechanics: none[bool](),
+    electronics: none[YesNoAuto](),
+    mechanics: none[YesNoAuto](),
   )
 
 proc fromArgs*(configType: typedesc[CommonConfigOpt], args: Table[string, docopt.Value]): CommonConfigOpt =
@@ -118,14 +122,18 @@ proc fromArgs*(configType: typedesc[CommonConfigOpt], args: Table[string, docopt
     config.offline = some(true)
 
   if args["--electronics"]:
-    config.electronics = Yes.toOpt()
+    # config.electronics = Yes.toOpt()
+    config.electronics = some(Yes)
   elif args["--no-electronics"]:
-    config.electronics = No.toOpt()
+    # config.electronics = No.toOpt()
+    config.electronics = some(No)
 
   if args["--mechanics"]:
-    config.mechanics = Yes.toOpt()
+    # config.mechanics = Yes.toOpt()
+    config.mechanics = some(Yes)
   elif args["--no-mechanics"]:
-    config.mechanics = No.toOpt()
+    # config.mechanics = No.toOpt()
+    config.mechanics = some(No)
 
   return config
 
@@ -160,8 +168,10 @@ proc extendWithDefaults*(this: CommonConfigOpt): CommonConfig =
     reportTargets: reportTargets,
     force: this.force.get(false),
     offline: this.offline.get(false),
-    electronics: YesNoAuto.fromOpt(this.electronics),
-    mechanics: YesNoAuto.fromOpt(this.mechanics),
+    # electronics: YesNoAuto.fromOpt(this.electronics),
+    # mechanics: YesNoAuto.fromOpt(this.mechanics),
+    electronics: this.electronics.get(YesNoAuto.Auto),
+    mechanics: this.mechanics.get(YesNoAuto.Auto),
   )
 
 proc toOpt*(this: CommonConfig): CommonConfigOpt =
@@ -171,6 +181,8 @@ proc toOpt*(this: CommonConfig): CommonConfigOpt =
     reportTargets: some(this.reportTargets),
     force: some(this.force),
     offline: some(this.offline),
-    electronics: this.electronics.toOpt(),
-    mechanics: this.mechanics.toOpt(),
+    # electronics: this.electronics.toOpt(),
+    # mechanics: this.mechanics.toOpt(),
+    electronics: some(this.electronics),
+    mechanics: some(this.mechanics),
   )

@@ -34,6 +34,29 @@ proc fromOpt*(t: typedesc[YesNoAuto], val: Option[bool]): YesNoAuto =
     else:
       Auto
 
+proc toStr*(this: YesNoAuto): string =
+  return case this:
+    of Yes:
+      "yes"
+    of No:
+      "no"
+    of Auto:
+      "auto"
+
+proc `$`*(this: YesNoAuto): string =
+  return this.toStr()
+
+proc fromStr*(t: typedesc[YesNoAuto], val: string): YesNoAuto =
+  let valL = val.toLower()
+  return if valL == "yes" or valL == "true" or valL == "1":
+      Yes
+    elif valL == "no" or valL == "false" or valL == "0":
+      No
+    elif valL == "auto" or valL == "automatic":
+      Auto
+    else:
+      raise newException(ValueError, "Failed to convert value '{val}' to YesNoAuto")
+
 macro importAll*(dir: static[string]): untyped =
   var bracket = newNimNode(nnkBracket)
   # let dir = "checks"

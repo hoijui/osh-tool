@@ -49,10 +49,10 @@ type
     offline*: Option[bool]
       ## Whether to do everything without accessing the internet,
       ## and skip everything that does not work without it.
-    electronics*: Option[bool]
+    electronics*: Option[YesNoAuto]
       ## Whether to treat the project as an electronics project -
       ## meaning, one that contains schematics and PCB designs.
-    mechanics*: Option[bool]
+    mechanics*: Option[YesNoAuto]
     checks*: Option[seq[CheckConfig]]
 
   ConfigCmdCheck* = ref object #of CommonConfig
@@ -107,8 +107,8 @@ proc toOpt*(this: ConfigCmdCheck): ConfigCmdCheckOpt =
     reportTargets: some(this.reportTargets),
     force: some(this.force),
     offline: some(this.offline),
-    electronics: this.electronics.toOpt(),
-    mechanics: this.mechanics.toOpt(),
+    electronics: some(this.electronics),
+    mechanics: some(this.mechanics),
     checks: some(tableToPlain(this.checks)),
   )
 
