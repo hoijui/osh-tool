@@ -25,9 +25,9 @@ proc toOpt*(this: YesNoAuto): Option[bool] =
     of Auto:
       none[bool]()
 
-proc fromOpt*(t: typedesc[YesNoAuto], this: Option[bool]): YesNoAuto =
-  return if this.isSome():
-      if this.get():
+proc fromOpt*(t: typedesc[YesNoAuto], val: Option[bool]): YesNoAuto =
+  return if val.isSome():
+      if val.get():
         Yes
       else:
         No
