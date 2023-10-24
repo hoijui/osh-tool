@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC0-1.0
 
 # `osh`-tool
 
-[![License: AGPL v3+](
+[![License: AGPL-3.0-or-later](
     https://img.shields.io/badge/License-AGPL%20v3+-blue.svg)](
     https://www.gnu.org/licenses/agpl-3.0)
 [![REUSE status](
