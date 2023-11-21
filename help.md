@@ -44,9 +44,9 @@ This just reads files and writes to stdout.
 It neither deletes, changes nor creates files.
 
 Usage:
-  osh [-C <path>] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
-  osh [-C <path>] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C <path>] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
+  osh [-C <path>] [-c=<path>] [--config=<path>] [--default-config=<path>] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
+  osh [-C <path>] [-c=<path>] [--config=<path>] [--default-config=<path>] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C <path>] [-c=<path>] [--config=<path>] [--default-config=<path>] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=<path> ...] [--report-md-table=<path> ...] [--report-json=<path> ...] [--report-csv=<path> ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -55,6 +55,8 @@ Options:
   -V --version       Show this tools version and exit.
   -q --quiet         Prevents all logging output, showing only the version number in combination with --version.
   -C <path>          Run as if osh was started in <path> instead of the current working directory.
+  -c --config <path> Load config from the given path; see --default-config.
+  --default-config <path> Path to a to-be-created JSON file, holding the default configuration.
   --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generated files, if they are explicitly requested (e.g. with --readme or --license).
   -l --list-checks   Creates a list of all available checks with descriptions in Markdown format and exits.

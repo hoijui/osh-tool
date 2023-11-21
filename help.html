@@ -61,9 +61,9 @@ This just reads files and writes to stdout.
 It neither deletes, changes nor creates files.
 
 Usage:
-  osh [-C &lt;path&gt;] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
-  osh [-C &lt;path&gt;] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
-  osh [-C &lt;path&gt;] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=&lt;path&gt; ...] [--report-md-table=&lt;path&gt; ...] [--report-json=&lt;path&gt; ...] [--report-csv=&lt;path&gt; ...]
+  osh [-C &lt;path&gt;] [-c=&lt;path&gt;] [--config=&lt;path&gt;] [--default-config=&lt;path&gt;] [--quiet] init    [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [--readme] [--license]
+  osh [-C &lt;path&gt;] [-c=&lt;path&gt;] [--config=&lt;path&gt;] [--default-config=&lt;path&gt;] [--quiet] update  [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics]
+  osh [-C &lt;path&gt;] [-c=&lt;path&gt;] [--config=&lt;path&gt;] [--default-config=&lt;path&gt;] [--quiet] [check] [--offline] [-e] [--electronics] [--no-electronics] [-m] [--mechanics] [--no-mechanics] [-f] [--force] [-l] [--list-checks] [--report-md-list=&lt;path&gt; ...] [--report-md-table=&lt;path&gt; ...] [--report-json=&lt;path&gt; ...] [--report-csv=&lt;path&gt; ...]
   osh (-h | --help)
   osh (-V | --version) [--quiet]
 
@@ -72,6 +72,8 @@ Options:
   -V --version       Show this tools version and exit.
   -q --quiet         Prevents all logging output, showing only the version number in combination with --version.
   -C &lt;path&gt;          Run as if osh was started in &lt;path&gt; instead of the current working directory.
+  -c --config &lt;path&gt; Load config from the given path; see --default-config.
+  --default-config &lt;path&gt; Path to a to-be-created JSON file, holding the default configuration.
   --offline          Do not access the network/internet.
   -f --force         Force overwriting of any generated files, if they are explicitly requested (e.g. with --readme or --license).
   -l --list-checks   Creates a list of all available checks with descriptions in Markdown format and exits.
