@@ -87,13 +87,14 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
       args = args,
       env = nil, # nil => inherit from parent process
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
-    debug "Waiting for 'projvar' run to end ..."
     process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    debug fmt"Waiting for '{PROJVAR_CMD}' run to end ..."
     let exCode = osproc.waitForExit(process)
     process.close()
     debug fmt"'{PROJVAR_CMD}' run done."
     if exCode == 0:
+      debug fmt"'{PROJVAR_CMD}' ran successsfully."
       let jsonRoot = parseJson(newFileStream(outFilePath), outFilePath)
       var vars = newTable[string, string]()
       echo jsonRoot.kind
@@ -108,12 +109,14 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
 proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[string]): string =
   debug fmt"Running {OSH_DIR_STD_TOOL_CMD} ..."
   try:
+    debug fmt"Now running '{OSH_DIR_STD_TOOL_CMD}' ..."
     let process = osproc.startProcess(
       command = OSH_DIR_STD_TOOL_CMD,
       workingDir = projRoot,
       args = args,
       env = nil,
       options = {poUsePath})
+    debug fmt"Waiting for '{OSH_DIR_STD_TOOL_CMD}' run to end ..."
     let procStdin = process.inputStream()
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Writing to stdin ..."
     for path in fileListing:
