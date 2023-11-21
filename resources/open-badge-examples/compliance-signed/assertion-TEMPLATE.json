@@ -13,7 +13,6 @@
     "type": "SignedBadge",
     "creator": "${KEY_ID}"
   },
-  "image": "${BAKED_IMAGE_URL}",
   "evidence": [
     ${EVIDENCE_1},
     ${EVIDENCE_2},
