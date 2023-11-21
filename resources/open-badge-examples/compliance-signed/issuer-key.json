@@ -1,0 +1,8 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "type": "CryptographicKey",
+  "id": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer-key.json",
+  "owner": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer.json",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArgydcadsgM7AOl9nvrZG\ncZqNl/zdk96tR9AMf1VMPS6y/JZVP90MOQ5ryPhK/7ubKDlnnJ78oV+/eyft295o\n49S2ViKZaPVsmLBXe/HDW2EDm1deyzzbCnvnN858yYZS930ObTiLzn/C0QBggGus\nh6NVbaJWpGTznDDr8wWkZUFhK0TNkK23x0ZudQI14TFs/EGbdtCA5wL9oKv1kC2Y\ncBbO8NnI16DWkJG3UKSnZZDXl1vUFAvZKWhsTNlM61ygkYqB8A6yDzdNnD7LxIWd\nO3Q1jF1AaFegUe5ye5u3to0r2MoWgmaR0Nh7cV8+N+Z1QBj6s5nS7KOl9lCEaaMH\ntZafwSBmKNowXuUdXUthMP6Y7GvxYDL1TEp+BIIqCIIv33ApKpMqCAVTlhBmr+ux\nvvPtjebhLQ17fADqOXdWjBE27Sxqy9Lr83NfbAUUEGIiz/zmwdm8VywqJC9i/edr\nToJYCmrsigIeS1UZjheTNEkP4vweJVuMq5KRADzhcmOQqc5klCAnRyBA1B6bumM/\nrT6vUTn06/jZJQZH+bx1k5cB2g2o5/0c9d3m/XIOL1IRVn0QiuVKiZ8N/EmSGzyj\ndVQ196PZ6wmg6bN9uQa0GP+kbv5NyKwXjunWinv0RwdkG189HyI8tT+/+JTygjHU\n7yxKIISrDI7gFC6FkzmfOTsCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+}
+

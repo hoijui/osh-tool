@@ -1,0 +1,13 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/badge-class.json",
+  "type": "BadgeClass",
+  "name": "osh-tool badge - sample - compliance (signed)",
+  "description": "A simple, signed (vs hosted) Open Badge 2.0 badge, concerning only the comliance factor of an osh-tool run.",
+  "image": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/media/img/osh-tool-sample-badge-signed.svg",
+  "criteria": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/criteria.json",
+  "tags": ["osh", "compliance"],
+  "alignment": [],
+  "issuer": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer.json"
+}
+

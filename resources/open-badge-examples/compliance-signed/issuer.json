@@ -1,0 +1,10 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer.json",
+  "type": "Issuer",
+  "name": "osh-tool sample issuer of Open Badges",
+  "url": "https://github.com/hoijui/osh-tool",
+  "image": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/media/img/osh-tool-logo.svg",
+  "publicKey": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer-key.json"
+}
+

@@ -1,0 +1,25 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "type": "Assertion",
+  "id": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/assertion-1.json",
+  "badge": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/badge-class.json",
+  "recipient": {
+    "type": "email",
+    "identity": "sha256$488842626ec74a0468d90ea17dc4e11c2d0e8e54e45c5075fbd1d2e767f44249",
+    "hashed": true,
+    "salt": "abcdefg123456789"
+  },
+  "verification": {
+    "type": "SignedBadge",
+    "creator": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer.json"
+  },
+  "image": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/assertion-1-badge-baked.svg",
+  "evidence": [
+    "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/assertion-1-osh-tool-output.json",
+    "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/assertion-1-osh-tool-output.md"
+  ],
+  "narrative": "The osh-tool was run on _Project X_, which achieved a total OSH(-tool) compliance of `86.42%`. See the evidence for further details.",
+  "issuedOn": "2022-06-17T23:59:59Z",
+  "expires": "2099-06-30T23:59:59Z"
+}
+

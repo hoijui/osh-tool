@@ -1,0 +1,7 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/criteria.json",
+  "type": "Criteria",
+  "narrative": "The [osh-tool](https://github.com/hoijui/osh-tool) has to be run on the respective OSH projects git repository (locally), using the defautl configuration for the tool, and the compliance factor has to reach at least 0.8 (-> 80% compliance)."
+}
+

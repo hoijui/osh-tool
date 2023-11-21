@@ -6,3 +6,10 @@ Source: https://gitlab.com/hoijui/osh-tool
 Files: resources/media/img/*.svg
 Copyright: Robin Vobruba <hoijui.quaero@gmail.com>
 License: CC-BY-SA-4.0
+
+Files:
+	resources/open-badge-examples/compliance-signed/*.json
+	resources/open-badge-examples/compliance-signed/*.pem
+	resources/open-badge-examples/compliance-signed/*.der
+Copyright: Robin Vobruba <hoijui.quaero@gmail.com>
+License: Unlicense
