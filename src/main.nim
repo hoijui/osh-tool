@@ -166,7 +166,7 @@ proc extractCommand(args: Table[string, Value]): Command =
   elif args["check"]:
     return Command.Check
   else:
-    info "No valid/known command given, defaultingto 'check'"
+    info "No valid/known command given, defaulting to 'check'"
     return Command.Check
 
 proc extractCfgFile(args: Table[string, Value]): Option[string] =
