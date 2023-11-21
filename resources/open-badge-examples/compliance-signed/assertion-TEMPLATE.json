@@ -2,23 +2,22 @@
   "@context": "https://w3id.org/openbadges/v2",
   "type": "Assertion",
   "id": "${ASSERTION_ID}",
-  "badge": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/badge-class.json",
+  "badge": "${BADGE_CLASS_ID}",
   "recipient": {
-    "type": "url",
+    "type": "${RECIPIENT_TYPE}",
     "identity": "${RECIPIENT_IDENTITY_HASH}",
     "hashed": true,
     "salt": "${RECIPIENT_SALT}"
   },
   "verification": {
     "type": "SignedBadge",
-    "creator": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer.json"
+    "creator": "${KEY_ID}"
   },
-  "image": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/assertion-gen-baked.svg",
+  "image": "${BAKED_IMAGE_URL}",
   "evidence": [
-    "${EVIDENCE_1}",
-    "${EVIDENCE_2}",
-    "${EVIDENCE_3}",
-    "${EVIDENCE_4}"
+    ${EVIDENCE_1},
+    ${EVIDENCE_2},
+    ${EVIDENCE_3}
   ],
   "narrative": "The osh-tool was run on _${PROJECT_NAME}_, which achieved a total OSH(-tool) compliance of `${COMPLIANCE_PERCENT}`. See the evidence for further details.",
   "issuedOn": "${DATE_ISSUED_ON}",

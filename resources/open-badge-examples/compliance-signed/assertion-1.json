@@ -11,7 +11,7 @@
   },
   "verification": {
     "type": "SignedBadge",
-    "creator": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer.json"
+    "creator": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/issuer-key.json"
   },
   "image": "https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed/assertion-1-badge-baked.svg",
   "evidence": [
