@@ -15,6 +15,7 @@ FROM nimlang/nim:2.0.0
 ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.4.4
 ARG okh_tool_bin=okh-tool
+ARG repvar_release=0.12.0
 ARG projvar_release=0.16.2
 ARG mle_release=0.23.0
 ARG mlc_release=0.17.1
@@ -95,6 +96,14 @@ RUN rm config.nims && \
         rm $OKH_TOOL_PKG.tar.gz && \
         rm -Rf $OKH_TOOL_PKG ; \
     fi
+
+ENV REPVAR_PKG="repvar-${repvar_release}-x86_64-unknown-linux-musl"
+ENV REPVAR_DL="https://github.com/hoijui/repvar/releases/download/$repvar_release/$REPVAR_PKG.tar.gz"
+RUN wget --quiet "$REPVAR_DL" && \
+    tar xf $REPVAR_PKG.tar.gz && \
+    mv $REPVAR_PKG/repvar ./ && \
+    rm $REPVAR_PKG.tar.gz && \
+    rm -Rf $REPVAR_PKG
 
 ENV PROJVAR_PKG="projvar-${projvar_release}-x86_64-unknown-linux-musl"
 ENV PROJVAR_DL="https://github.com/hoijui/projvar/releases/download/$projvar_release/$PROJVAR_PKG.tar.gz"
