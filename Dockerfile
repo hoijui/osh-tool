@@ -39,6 +39,7 @@ RUN \
         rubygems \
         wget \
         jq \
+        yq \
         bc \
         && \
     rm -rf /var/lib/apt/lists/*
