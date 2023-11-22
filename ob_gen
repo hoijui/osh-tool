@@ -205,18 +205,16 @@ then
 			-sha256 \
 			-nodes \
 			-pkeyopt "$pkeyopt" \
-			-pkeyopt "ec_param_enc:named_curve" \
 			-newkey "$ossl_sub_cmd" \
 			-keyform PEM \
 			-keyout "$PRIV_KEY_PEM" \
 			-days "$KEY_VALIDITY_DAYS" \
 			-outform PEM \
 			-out "$CERT"
-			# -pkeyopt "ec_param_enc:explicit" \
 
 		# Converts the private key from PEM to DER
 		# NOTE Doing it that way,
-		#      becasue I was not able to get OpenSSL
+		#      because I was not able to get OpenSSL
 		#      to directly create the private key in DER format
 		#      in the previous step.
 		openssl "$ossl_sub_cmd" \
@@ -245,7 +243,7 @@ then
 				-outform DER \
 				-out "$PRIV_KEY_DER" \
 				-pkeyopt ec_paramgen_curve:P-256 \
-				-pkeyopt ec_param_enc:named_curve
+				-pkeyopt ec_param_enc:explicit
 		else
 			>&2 echo "ERROR: Not yet supported algorithm (gen): '$ALG'!"
 			exit 4
