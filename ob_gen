@@ -15,7 +15,7 @@ SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 SCRIPT_NAME="$(basename "$SCRIPT_PATH")"
 OUT_DIR_DEFAULT="build"
-REQUIRED_TOOLS=("yq" "bc" "sed" "awk" "repvar" "obadgen" "openssl")
+REQUIRED_TOOLS=("jq" "bc" "sed" "awk" "repvar" "obadgen" "openssl")
 
 # parameters
 # repo="$(pwd)"
@@ -136,8 +136,8 @@ wget \
     -O "$OSH_TOOL_REPORT_JSON" \
     "$OSH_TOOL_REPORT_JSON_URL"
 COMPLIANCE_FACTOR_MIN="0.8"
-COMPLIANCE_FACTOR="$(yq r "$OSH_TOOL_REPORT_JSON" 'stats.ratings.compliance.factor')"
-COMPLIANCE_BADGE_URL=$(yq r "$OSH_TOOL_REPORT_JSON" 'stats.ratings.compliance.badgeUrl')
+COMPLIANCE_FACTOR="$(jq '.stats.ratings.compliance.factor' < "$OSH_TOOL_REPORT_JSON")"
+COMPLIANCE_BADGE_URL=$(jq '.stats.ratings.compliance.badgeUrl' < "$OSH_TOOL_REPORT_JSON")
 COMPLIANCE_BADGE="$out_dir/compliance-badge-raw.svg"
 wget \
 	--quiet \
@@ -174,7 +174,7 @@ EVIDENCE_2='"'"$OSH_TOOL_REPORT_HTML_URL"'"'
 EVIDENCE_3='"'"$OSH_TOOL_REPORT_MD_URL"'"'
 DATE_ISSUED_ON="$(date --iso-8601=seconds)"
 DATE_EXPIRES="$(date --iso-8601=seconds --date="2099-12-30")"
-COMPLIANCE_PERCENT="$(yq r "$OSH_TOOL_REPORT_JSON" 'stats.ratings.compliance.percent')"
+COMPLIANCE_PERCENT="$(jq '.stats.ratings.compliance.percent' < "$OSH_TOOL_REPORT_JSON")"
 EOF
 #EVIDENCE_4="{ \"compliance-factor\": \"$COMPLIANCE_FACTOR\" }"
 
