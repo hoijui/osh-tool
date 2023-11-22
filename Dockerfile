@@ -33,6 +33,7 @@ RUN \
     apt-get install -y --no-install-recommends \
         git \
         mercurial \
+        openssl \
         pandoc \
         python3.9 \
         python3-pip \
