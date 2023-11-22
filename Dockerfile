@@ -19,6 +19,7 @@ ARG repvar_release=0.12.0
 ARG projvar_release=0.16.2
 ARG mle_release=0.23.0
 ARG mlc_release=0.17.1
+ARG obadgen_release=0.2.0
 ARG osh_dir_std_release=0.7.0
 
 # Installs the FSF REUSE CLI tool
@@ -128,6 +129,14 @@ RUN wget --quiet "$MLC_DL" && \
     mv $MLC_PKG/mlc ./ && \
     rm $MLC_PKG.tar.gz && \
     rm -Rf $MLC_PKG
+
+ENV OBADGEN_PKG="obadgen-${obadgen_release}-x86_64-unknown-linux-musl"
+ENV OBADGEN_DL="https://github.com/hoijui/obadgen/releases/download/$obadgen_release/$OBADGEN_PKG.tar.gz"
+RUN wget --quiet "$OBADGEN_DL" && \
+    tar xf $OBADGEN_PKG.tar.gz && \
+    mv $OBADGEN_PKG/obadgen ./ && \
+    rm $OBADGEN_PKG.tar.gz && \
+    rm -Rf $OBADGEN_PKG
 
 ENV OSH_DIR_STD_PKG="osh-dir-std-${osh_dir_std_release}-x86_64-unknown-linux-musl"
 ENV OSH_DIR_STD_DL="https://github.com/hoijui/osh-dir-std-rs/releases/download/$osh_dir_std_release/$OSH_DIR_STD_PKG.tar.gz"
