@@ -80,6 +80,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     var options = {poUsePath};
     let outFilePath = genTempPath(fmt"osh-tool_{PROJVAR_CMD}_", ".json")
     args.add("--file-out=" & outFilePath)
+    args.add("--none")
     args.add("--raw-panic")
     options.incl(poUsePath)
     if debug:
