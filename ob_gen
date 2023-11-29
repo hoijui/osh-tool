@@ -21,6 +21,7 @@ REQUIRED_TOOLS=("jq" "bc" "sed" "awk" "repvar" "obadgen" "openssl")
 # repo="$(pwd)"
 out_dir="$OUT_DIR_DEFAULT"
 force=false
+example=false
 
 function print_help() {
 
@@ -36,6 +37,14 @@ function print_help() {
 	echo -e "  -o, --output-dir [PATH]"
 	echo -e "    Where to write the resulting Open Badge and JSON assertion to"
 	echo -e "    (default: '$OUT_DIR_DEFAULT')"
+	echo -e "  --project-report [JSON-FILE]"
+	echo -e "    Where to find the locally stored osh-tool JSON report"
+	echo -e "  --project-name [JSON-FILE]"
+	echo -e "    Where to find the locally stored osh-tool JSON report"
+	echo -e "  --project-report [JSON-FILE]"
+	echo -e "    Where to find the locally stored osh-tool JSON report"
+	echo -e "  --example"
+	echo -e "    Use example data from an osh-tool of the OHLOOM project"
 	echo -e "  -f, --force"
 	echo -e "    Forces overwriting the signign certificate/key, if it already exists"
 	echo -e "  -h, --help"
@@ -57,6 +66,25 @@ do
 		-o|--output-dir)
 			out_dir="$1"
 			shift
+			;;
+		--project-report)
+			OSH_TOOL_REPORT_JSON="$1"
+			shift
+			;;
+		--project-name)
+			PROJECT_NAME="$1"
+			shift
+			;;
+		--project-url)
+			RECIPIENT_URL="$1"
+			shift
+			;;
+		--project-hosting-url)
+			PROJECT_HOSTING_BASE_URL="$1"
+			shift
+			;;
+		--example)
+			example=true
 			;;
 		-f|--force)
 			force=true
@@ -88,17 +116,38 @@ then
 	exit 2
 fi
 
-# TODO Externalize these - Project specific parameters
-PROJECT_NAME="OHLOOM"
-RECIPIENT_URL="https://gitlab.com/OSEGermany/ohloom/"
-PROJECT_HOSTING_BASE_URL="https://osegermany.gitlab.io/ohloom"
+if $example
+then
+	if [ -n "${PROJECT_NAME+x}" ] || [ -n "${RECIPIENT_URL+x}" ] || [ -n "${PROJECT_HOSTING_BASE_URL+x}" ]
+	then
+		>&2 echo "ERROR: You may not use --example with any of --project-report, --project-name, --project-url, --project-hosting-url"
+		exit 3
+	fi
+	PROJECT_NAME="OHLOOM"
+	RECIPIENT_URL="https://gitlab.com/OSEGermany/ohloom"
+	PROJECT_HOSTING_BASE_URL="https://osegermany.gitlab.io/ohloom"
+	if [ -z ${OSH_TOOL_REPORT_JSON+x} ]
+	then
+		OSH_TOOL_REPORT_JSON_URL="$PROJECT_HOSTING_BASE_URL/osh-report.json"
+		OSH_TOOL_REPORT_JSON="$out_dir/$(basename "$OSH_TOOL_REPORT_JSON_URL")"
+		wget \
+			--quiet \
+			-O "$OSH_TOOL_REPORT_JSON" \
+			"$OSH_TOOL_REPORT_JSON_URL"
+	fi
+fi
 
+if [ -z "${OSH_TOOL_REPORT_JSON+x}" ] || [ -z "${PROJECT_NAME+x}" ] || [ -z "${RECIPIENT_URL+x}" ] || [ -z "${PROJECT_HOSTING_BASE_URL+x}" ]
+then
+	>&2 echo "ERROR: Please use either --example or all of --project-report, --project-name, --project-url, --project-hosting-url."
+	exit 4
+fi
 
 mkdir -p "$out_dir"
 
 # TODO Choose one of these two - really, we need URL though for the projects; right?
-# RECIPIENT_TYPE="url"
-RECIPIENT_TYPE="email"
+RECIPIENT_TYPE="url"
+# RECIPIENT_TYPE="email"
 if [ "$RECIPIENT_TYPE" = "url" ]
 then
 	RECIPIENT_IDENTITY_CLEAR="$RECIPIENT_URL"
@@ -130,11 +179,6 @@ RECIPIENT_SALT="dfvnk097t6iubasr$RANDOM"
 OSH_TOOL_REPORT_JSON_URL="$PROJECT_HOSTING_BASE_URL/osh-report.json"
 OSH_TOOL_REPORT_HTML_URL="$PROJECT_HOSTING_BASE_URL/osh-report.html"
 OSH_TOOL_REPORT_MD_URL="$PROJECT_HOSTING_BASE_URL/osh-report.md"
-OSH_TOOL_REPORT_JSON="$out_dir/$(basename "$OSH_TOOL_REPORT_JSON_URL")"
-wget \
-	--quiet \
-    -O "$OSH_TOOL_REPORT_JSON" \
-    "$OSH_TOOL_REPORT_JSON_URL"
 COMPLIANCE_FACTOR_MIN="0.8"
 COMPLIANCE_FACTOR="$(jq --raw-output '.stats.ratings.compliance.factor' < "$OSH_TOOL_REPORT_JSON")"
 COMPLIANCE_BADGE_URL=$(jq --raw-output '.stats.ratings.compliance.badgeUrl' < "$OSH_TOOL_REPORT_JSON")
