@@ -10,6 +10,8 @@ import json
 import jsony
 import options
 import std/sets
+import strformat
+import strutils
 import tables
 import ./check_config
 import ./config_common
@@ -238,6 +240,13 @@ proc dumpHook*[N, T](s: var string, v: array[N, t[T]]) =
     dumpKeyValuePair(s, k, e, i)
   s.add '}'
 
+proc enumHook*(val: string, v: var YesNoAuto) =
+  v = case val.toLower():
+    of "yes": Yes
+    of "no": No
+    of "auto": Auto
+    else: raise newException(IOError, fmt("Failed to parse value '{val}' into a YesNoAuto enum variant"))
+
 proc toJsonStr*(this: ConfigCmdCheckOpt): string =
   ## Converts the configuration into a pretty JSON string.
   ## Unset values (Option types set to none)
@@ -256,8 +265,7 @@ proc writeJson*(this: ConfigCmdCheckOpt, configFile: string) =
 proc fromJsonStr(t: typedesc[ConfigCmdCheckOpt], jsonStr: string): ConfigCmdCheckOpt =
   ## Parses a given string as JSON into a configuration object.
   ## Values not present in the JSON will be set to the Option variant none.
-  var jsonNode = json.parseJson(jsonStr)
-  return json.to(jsonNode, ConfigCmdCheckOpt)
+  return jsony.fromJson(jsonStr, ConfigCmdCheckOpt)
 
 proc parseJsonFile*(t: typedesc[ConfigCmdCheckOpt], configFile: string): ConfigCmdCheckOpt =
   ## Parses the content of the given file as JSON into a configuration object.

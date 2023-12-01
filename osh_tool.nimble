@@ -13,7 +13,11 @@ binDir = "build"
 requires "nim >= 2.0.0"
 requires "csvtools"
 requires "docopt"
-requires "jsony"
+# HACK We use our own, patched version of this library,
+#      until this gets merged upstream:
+#      <https://github.com/treeform/jsony/pull/83>
+# requires "jsony"
+requires "https://github.com/hoijui/jsony#1f57ea0"
 requires "shell"
 requires "regex"
 requires "result"
