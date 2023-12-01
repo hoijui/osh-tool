@@ -255,7 +255,7 @@ proc writeJson*(this: ConfigCmdCheckOpt, configFile: string) =
 
 proc fromJsonStr(t: typedesc[ConfigCmdCheckOpt], jsonStr: string): ConfigCmdCheckOpt =
   ## Parses a given string as JSON into a configuration object.
-  ## Values not present in the JSON will be set to the Option variant none. 
+  ## Values not present in the JSON will be set to the Option variant none.
   var jsonNode = json.parseJson(jsonStr)
   return json.to(jsonNode, ConfigCmdCheckOpt)
 
