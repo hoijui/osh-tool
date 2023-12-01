@@ -18,6 +18,18 @@ type
     prelude: ReportPrelude
     debug: bool
 
+proc bool2str(val: bool): string =
+  # let type_1 = true
+  # if type_1:
+  # See:
+  # * <https://en.wikipedia.org/wiki/Check_mark>
+  # * <https://en.wikipedia.org/wiki/X_mark>
+  if val: "✅" else: "❌"
+  # else:
+  #   let passedName = if val: "🗹" else: "☐"
+  #   let passedColor = res.getGoodColor()
+  #   fmt"""<font color="{passedColor}">{passedName}</font>"""
+
 method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   self.prelude = prelude
@@ -37,16 +49,7 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let strm = self.getStream(res)
-  # See:
-  # * <https://en.wikipedia.org/wiki/Check_mark>
-  # * <https://en.wikipedia.org/wiki/X_mark>
-  let type_1 = true
-  let passedStr = if type_1:
-    if res.isGood(): "✅" else: "❌"
-  else:
-    let passedName = if res.isGood(): "🗹" else: "☐"
-    let passedColor = res.getGoodColor()
-    fmt"""<font color="{passedColor}">{passedName}</font>"""
+  let passedStr = bool2str(res.isGood())
   let kindName = $res.kind
   let kindColor = res.getKindColor()
   let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
