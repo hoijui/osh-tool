@@ -12,6 +12,7 @@ import std/streams
 import std/strutils
 import strformat
 import system
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -82,9 +83,11 @@ method getSignificanceFactors*(this: MarkdownLintCheck): CheckSignificance =
     )
 
 method run*(this: MarkdownLintCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let mdFiles = filterByExtensions(state.listFiles(), @["md", "markdown"], 1)
   if mdFiles.len() == 0:
     return newCheckResult(
+      config,
       CheckResultKind.Inapplicable,
       CheckIssueSeverity.Low,
       some(fmt"No Markdown sources found, thus we can not lint anything")
@@ -103,7 +106,7 @@ method run*(this: MarkdownLintCheck, state: var State): CheckResult =
     process.close()
     debug fmt"'{MDL_CMD}' run done."
     if exCode == 0:
-      newCheckResult(CheckResultKind.Perfect)
+      newCheckResult(config, CheckResultKind.Perfect)
     else:
       var issues: seq[CheckIssue] = @[]
       var explLines: seq[string] = @[]
@@ -134,12 +137,13 @@ method run*(this: MarkdownLintCheck, state: var State): CheckResult =
         else:
           CheckResultKind.Acceptable
       CheckResult(
+        config: config,
         kind: kind,
         issues: issues
       )
   except OSError as err:
     let msg = fmt("ERROR Failed to run '{MDL_CMD}'; make sure it is in your PATH: {err.msg}")
-    newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+    newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: MarkdownLintCheckGenerator): seq[string] =
   return IDS

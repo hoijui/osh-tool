@@ -10,6 +10,7 @@ import os
 import std/uri
 import strformat
 import strutils
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -56,12 +57,13 @@ method getSignificanceFactors*(this: MdNoGlobalLinksToLocalFilesCheck): CheckSig
     )
 
 method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let mdFiles = filterByExtensions(state.listfiles(), @["md", "markdown"]) # TODO Make case-insensitive
   let links = try:
     extractMarkdownLinks(state.config.projRoot, mdFiles)
   except IOError as err:
     let msg = fmt("Failed to extract Markdown links from docu: {err.msg}")
-    return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+    return newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
   var issues = newSeq[CheckIssue]()
   let nl = "<br>&nbsp;"
   for link in links:
@@ -84,9 +86,10 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
           msg: some(fmt"'{link.srcFile}':{link.srcLine}:{link.srcColumn}{nl}    '{link.target}'{nl}    ->{nl}    '{newTarget}'")))
         continue
   if len(issues) == 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     CheckResult(
+      config: config,
       kind: CheckResultKind.Bad,
       issues: issues)
 

@@ -10,6 +10,7 @@ import options
 # import os
 import strformat
 import system
+import tables
 import ../check
 import ../check_config
 import ../config_cmd_check
@@ -68,21 +69,22 @@ method getSignificanceFactors*(this: VcsPublicCheck): CheckSignificance =
     )
 
 method run*(this: VcsPublicCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let vcsUsedGen = vcs_used.createGenerator()
   let vcsUsedId = vcsUsedGen.id()[0]
-  let vcsUsedConfig = ConfigCmdCheck(state.config).checks.getOrDefault(vcsUsedId, CheckConfig(id: vcsUsedId, json: none[string]()))
+  let vcsUsedConfig = ConfigCmdCheck(state.config).checks.getOrDefault(vcsUsedId, newCheckConfig(vcsUsedId))
   let vcsUsedResult = vcsUsedGen.generate(vcsUsedConfig).run(state)
   if not vcsUsedResult.isGood():
     let msg = fmt"""Project does not use a VCS, \
 so it could not possibly be publicly hosted."""
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(msg))
+    return newCheckResult(config, CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(msg))
   # TODO Support other VCS then git
   if not state.config.projVars.hasKey(PV_URL_KEY):
     let msg = fmt"""Project meta-data property '{PV_URL_KEY}' is not available; \
 You might not be using a local and public git repo to host this project, \
 or the projvar tool fails to find it for some reason.
 We currently only support the git VCS in this check."""
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(msg))
+    return newCheckResult(config, CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(msg))
   let publicGitRepoWebUrl = state.config.projVars[PV_URL_KEY]
   try: # TODO Move ths to ./util/run
     debug fmt"Now running '{IS_PUB_CMD}' ..."
@@ -111,24 +113,24 @@ We currently only support the git VCS in this check."""
 The first line should be 'true' or 'false', but was:
 '{firstLine}'
 """ & NOT_YOUR_FAULT
-        newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+        newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
       else:
         let isPublic = isPublicOpt.get()
         if isPublic:
-          newCheckResult(CheckResultKind.Perfect)
+          newCheckResult(config, CheckResultKind.Perfect)
         else:
-          newCheckResult(CheckResultKind.Perfect)
+          newCheckResult(config, CheckResultKind.Perfect)
     else:
       let msg = fmt"""Failed to run '{IS_PUB_CMD}'.
 exit code: {exCode}
 """ & NOT_YOUR_FAULT
-      newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+      newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
   except OSError as err:
     let msg = fmt"""Failed to run '{IS_PUB_CMD}'.
 error message:
 '{err.msg}'
 """ & NOT_YOUR_FAULT
-    newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+    newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: VcsPublicCheckGenerator): seq[string] =
   return IDS

@@ -8,6 +8,7 @@
 import re
 import options
 import strformat
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -60,10 +61,12 @@ method getSignificanceFactors*(this: BomExistsCheck): CheckSignificance =
 
 method run(this: BomExistsCheck, state: var State): CheckResult =
   # TODO Also use osh-dir-std tag "bom" to find it
+  let config = state.config.checks[ID]
   return (if filterPathsMatching(state.listFilesL1(), R_BOM).len > 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.Middle,
       some("""No BoM file found in the root directory.

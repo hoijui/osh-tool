@@ -74,7 +74,7 @@ method getSignificanceFactors*(this: CleanElectronicsFilesCheck): CheckSignifica
     )
 
 method run*(this: CleanElectronicsFilesCheck, state: var State): CheckResult =
-  extCheckRun(state, state.config.electronics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
+  extCheckRun(state, ID, state.config.electronics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
 method id*(this: CleanElectronicsFilesCheckGenerator): seq[string] =
   return IDS

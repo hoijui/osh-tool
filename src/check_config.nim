@@ -10,10 +10,15 @@ import options
 type
   CheckConfig* = ref object
     id*: string
+    customReqCompFac*: Option[float]
+      ## The minimum required compliance factor to pass this test.
+      ## This is not used by default (set to `none`),
+      ## but may be set in a supplied configuration.
     json*: Option[string]
 
 template newCheckConfig*(idArg: string): CheckConfig =
   CheckConfig(
       id: idArg,
+      customReqCompFac: none[float](),
       json: none[string](),
     )

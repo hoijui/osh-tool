@@ -12,6 +12,7 @@ import os
 import macros
 import system
 import regex
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -113,6 +114,7 @@ method getSignificanceFactors*(this: NoSourceFilesInRootCheck): CheckSignificanc
     )
 
 method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let rootSourceFiles = filterByExtensions(
     state.listFilesL1(),
     SOURCE_EXTENSIONS,
@@ -126,9 +128,10 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
     )
   # TODO Only fail if more then 2 files with the same extension are found
   return (if rootSourceFiles.len == 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.Low,
       some(

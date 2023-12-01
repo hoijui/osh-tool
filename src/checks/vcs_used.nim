@@ -9,6 +9,7 @@ import options
 import os
 import strformat
 import system
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -107,6 +108,7 @@ method getSignificanceFactors*(this: VcsUsedCheck): CheckSignificance =
     )
 
 method run*(this: VcsUsedCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   var usedVcs = none(Vcs)
   for vcs in STORE_FILE_OR_DIR_NAMES:
     let storePath = os.joinPath(state.config.projRoot, vcs.store)
@@ -117,9 +119,10 @@ method run*(this: VcsUsedCheck, state: var State): CheckResult =
     if usedVcs.isSome():
       let vcs = usedVcs.get()
       if vcs.distributed:
-        newCheckResult(CheckResultKind.Perfect)
+        newCheckResult(config, CheckResultKind.Perfect)
       else:
         newCheckResult(
+          config,
           CheckResultKind.Ok,
           CheckIssueSeverity.Low,
           some(fmt"""VCS detected ({vcs.name}), but it is not a distributed one
@@ -128,6 +131,7 @@ for example [git](https://git-scm.com/).""")
         )
     else:
       newCheckResult(
+        config,
         CheckResultKind.Bad,
         CheckIssueSeverity.Middle,
         some("""No VCS detected.

@@ -74,7 +74,7 @@ method getSignificanceFactors*(this: CleanCadFilesCheck): CheckSignificance =
     )
 
 method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
-  extCheckRun(state, state.config.mechanics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
+  extCheckRun(state, ID, state.config.mechanics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
 method id*(this: CleanCadFilesCheckGenerator): seq[string] =
   return IDS

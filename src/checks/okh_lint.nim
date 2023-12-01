@@ -9,6 +9,7 @@ import options
 import os
 import strformat
 import system
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -63,8 +64,13 @@ method getSignificanceFactors*(this: OkhLintCheck): CheckSignificance =
     )
 
 method run*(this: OkhLintCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   if not os.fileExists(okhFile(state.config)):
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.High, some(fmt"Main OKH manifest file {OKH_FILE} not found"))
+    return newCheckResult(
+      config,
+      CheckResultKind.Inapplicable,
+      CheckIssueSeverity.High,
+      some(fmt"Main OKH manifest file {OKH_FILE} not found"))
   try:
     debug fmt"Now running '{OKH_CMD}' ..."
     let process = osproc.startProcess(
@@ -79,16 +85,16 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
     process.close()
     debug fmt"'{OKH_CMD}' run done."
     if exCode == 0:
-      newCheckResult(CheckResultKind.Perfect)
+      newCheckResult(config, CheckResultKind.Perfect)
     else:
       let msg = if len(lines) > 0:
           some(lines.join("\n"))
         else:
           none(string)
-      newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
+      newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.Middle, msg)
   except OSError as err:
     let msg = fmt("ERROR Failed to run '{OKH_CMD}'; make sure it is in your PATH: {err.msg}")
-    newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+    newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: OkhLintCheckGenerator): seq[string] =
   return IDS

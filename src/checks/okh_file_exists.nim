@@ -10,6 +10,7 @@ from strutils import join
 import os
 import options
 import re
+import tables
 import ../config_cmd_check
 import ../check
 import ../check_config
@@ -65,13 +66,15 @@ method getSignificanceFactors*(this: OkhFileExistsCheck): CheckSignificance =
     )
 
 method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   if os.fileExists(okhFile(state.config)):
-    return newCheckResult(CheckResultKind.Perfect)
+    return newCheckResult(config, CheckResultKind.Perfect)
   else:
     let nonDefaultTomls = filterPathsMatchingFileName(state.listFilesL1(), R_OKH_FILE_LOSH)
     if nonDefaultTomls.len() > 0:
       let presentTomls = nonDefaultTomls.join(", ")
       return newCheckResult(
+          config,
           CheckResultKind.Bad,
           CheckIssueSeverity.Low,
           some(fmt("While you have an OKH meta-data file ({presentTomls}),\nit is prefferable to use the specific file name '{OKH_FILE}'."))
@@ -81,12 +84,14 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
       if nonDefaultYamls.len() > 0:
         let presentYamls = nonDefaultYamls.join(", ")
         return newCheckResult(
+          config,
           CheckResultKind.Bad,
           CheckIssueSeverity.Middle,
           some(fmt("While you have an OKH v1 meta-data file ({presentYamls}),\nit is prefferable to use the new OKH LOSH standard.\nYou may want to use the okh-tool (<{OKH_TOOL_URL}>) to convert your OKH v1 '{presentYamls}' to an OKH-LOSH '{OKH_FILE}'."))
         )
       else:
         return newCheckResult(
+          config,
           CheckResultKind.Bad,
           CheckIssueSeverity.High,
           some(fmt("Open Know-How meta-data file ({OKH_FILE}) not found.\nPlease consider creating it, if this is an OSH project.\nSee <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"

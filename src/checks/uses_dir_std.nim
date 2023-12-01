@@ -10,6 +10,7 @@ import options
 import strformat
 import strutils
 import system
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -61,6 +62,7 @@ method getSignificanceFactors*(this: UsesDirStdCheck): CheckSignificance =
     )
 
 method run*(this: UsesDirStdCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   try:
     let args = ["rate", "--standard", DIR_STD_NAME, "--include-coverage"]
     let jsonLines = runOshDirStd(state.config.projRoot, args, state.listFiles())
@@ -79,24 +81,24 @@ files not covered by the standard:
 - """ & notInStdFiles.join("\n- ")
         let compFactorRounded = round(compFactor)
         if compFactor == 1.0:
-          return newCheckResult(CheckResultKind.Perfect)
+          return newCheckResult(config, CheckResultKind.Perfect)
         elif compFactor >= HIGH_COMPLIANCE:
-          return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
+          return newCheckResult(config, CheckResultKind.Ok, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is not perfect, but close, \
 being above the high compliance margin of {HIGH_COMPLIANCE}""" & notInStdFilesStr))
         elif compFactor >= MIN_COMPLIANCE:
-          return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.Middle,
+          return newCheckResult(config, CheckResultKind.Ok, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is above the minimum compliance margin \
 of {MIN_COMPLIANCE}; good! :-)""" & notInStdFilesStr))
         else:
-          return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.Middle,
+          return newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.Middle,
               some(fmt"""Compliance factor {compFactorRounded} is low; \
 below the minimum compliance margin of {MIN_COMPLIANCE}""" & notInStdFilesStr))
-    return newCheckResult(CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
+    return newCheckResult(config, CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
         some(fmt"""Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; \
 please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
   except OSError as err:
-    return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(err.msg))
+    return newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(err.msg))
 
 method id*(this: UsesDirStdCheckGenerator): seq[string] =
   return IDS

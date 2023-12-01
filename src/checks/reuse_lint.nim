@@ -10,6 +10,7 @@ import regex
 import strformat
 import strutils
 import system
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -74,6 +75,7 @@ method getSignificanceFactors*(this: ReuseLintCheck): CheckSignificance =
     )
 
 method run*(this: ReuseLintCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   try:
     debug fmt"Now running '{REUSE_CMD}' ..."
     let process = osproc.startProcess(
@@ -88,7 +90,7 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
     process.close()
     debug fmt"'{REUSE_CMD}' run done."
     if exCode == 0:
-      newCheckResult(CheckResultKind.Perfect)
+      newCheckResult(config, CheckResultKind.Perfect)
     else:
       var msg_lines = newSeq[string]()
       msg_lines.add("For more details then this list, and help with fixing these issues,")
@@ -149,13 +151,14 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
         msg: msg
       ), 0)
       CheckResult(
+        config: config,
         kind: kind,
         issues: issues
       )
 
   except OSError as err:
     let msg = fmt("Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
-    newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+    newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: ReuseLintCheckGenerator): seq[string] =
   return IDS

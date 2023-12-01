@@ -8,6 +8,7 @@
 from strutils import join
 import options
 import re
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -55,11 +56,13 @@ method getSignificanceFactors*(this: UnwantedFilesExistNotCheck): CheckSignifica
     )
 
 method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let unwantedFiles = filterPathsMatchingFileName(state.listFiles(), R_UNWANTED_FILES)
   return (if unwantedFiles.len == 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.Middle,
       some("Unwanted files found. Please consider removing them:\n\n- " & unwantedFiles.join("\n- "))

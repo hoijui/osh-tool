@@ -54,6 +54,8 @@ type
   CheckResult* = object
     ## A container for all the data that makes up the result/scoring,
     ## by running a single check on a project.
+    config*: CheckConfig
+      ## The configuration that was used to generate this result.
     kind*: CheckResultKind
       ## The main status indicator of the check run.
     issues*: seq[CheckIssue]
@@ -121,6 +123,12 @@ type
         ## of all checks that ran.
       weightedComplianceSum: float, ## The sum over the weighted compliance factors
         ## of all checks that ran.
+      customCompliance: tuple[
+        passed: int, ## The number of tests that passed, according to their custom config.
+        failed: int, ## The number of tests that failed, according to their custom config.
+        notConfigured: int, ## The number of tests run that had no custom config.
+        ], ## Checks statistics related to their individual,
+        ## custom, required compliance factor, as provided in the configuration.
       ]
       ## Rough statistical data about the running of the checks.
     issues*: Table[string, int]
@@ -293,13 +301,14 @@ proc toCheckReqs*(bits: int): CheckReqs =
   ## This is the inverse of `CheckReqs.toNum(CheckReqs)`.
   cast[CheckReqs](bits)
 
-proc newCheckResult*(kind: CheckResultKind): CheckResult =
+proc newCheckResult*(config: CheckConfig, kind: CheckResultKind): CheckResult =
   ## Creates a check-result without an issue
-  return CheckResult(kind: kind, issues: @[])
+  return CheckResult(config: config, kind: kind, issues: @[])
 
-proc newCheckResult*(kind: CheckResultKind, severity: CheckIssueSeverity, msg: Option[string]): CheckResult =
+proc newCheckResult*(config: CheckConfig, kind: CheckResultKind, severity: CheckIssueSeverity, msg: Option[string]): CheckResult =
   ## Creates a check-result with a single issue
   return CheckResult(
+    config: config,
     kind: kind,
     issues: @[
       CheckIssue(
@@ -397,6 +406,20 @@ proc calcCompliance*(res: CheckResult): float32 =
 
   return oKind * oIssues
 
+proc isCustomPassed*(res: CheckResult): Option[bool] =
+  ## Whether the user-/config-supplied,
+  ## custom compliance factor has been reached.
+  ## See `CheckConfig.customReqCompFac`.
+  let checkConfig = res.config
+  if checkConfig.customReqCompFac.isSome():
+    let reqComFactor = checkConfig.customReqCompFac.get()
+    if res.calcCompliance() < reqComFactor:
+      some(false)
+    else:
+      some(true)
+  else:
+    none[bool]()
+
 method id*(this: CheckGenerator): seq[string] {.base.} =
   ## Returns a list of short, human&machine oriented, unique IDs/names
   ## of the check that this can generate.
@@ -465,12 +488,9 @@ method getSignificanceFactors*(this: Check): CheckSignificance {.base.} =
 
 method run*(this: Check, state: var State): CheckResult {.base.} =
   ## Runs this check on a specific project.
-  return CheckResult(
-    kind: CheckResultKind.Bad,
-    issues: @[
-      CheckIssue(
-        severity: CheckIssueSeverity.DeveloperFailure,
-        msg: some("Not implemented for this specific check!")
-      )
-    ]
+  return newCheckResult(
+    newCheckConfig("non-ID"),
+    CheckResultKind.Bad,
+    CheckIssueSeverity.DeveloperFailure,
+    some("Not implemented for this specific check!")
   )

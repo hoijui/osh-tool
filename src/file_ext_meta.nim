@@ -146,12 +146,13 @@ macro parseInjectExtsAndMap*(extsCsvContent: static[string]): untyped =
   # Use this for debugging:
   #echo toStrLit(result)
 
-proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string], fileExtsMaxParts: int, fileExtsMap: Table[string, (int, int, int, string)]): CheckResult =
+proc extCheckRun*(state: var State, checkId: string, configVal: YesNoAuto, fileExts: seq[string], fileExtsMaxParts: int, fileExtsMap: Table[string, (int, int, int, string)]): CheckResult =
+  let config = state.config.checks[checkId]
   if configVal == YesNoAuto.No:
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("Configured to always skip"))
+    return newCheckResult(config, CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("Configured to always skip"))
   let matchingFiles = filterByExtensions(state.listFilesNonGenerated(), fileExts, fileExtsMaxParts)
   if configVal == YesNoAuto.Auto and matchingFiles.len() == 0:
-    return newCheckResult(CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("No relevant files were found"))
+    return newCheckResult(config, CheckResultKind.Inapplicable, CheckIssueSeverity.Low, some("No relevant files were found"))
 
   var issues: seq[CheckIssue] = @[]
   if matchingFiles.len() == 0:
@@ -182,9 +183,10 @@ proc extCheckRun*(state: var State, configVal: YesNoAuto, fileExts: seq[string],
           )
 
   return (if issues.len == 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     CheckResult(
+        config: config,
         kind: CheckResultKind.Bad,
         issues: issues
       )

@@ -8,6 +8,7 @@
 from strutils import join
 import options
 import re
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -63,11 +64,13 @@ method getSignificanceFactors*(this: NoGeneratedFilesCheck): CheckSignificance =
     )
 
 method run*(this: NoGeneratedFilesCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let foundFiles = filterPathsMatchingFileName(state.listFilesNonGenerated(), R_GENERATABLE)
   return (if foundFiles.len == 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.Low,
       some(

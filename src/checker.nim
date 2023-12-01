@@ -93,6 +93,7 @@ proc check*(registry: var ChecksRegistry, state: var State) =
   # including skipped checks
   var idxAll = 0
   var passedChecks = 0
+  var customCompliance = (passed: 0, failed: 0, notConfigured: 0)
   var issues = initTable[string, int]()
   for imp in CheckIssueSeverity:
     issues[$imp] = 0
@@ -116,6 +117,15 @@ proc check*(registry: var ChecksRegistry, state: var State) =
       idxAll += 1
       continue
     let compliance = res.calcCompliance()
+    let customPassed = res.isCustomPassed()
+    if customPassed.isSome():
+      let passed = customPassed.get()
+      if passed:
+        customCompliance.passed += 1
+      else:
+        customCompliance.failed += 1
+    else:
+      customCompliance.notConfigured += 1
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
     let checkSigFacs = check.getSignificanceFactors()
@@ -147,6 +157,7 @@ proc check*(registry: var ChecksRegistry, state: var State) =
       complianceSum: complianceSum,
       weightsSum: weightsSum,
       weightedComplianceSum: weightedComplianceSum,
+      customCompliance: customCompliance,
       ),
     issues: issues,
     ratings: score.intoRatings()

@@ -8,6 +8,7 @@
 import options
 import re
 import strformat
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -61,10 +62,12 @@ method getSignificanceFactors*(this: LicenseExistsCheck): CheckSignificance =
 
 method run*(this: LicenseExistsCheck, state: var State): CheckResult =
   # TODO Add checks for REUSE bom, or check the output of `reuse --lint`
+  let config = state.config.checks[ID]
   return (if filterPathsMatching(state.listFilesL1(), R_LICENSE).len > 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.High,
       some("""No LICENSE (or COPYING) file found in the root directory.

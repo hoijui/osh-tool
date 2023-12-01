@@ -8,6 +8,7 @@
 import options
 import re
 import strformat
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -56,10 +57,12 @@ method getSignificanceFactors*(this: ReadmeExistsCheck): CheckSignificance =
     )
 
 method run(this: ReadmeExistsCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   return (if filterPathsMatching(state.listFilesL1(), R_README).len > 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.Middle,
       some("""No README file found in the root directory.

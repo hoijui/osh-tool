@@ -8,6 +8,7 @@
 from strutils import join
 import options
 import re
+import tables
 import ../check
 import ../check_config
 import ../state
@@ -48,11 +49,13 @@ method getSignificanceFactors*(this: NoSpaceInFileNamesCheck): CheckSignificance
     )
 
 method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
   let spacedFiles = filterPathsMatching(state.listFiles(), R_SPACE)
   return (if spacedFiles.len == 0:
-    newCheckResult(CheckResultKind.Perfect)
+    newCheckResult(config, CheckResultKind.Perfect)
   else:
     newCheckResult(
+      config,
       CheckResultKind.Bad,
       CheckIssueSeverity.Low,
       some("Files with spaces in their names (Please consider renaming them):\n\n- " &
