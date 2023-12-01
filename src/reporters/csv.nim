@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import options
 import sequtils
 import strformat
 import strutils
@@ -15,6 +16,7 @@ import csvtools
 type
   CsvCheck = object
       passed: string
+      customPassed: string
       state: string
       compliance: float
       weight: float
@@ -26,11 +28,19 @@ type
 
 method init(self: CsvCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
-  strm.writeLine("\"Passed\", \"Status\", \"Compliance Factor\", \"Weight\", \"Weighted Comp. Fac.\", \"Check\", \"Severity - Issue\"")
+  strm.writeLine("\"Passed\", \"Custom-Passed\", \"Status\", \"Compliance Factor\", \"Weight\", \"Weighted Comp. Fac.\", \"Check\", \"Severity - Issue\"")
 
 method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let passed = isGood(res)
   let passedStr = if passed: "true" else: "false"
+  let customPassed = res.isCustomPassed()
+  let customPassedStr = if customPassed.isSome():
+      if customPassed.get():
+        "true"
+      else:
+        "false"
+    else:
+      ""
   let compliance = res.calcCompliance()
   let weight = check.getSignificanceFactors().weight
   let msg = res.issues
@@ -41,6 +51,7 @@ method report(self: CsvCheckFmt, check: Check, res: CheckResult, index: int, ind
     .replace("\n", " <br>&nbsp;")
   self.checks.add(CsvCheck(
     passed: passedStr,
+    customPassed: customPassedStr,
     state: $res.kind,
     compliance: compliance,
     weight: weight,

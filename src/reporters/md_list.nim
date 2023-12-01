@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import options
 import sequtils
 import strformat
 import strutils
@@ -26,13 +27,21 @@ method report(self: MdListCheckFmt, check: Check, res: CheckResult, index: int, 
   let strm = self.getStream(res)
   let passed = isGood(res)
   let passedStr = if passed: "x" else: " "
+  let customPassed = res.isCustomPassed()
+  let customPassedStr = if customPassed.isSome():
+      if customPassed.get():
+        "[x]"
+      else:
+        "[ ]"
+    else:
+      "   "
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
       let severityStr = fmt"{issue.severity}"
       fmt("\n  - {severityStr.toUpper()}{msgFmt(issue.msg)}")
     )
     .join("")
-  strm.writeLine(fmt"- [{passedStr}] (compliance: {round(res.calcCompliance())}) {check.name()}{msg}")
+  strm.writeLine(fmt"- [{passedStr}]{customPassedStr} (compliance: {round(res.calcCompliance())}) {check.name()}{msg}")
 
 method finalize(self: MdListCheckFmt, stats: ReportStats) =
   let strm = self.repStream
@@ -47,6 +56,9 @@ method finalize(self: MdListCheckFmt, stats: ReportStats) =
   strm.writeLine(fmt"  * Passed: {stats.checks.passed}")
   strm.writeLine(fmt"  * Failed: {stats.checks.failed}")
   strm.writeLine(fmt"  * Available: {stats.checks.available}")
+  strm.writeLine(fmt"  * Custom-Passed: {stats.checks.customCompliance.passed}")
+  strm.writeLine(fmt"  * Custom-Failed: {stats.checks.customCompliance.failed}")
+  strm.writeLine(fmt"  * Custom-Not-Configured: {stats.checks.customCompliance.notConfigured}")
   strm.writeLine(fmt"  * Compliance (Sum / Average): {round(stats.checks.complianceSum)} / {round(stats.checks.complianceSum / float(stats.checks.run))}")
   strm.writeLine(fmt"  * Weights (Sum / Average): {round(stats.checks.weightsSum)} / {round(stats.checks.weightsSum / float(stats.checks.run))}")
   strm.writeLine(fmt"* Issues:")

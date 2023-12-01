@@ -19,6 +19,7 @@ type
     checks: seq[tuple[
       name: string,
       passed: bool,
+      customPassed: Option[bool],
       compliance: float,
       state: string,
       issues: seq[tuple[
@@ -32,6 +33,7 @@ method init(self: JsonCheckFmt, prelude: ReportPrelude) =
 
 method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let passed = isGood(res)
+  let customPassed = res.isCustomPassed()
   var issues = newSeq[tuple[severity: string, msg: string]]()
   for issue in res.issues:
     issues.add((
@@ -41,6 +43,7 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, in
   self.checks.add((
     name: check.name(),
     passed: passed,
+    customPassed: customPassed,
     compliance: float(res.calcCompliance()),
     state: $res.kind,
     issues: issues,

@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import options
 import sequtils
 import strformat
 import strutils
@@ -43,13 +44,18 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
     " | -: | -:"
   else:
     ""
-  strm.writeLine(fmt"| Passed | Status | Compliance" & tblOptHeader & " | Check | Severity - Issue |")
+  strm.writeLine(fmt"| Passed | Custom-Passed | Status | Compliance" & tblOptHeader & " | Check | Severity - Issue |")
   # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine(fmt"| - | -- | -:" & tblOptDelim & " | ----- | ---------------- |")
+  strm.writeLine(fmt"| - | - | -- | -:" & tblOptDelim & " | ----- | ---------------- |")
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let strm = self.getStream(res)
   let passedStr = bool2str(res.isGood())
+  let customPassed = res.isCustomPassed()
+  let customPassedStr = if customPassed.isSome():
+      bool2str(customPassed.get())
+    else:
+      " "
   let kindName = $res.kind
   let kindColor = res.getKindColor()
   let kindStr = fmt"""<font color="{kindColor}">{kindName}</font>"""
@@ -67,7 +73,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     fmt" | {round(weight)} | {round(weightedComp)}"
   else:
     ""
-  strm.writeLine(fmt"| {passedStr} | {kindStr} | {comp}%" & tblOptVals & fmt" | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| {passedStr} | {customPassedStr} | {kindStr} | {comp}%" & tblOptVals & fmt" | {check.name()} | {msg} |")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) =
   let strm = self.repStream
@@ -93,6 +99,9 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) =
   strm.writeLine(fmt"| Checks Passed | {stats.checks.passed} |")
   strm.writeLine(fmt"| Checks Failed | {stats.checks.failed} |")
   strm.writeLine(fmt"| Checks Available | {stats.checks.available} |")
+  strm.writeLine(fmt"| Custom-Passed | {stats.checks.customCompliance.passed} |")
+  strm.writeLine(fmt"| Custom-Failed | {stats.checks.customCompliance.failed} |")
+  strm.writeLine(fmt"| Custom-Not-Configured | {stats.checks.customCompliance.notConfigured} |")
   for imp in stats.issues.keys:
     strm.writeLine(fmt"| Issues {imp} | {stats.issues[imp]} |")
   strm.writeLine(fmt"| Compliance | {stats.ratings.compliance.percent}% |")
