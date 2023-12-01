@@ -16,6 +16,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["oe", "okhex", "okh_file_exists"]
+const ID = IDS[0]
 const OKH_FILE* = "okh.toml"
 let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
 let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
@@ -91,7 +93,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
         )
 
 method id*(this: OkhFileExistsCheckGenerator): seq[string] =
-  return @["oe", "okhex", "okh_file_exists"]
+  return IDS
 
 method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

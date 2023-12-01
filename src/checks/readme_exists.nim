@@ -13,6 +13,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["re", "rdmex", "readme_exists"]
+const ID = IDS[0]
 let RS_README = "(?i)^.*README.*$"
 let R_README = re(RS_README)
 
@@ -66,7 +68,7 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
   )
 
 method id*(this: ReadmeExistsCheckGenerator): seq[string] =
-  return @["re", "rdmex", "readme_exists"]
+  return IDS
 
 method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

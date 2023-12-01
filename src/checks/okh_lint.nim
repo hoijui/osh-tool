@@ -19,6 +19,8 @@ import std/streams
 import std/strutils
 import ./okh_file_exists
 
+const IDS = @["ol", "okh_lint"]
+const ID = IDS[0]
 const OKH_CMD = "okh-tool"
 
 type OkhLintCheck = ref object of Check
@@ -89,7 +91,7 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: OkhLintCheckGenerator): seq[string] =
-  return @["ol", "okh_lint"]
+  return IDS
 
 method generate*(this: OkhLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

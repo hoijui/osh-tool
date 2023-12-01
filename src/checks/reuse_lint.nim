@@ -19,6 +19,8 @@ import std/logging
 import std/osproc
 import std/streams
 
+const IDS = @["rl", "reusel", "reuse_lint"]
+const ID = IDS[0]
 const REUSE_CMD = "reuse"
 const REUSE_TOOL_URL = "https://reuse.software/"
 const HIGH_COMPLIANCE = 0.7
@@ -156,7 +158,7 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: ReuseLintCheckGenerator): seq[string] =
-  return @["rl", "reusel", "reuse_lint"]
+  return IDS
 
 method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

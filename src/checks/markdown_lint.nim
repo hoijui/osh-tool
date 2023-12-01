@@ -17,6 +17,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["ml", "mdl", "mdlint", "md_lint", "markdown_lint"]
+const ID = IDS[0]
 const MDL_CMD = "mdl"
 const OK_NUM_ISSUES_PER_FILE = 5
 
@@ -140,7 +142,7 @@ method run*(this: MarkdownLintCheck, state: var State): CheckResult =
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: MarkdownLintCheckGenerator): seq[string] =
-  return @["ml", "mdl", "mdlint", "md_lint", "markdown_lint"]
+  return IDS
 
 method generate*(this: MarkdownLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

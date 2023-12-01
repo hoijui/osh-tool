@@ -15,6 +15,8 @@ import ../state
 import ../util/fs
 import ../file_ext_meta
 
+const IDS = @["ccf", "ccadf", "clean_cad_files"]
+const ID = IDS[0]
 const EXT_FILE = "resources/osh-file-types/res/data/cad.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
@@ -75,7 +77,7 @@ method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
   extCheckRun(state, state.config.mechanics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
 method id*(this: CleanCadFilesCheckGenerator): seq[string] =
-  return @["ccf", "ccadf", "clean_cad_files"]
+  return IDS
 
 method generate*(this: CleanCadFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

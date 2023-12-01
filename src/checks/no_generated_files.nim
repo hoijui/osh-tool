@@ -13,6 +13,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["ngf", "nogenf", "no_generated_files"]
+const ID = IDS[0]
 let R_GENERATABLE= re"^.*[.](jpg|jpeg|gif|png|bmp|pdf|stl|zip|jar)$" # TODO Add much more, and maybe move this list to a CSV file
 
 type NoGeneratedFilesCheck = ref object of Check
@@ -76,7 +78,7 @@ method run*(this: NoGeneratedFilesCheck, state: var State): CheckResult =
   )
 
 method id*(this: NoGeneratedFilesCheckGenerator): seq[string] =
-  return @["ngf", "nogenf", "no_generated_files"]
+  return IDS
 
 method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

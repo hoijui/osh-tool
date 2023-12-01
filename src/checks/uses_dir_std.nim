@@ -19,6 +19,8 @@ import ../util/run
 
 include ../constants
 
+const IDS = @["dss", "dirstd", "dir_std", "dir_std_used"]
+const ID = IDS[0]
 const HIGH_COMPLIANCE = 0.9
 const MIN_COMPLIANCE = 0.6
 
@@ -97,7 +99,7 @@ please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
     return newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(err.msg))
 
 method id*(this: UsesDirStdCheckGenerator): seq[string] =
-  return @["dss", "dirstd", "dir_std", "dir_std_used"]
+  return IDS
 
 method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

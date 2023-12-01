@@ -18,7 +18,7 @@ import ../state
 
 const README_TEMPLATE_URL = "https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/BLANK_README.md"
 let R_README = re".*README.*"
-const IDS* = @["re", "readme"]
+const IDS = @["re", "readme"]
 
 type ReadmeInitUpdate = ref object of InitUpdate
 type ReadmeInitUpdateGenerator = ref object of InitUpdateGenerator

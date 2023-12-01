@@ -19,7 +19,7 @@ import ../state
 const LICENSE_GUIDE_URL = "TODO-Licensing-Guide-URL" # TODO
 const REUSE_URL = "https://github.com/fsfe/reuse-tool"
 let R_LICENSE = re"(?i)^.*(LICENSE|COPYING).*$"
-const IDS* = @["li", "license"]
+const IDS = @["li", "license"]
 
 type LicenseInitUpdate = ref object of InitUpdate
 type LicenseInitUpdateGenerator = ref object of InitUpdateGenerator

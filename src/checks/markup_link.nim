@@ -17,6 +17,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["mul", "mulinks", "mu_links", "markup_links"]
+const ID = IDS[0]
 const MLC_CMD = "mlc"
 
 type MarkupLinkCheck = ref object of Check
@@ -103,7 +105,7 @@ method run*(this: MarkupLinkCheck, state: var State): CheckResult =
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: MarkupLinkCheckGenerator): seq[string] =
-  return @["mul", "mulinks", "mu_links", "markup_links"]
+  return IDS
 
 method generate*(this: MarkupLinkCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

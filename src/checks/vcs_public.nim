@@ -21,6 +21,8 @@ import std/osproc
 import std/streams
 import std/tables
 
+const IDS = @["vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
+const ID = IDS[0]
 const IS_PUB_CMD = "is-git-forge-public"
 const NOT_YOUR_FAULT = "This is not your fault; please report it!"
 const PV_URL_KEY = "REPO_WEB_URL"
@@ -129,7 +131,7 @@ error message:
     newCheckResult(CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
 method id*(this: VcsPublicCheckGenerator): seq[string] =
-  return @["vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
+  return IDS
 
 method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

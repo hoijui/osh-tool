@@ -17,6 +17,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["nsfir", "no_sources_in_root", "no_source_files_in_root"]
+const ID = IDS[0]
 const EXT_FILE = "resources/file-extension-list/data/categories/code.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
@@ -138,7 +140,7 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
   )
 
 method id*(this: NoSourceFilesInRootCheckGenerator): seq[string] =
-  return @["nsfir", "no_sources_in_root", "no_source_files_in_root"]
+  return IDS
 
 method generate*(this: NoSourceFilesInRootCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

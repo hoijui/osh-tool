@@ -13,6 +13,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
+const IDS = @["nuf", "nounwanted", "no_unwanted", "no_unwanted_files"]
+const ID = IDS[0]
 let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trashes|ehthumbs\.db|Thumbs\.db|.*~|.*\.orig|.*\.swp|.*\.kate-swp|.*\.fcstd1)$"
 
 type UnwantedFilesExistNotCheck = ref object of Check
@@ -65,7 +67,7 @@ method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
   )
 
 method id*(this: UnwantedFilesExistNotCheckGenerator): seq[string] =
-  return @["nuf", "nounwanted", "no_unwanted", "no_unwanted_files"]
+  return IDS
 
 method generate*(this: UnwantedFilesExistNotCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

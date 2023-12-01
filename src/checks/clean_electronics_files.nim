@@ -15,6 +15,8 @@ import ../state
 import ../util/fs
 import ../file_ext_meta
 
+const IDS = @["cef", "celef", "clean_electronics_files"]
+const ID = IDS[0]
 const EXT_FILE = "resources/osh-file-types/res/data/pcb.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
@@ -75,7 +77,7 @@ method run*(this: CleanElectronicsFilesCheck, state: var State): CheckResult =
   extCheckRun(state, state.config.electronics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
 method id*(this: CleanElectronicsFilesCheckGenerator): seq[string] =
-  return @["cef", "celef", "clean_electronics_files"]
+  return IDS
 
 method generate*(this: CleanElectronicsFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
   this.ensureNonConfig(config)

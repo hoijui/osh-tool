@@ -22,7 +22,8 @@ type
     distributed: bool
       ## Whether this describes a distributed (vs centralized) VCS
 
-const IDS* = @["vu", "vcsu", "vcs_used"]
+const IDS = @["vu", "vcsu", "vcs_used"]
+const ID = IDS[0]
 
 ## The cache dir/file name for different VCS,
 ## and an indication whehter that VCS is distributed.
