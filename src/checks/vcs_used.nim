@@ -113,7 +113,8 @@ method run*(this: VcsUsedCheck, state: var State): CheckResult =
     if os.fileExists(storePath) or os.dirExists(storePath):
       usedVcs = some(vcs)
       break
-    return if usedVcs.isSome():
+  return
+    if usedVcs.isSome():
       let vcs = usedVcs.get()
       if vcs.distributed:
         newCheckResult(CheckResultKind.Perfect)
