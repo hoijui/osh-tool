@@ -79,7 +79,7 @@ method run*(this: CleanElectronicsFilesCheck, state: var State): CheckResult =
 method id*(this: CleanElectronicsFilesCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: CleanElectronicsFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: CleanElectronicsFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   CleanElectronicsFilesCheck()
 

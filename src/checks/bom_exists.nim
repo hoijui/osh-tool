@@ -74,7 +74,7 @@ Please consider adding e.g. a 'BoM.csv'.""")
 method id*(this: BomExistsCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: BomExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: BomExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   BomExistsCheck()
 

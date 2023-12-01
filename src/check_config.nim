@@ -11,3 +11,9 @@ type
   CheckConfig* = ref object
     id*: string
     json*: Option[string]
+
+template newCheckConfig*(idArg: string): CheckConfig =
+  CheckConfig(
+      id: idArg,
+      json: none[string](),
+    )

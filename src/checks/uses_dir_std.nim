@@ -101,7 +101,7 @@ please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
 method id*(this: UsesDirStdCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   UsesDirStdCheck()
 

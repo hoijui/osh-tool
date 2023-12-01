@@ -69,7 +69,7 @@ method run*(this: UnwantedFilesExistNotCheck, state: var State): CheckResult =
 method id*(this: UnwantedFilesExistNotCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: UnwantedFilesExistNotCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: UnwantedFilesExistNotCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   UnwantedFilesExistNotCheck()
 

@@ -93,7 +93,7 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
 method id*(this: OkhLintCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: OkhLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: OkhLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   OkhLintCheck()
 

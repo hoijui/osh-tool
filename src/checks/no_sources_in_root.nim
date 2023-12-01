@@ -142,7 +142,7 @@ method run*(this: NoSourceFilesInRootCheck, state: var State): CheckResult =
 method id*(this: NoSourceFilesInRootCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: NoSourceFilesInRootCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: NoSourceFilesInRootCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   NoSourceFilesInRootCheck()
 

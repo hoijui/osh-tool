@@ -45,7 +45,7 @@ method sort*(this: var ChecksRegistry) {.base.} =
 method registerGenerators*(this: var ChecksRegistry) {.base.} =
   registerAll("checks")
 
-method getCheck*(this: var ChecksRegistry, config: CheckConfig = CheckConfig(id: "non-ID", json: none[string]())): check.Check {.base.} =
+method getCheck*(this: var ChecksRegistry, config: CheckConfig = newCheckConfig("non-ID")): check.Check {.base.} =
   let generator = this.lookup[config.id]
   let primaryId = generator.id[0]
   if this.checks.contains(primaryId):
@@ -69,5 +69,5 @@ proc getAllChecksDefaultConfig*(this: var ChecksRegistry): OrderedTable[string, 
   this.registerGenerators()
   var checkConfigs = initOrderedTable[string, CheckConfig]()
   for primaryId in this.index.keys:
-    checkConfigs[primaryId] = CheckConfig(id: primaryId, json: none[string]())
+    checkConfigs[primaryId] = newCheckConfig(primaryId)
   return checkConfigs

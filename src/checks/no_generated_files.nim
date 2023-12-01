@@ -80,7 +80,7 @@ method run*(this: NoGeneratedFilesCheck, state: var State): CheckResult =
 method id*(this: NoGeneratedFilesCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   NoGeneratedFilesCheck()
 

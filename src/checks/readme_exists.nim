@@ -70,7 +70,7 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
 method id*(this: ReadmeExistsCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   ReadmeExistsCheck()
 

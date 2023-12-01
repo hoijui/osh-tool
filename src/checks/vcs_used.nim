@@ -137,7 +137,7 @@ for example [git](https://git-scm.com/).""")
 method id*(this: VcsUsedCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   VcsUsedCheck()
 

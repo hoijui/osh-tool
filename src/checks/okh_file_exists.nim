@@ -95,7 +95,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
 method id*(this: OkhFileExistsCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   OkhFileExistsCheck()
 

@@ -75,7 +75,7 @@ method run*(this: LicenseExistsCheck, state: var State): CheckResult =
 method id*(this: LicenseExistsCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: LicenseExistsCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: LicenseExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   LicenseExistsCheck()
 

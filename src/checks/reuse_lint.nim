@@ -160,7 +160,7 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
 method id*(this: ReuseLintCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   ReuseLintCheck()
 

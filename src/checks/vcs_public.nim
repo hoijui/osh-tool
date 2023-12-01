@@ -133,7 +133,7 @@ error message:
 method id*(this: VcsPublicCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   VcsPublicCheck()
 

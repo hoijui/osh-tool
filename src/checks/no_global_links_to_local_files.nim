@@ -93,7 +93,7 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
 method id*(this: MdNoGlobalLinksToLocalFilesCheckGenerator): seq[string] =
   return IDS
 
-method generate*(this: MdNoGlobalLinksToLocalFilesCheckGenerator, config: CheckConfig = CheckConfig(id: this.id()[0], json: none[string]())): Check =
+method generate*(this: MdNoGlobalLinksToLocalFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)
   MdNoGlobalLinksToLocalFilesCheck()
 
