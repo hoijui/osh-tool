@@ -6,6 +6,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import options
+import std/json
+import std/jsonutils
 import re
 import strformat
 import strutils
@@ -92,6 +94,16 @@ proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle:
   strm.writeLine("")
   strm.writeLine("</details>")
   strm.writeLine("")
+  strm.writeLine("<details>")
+  strm.writeLine("")
+  strm.writeLine("<summary>Configuration used for this `osh`-tool run</summary>")
+  strm.writeLine("")
+  strm.writeLine("```json")
+  let configJsonNode = jsonutils.toJson(prelude.config)
+  strm.writeLine(json.pretty(configJsonNode))
+  strm.writeLine("```")
+  strm.writeLine("")
+  strm.writeLine("</details>")
 
 method init*(self: CheckFmt, prelude: ReportPrelude) {.base.} =
   quit "to override!"

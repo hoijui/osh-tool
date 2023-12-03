@@ -130,9 +130,9 @@ type
 #     else:
 #       log(res.kind.logLevel(), fmt"Update - {iu.name()}? - {res.kind}: {res.msg.get()}")
 
-proc run(command: Command, config: ConfigCmdCheck) =
+proc run(command: Command, configOpt: ConfigCmdCheckOpt, config: ConfigCmdCheck) =
   debug "Creating the state ..."
-  var runState = newState(config)
+  var runState = newState(configOpt, config)
   case command:
     # of Init:
     #   debug "Creating the init & update registry ..."
@@ -211,6 +211,7 @@ proc cli(): CliRes =
         var registry = ChecksRegistry.new()
         let config = cfg.extendWithDefaults(registry.getAllChecksDefaultConfig())
         var configOpt = config.toOpt()
+        configOpt.projRoot = none[string]()
         configOpt.projPrefixes = none[seq[string]]()
         configOpt.writeJson(configFile)
     quit(0)
@@ -243,7 +244,7 @@ proc cli(): CliRes =
       debug  config.toOpt().toJsonStr()
       debug "######################################################################"
       debug ""
-      run(command, config)
+      run(command, cfg, config)
     # of Command.Init:
       # ConfigCmdInitOpt.fromArgs(args)
       # raise newException(Defect, "TODO implement")

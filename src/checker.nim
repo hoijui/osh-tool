@@ -80,9 +80,10 @@ proc check*(registry: var ChecksRegistry, state: var State) =
       osh_dir_std: toolVersion("osh-dir-std", "--version", "--quiet"),
   )
   let prelude = ReportPrelude(
+    config: state.configOpt.toJson(),
     homepage: OSH_TOOL_REPO,
     projVars: state.config.projVars,
-    tool_versions: tool_versions
+    tool_versions: tool_versions,
     )
   for checkFmt in reports:
     checkFmt.init(prelude)

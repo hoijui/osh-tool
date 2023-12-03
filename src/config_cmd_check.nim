@@ -247,12 +247,18 @@ proc enumHook*(val: string, v: var YesNoAuto) =
     of "auto": Auto
     else: raise newException(IOError, fmt("Failed to parse value '{val}' into a YesNoAuto enum variant"))
 
+proc toJson*(this: ConfigCmdCheckOpt): JsonNode =
+  ## Converts the configuration into a JSON node.
+  ## Unset values (Option types set to none)
+  ## will be left out of the string completely.
+  let jsonStr = jsony.toJson(this)
+  return json.parseJson(jsonStr)
+
 proc toJsonStr*(this: ConfigCmdCheckOpt): string =
   ## Converts the configuration into a pretty JSON string.
   ## Unset values (Option types set to none)
   ## will be left out of the string completely.
-  let jsonStr = jsony.toJson(this)
-  let jsonNode = json.parseJson(jsonStr)
+  let jsonNode = this.toJson()
   return json.pretty(jsonNode)
 
 proc writeJson*(this: ConfigCmdCheckOpt, configFile: string) =

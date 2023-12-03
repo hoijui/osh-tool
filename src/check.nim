@@ -8,6 +8,7 @@
 # TODO We may want to introduce a small DSL for reducing checks (and init_updates) boilerplate code; see https://github.com/GaryM-exkage/GDGW-Maverick-Bot/blob/master/src/nimcordbot/command/command.nim
 
 import logging
+import json
 import options
 import tables
 import strformat
@@ -87,6 +88,7 @@ type
 
   ReportPrelude* = object
     ## Data about the report that is available *before* running the checks.
+    config*: JsonNode
     homepage*: string
     projVars*: TableRef[string, string]
       ## Project meta-data; see <https://github.com/hoijui/projvar/>
@@ -211,6 +213,21 @@ type
   Check* = ref object of RootObj
 
   CheckGenerator* = ref object of RootObj
+
+proc isAllCustom*(this: ReportStats) : bool =
+  ## Returns `true` if all checks that ran
+  ## had a custom required compliance factor configured.
+  return this.checks.customCompliance.notConfigured == 0
+
+proc isNoneCustom*(this: ReportStats) : bool =
+  ## Returns `true` if none of the checks that ran
+  ## had a custom required compliance factor configured.
+  return this.checks.customCompliance.notConfigured == this.checks.run
+
+proc isNoneCustomFailed*(this: ReportStats) : bool =
+  ## Returns `true` if none of the checks failed that ran
+  ## and had a custom required compliance factor configured.
+  return this.checks.customCompliance.failed == 0
 
 method `*`*(this: CheckSignificance, multiplier: float32) : CheckSignificance {.base.} =
   CheckSignificance(

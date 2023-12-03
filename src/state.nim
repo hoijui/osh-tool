@@ -16,6 +16,7 @@ import ./util/fs as fs
 type
   State* = object
     config*: ConfigCmdCheck
+    configOpt*: ConfigCmdCheckOpt
     projFiles*: Option[seq[string]]
     projFilesL1*: Option[seq[string]]
     projFilesNonGenerated*: Option[seq[string]]
@@ -61,8 +62,9 @@ method listFilesL1Contains*(this: var State, regex: Regex): seq[string] {.base.}
   ## of which a part matches ``regex``
   return toSeq(this.listFilesL1().filterIt(it.contains(regex)))
 
-proc newState*(config: ConfigCmdCheck): State =
+proc newState*(configOpt: ConfigCmdCheckOpt, config: ConfigCmdCheck): State =
   return State(
     config: config,
+    configOpt: configOpt,
     projFiles: none(seq[string])
     )
