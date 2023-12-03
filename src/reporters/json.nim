@@ -51,5 +51,6 @@ method report(self: JsonCheckFmt, check: Check, res: CheckResult, index: int, in
 
 method finalize(self: JsonCheckFmt, stats: ReportStats) =
   let strm = self.repStream
-  strm.writeLine((prelude: self.prelude, checks: self.checks, stats: stats).toJson)
+  let jsonNode = jsonutils.toJson((prelude: self.prelude, checks: self.checks, stats: stats))
+  strm.writeLine(json.pretty(jsonNode))
   self.repStream.close()
