@@ -257,6 +257,7 @@ proc cli(): CliRes =
     # of Command.Update:
       # ConfigCmdUpdateOpt.fromArgs(args)
       # raise newException(Defect, "TODO implement")
+  info "done."
 
   return ok()
 
