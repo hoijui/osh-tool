@@ -14,8 +14,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
-const IDS = @["bomex", "be", "bom_exists"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "bomex", "be", "bom_exists"]
+const ID = srcFileNameBase()
 let RS_EDITABLE= "^.*(csv|tsv|odp|xls|xslx|md|markdown)$" # TODO Should/Could we add more here? .. or rahter use the osh-file-types repo right away?
 let R_EDITABLE= re(RS_EDITABLE) # The Open-o-Meter requires the BoM (and other things) to be present in an editable format; thus we should check that at some point
 let RS_BOM = "(?i)^(BoM|BillOfMaterials|Bill_of_Materials|Bill-of-Materials).*$"
@@ -74,8 +74,8 @@ Please consider adding e.g. a 'BoM.csv'.""")
     )
   )
 
-method id*(this: BomExistsCheckGenerator): seq[string] =
-  return IDS
+method id*(this: BomExistsCheckGenerator): string =
+  return ID
 
 method generate*(this: BomExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

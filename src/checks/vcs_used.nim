@@ -23,8 +23,8 @@ type
     distributed: bool
       ## Whether this describes a distributed (vs centralized) VCS
 
-const IDS = @["vu", "vcsu", "vcs_used"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "vu", "vcsu", "vcs_used"]
+const ID = srcFileNameBase()
 
 ## The cache dir/file name for different VCS,
 ## and an indication whehter that VCS is distributed.
@@ -139,8 +139,8 @@ Please consider using one,
 for example [git](https://git-scm.com/).""")
       )
 
-method id*(this: VcsUsedCheckGenerator): seq[string] =
-  return IDS
+method id*(this: VcsUsedCheckGenerator): string =
+  return ID
 
 method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

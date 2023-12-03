@@ -58,15 +58,13 @@ proc list*(registry: var ChecksRegistry) =
   echo(fmt"| --- | ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
   for primaryId, checkGenerator in registry.index:
     var check = checkGenerator.generate()
-    var ids = checkGenerator.id()
-    ids[0] = fmt"**{ids[0]}**"
-    let idsFormatted = ids.join(", ")
+    var id = checkGenerator.id()
     let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let singleLineWhy = check.why().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let checkSign = check.getSignificanceFactors()
     let srcCodePath = check.sourcePath()
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
-    echo(fmt"| {idsFormatted} | {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
+    echo(fmt"| {id} | {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
 
 proc check*(registry: var ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()

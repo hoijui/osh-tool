@@ -14,8 +14,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
-const IDS = @["nsifn", "nospace", "no_space", "no_space_in_file_names"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "nsifn", "nospace", "no_space", "no_space_in_file_names"]
+const ID = srcFileNameBase()
 let R_SPACE = re".*\s.*"
 
 type NoSpaceInFileNamesCheck = ref object of Check
@@ -64,8 +64,8 @@ method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
     )
   )
 
-method id*(this: NoSpaceInFileNamesCheckGenerator): seq[string] =
-  return IDS
+method id*(this: NoSpaceInFileNamesCheckGenerator): string =
+  return ID
 
 method generate*(this: NoSpaceInFileNamesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

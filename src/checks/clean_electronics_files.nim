@@ -15,8 +15,8 @@ import ../state
 import ../util/fs
 import ../file_ext_meta
 
-const IDS = @["cef", "celef", "clean_electronics_files"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "cef", "celef", "clean_electronics_files"]
+const ID = srcFileNameBase()
 const EXT_FILE = "resources/osh-file-types/res/data/pcb.csv"
 const FROM_THIS_FILE_TO_PROJ_ROOT = "../.."
 const EXT_FILE_REL = FROM_THIS_FILE_TO_PROJ_ROOT & "/" & EXT_FILE
@@ -76,8 +76,8 @@ method getSignificanceFactors*(this: CleanElectronicsFilesCheck): CheckSignifica
 method run*(this: CleanElectronicsFilesCheck, state: var State): CheckResult =
   extCheckRun(state, ID, state.config.electronics, FILE_EXTENSIONS, FILE_EXTENSIONS_MAX_PARTS, FILE_EXTENSIONS_MAP)
 
-method id*(this: CleanElectronicsFilesCheckGenerator): seq[string] =
-  return IDS
+method id*(this: CleanElectronicsFilesCheckGenerator): string =
+  return ID
 
 method generate*(this: CleanElectronicsFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

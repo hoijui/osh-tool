@@ -19,7 +19,8 @@ import ../state
 const LICENSE_GUIDE_URL = "TODO-Licensing-Guide-URL" # TODO
 const REUSE_URL = "https://github.com/fsfe/reuse-tool"
 let R_LICENSE = re"(?i)^.*(LICENSE|COPYING).*$"
-const IDS = @["li", "license"]
+#const IDS = @[srcFileNameBase(), "li", "license"]
+const ID = srcFileNameBase()
 
 type LicenseInitUpdate = ref object of InitUpdate
 type LicenseInitUpdateGenerator = ref object of InitUpdateGenerator
@@ -39,7 +40,7 @@ method update(this: LicenseInitUpdate, state: var State): UpdateResult =
   return UpdateResult(kind: Note, msg: some(fmt"Licenses need to be updated manually, see the REUSE tools documentation: <{REUSE_URL}>"))
 
 method id*(this: LicenseInitUpdateGenerator): seq[string] =
-  return IDS
+  return ID
 
 method generate*(this: LicenseInitUpdateGenerator, config: Option[InitUpdateConfig] = none[InitUpdateConfig]()): InitUpdate =
   if config.isSome:

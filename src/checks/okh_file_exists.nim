@@ -17,8 +17,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
-const IDS = @["oe", "okhex", "okh_file_exists"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "oe", "okhex", "okh_file_exists"]
+const ID = srcFileNameBase()
 const OKH_FILE* = "okh.toml"
 let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
 let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
@@ -97,8 +97,8 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
           some(fmt("Open Know-How meta-data file ({OKH_FILE}) not found.\nPlease consider creating it, if this is an OSH project.\nSee <{OKH_TEMPLATE_TOML_URL}> for a template.")) # TODO Add: "[Please consider] using the assistant (`osh okh`), or"
         )
 
-method id*(this: OkhFileExistsCheckGenerator): seq[string] =
-  return IDS
+method id*(this: OkhFileExistsCheckGenerator): string =
+  return ID
 
 method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

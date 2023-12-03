@@ -17,8 +17,8 @@ import ../state
 import ../util/fs
 import ../util/run
 
-const IDS = @["mdngltlf", "mdnogloblinks", "md_no_global_links", "md_no_global_links_to_local_files"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "mdngltlf", "mdnogloblinks", "md_no_global_links", "md_no_global_links_to_local_files"]
+const ID = srcFileNameBase()
 
 type MdNoGlobalLinksToLocalFilesCheck = ref object of Check
 type MdNoGlobalLinksToLocalFilesCheckGenerator = ref object of CheckGenerator
@@ -93,8 +93,8 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
       kind: CheckResultKind.Bad,
       issues: issues)
 
-method id*(this: MdNoGlobalLinksToLocalFilesCheckGenerator): seq[string] =
-  return IDS
+method id*(this: MdNoGlobalLinksToLocalFilesCheckGenerator): string =
+  return ID
 
 method generate*(this: MdNoGlobalLinksToLocalFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

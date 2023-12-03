@@ -14,8 +14,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
-const IDS = @["le", "licex", "license_exists"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "le", "licex", "license_exists"]
+const ID = srcFileNameBase()
 let RS_LICENSE = "(?i)^.*(LICEN[SC]E|COPYING).*$"
 let R_LICENSE = re(RS_LICENSE)
 
@@ -75,8 +75,8 @@ method run*(this: LicenseExistsCheck, state: var State): CheckResult =
     )
   )
 
-method id*(this: LicenseExistsCheckGenerator): seq[string] =
-  return IDS
+method id*(this: LicenseExistsCheckGenerator): string =
+  return ID
 
 method generate*(this: LicenseExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

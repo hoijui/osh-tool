@@ -22,8 +22,8 @@ import std/osproc
 import std/streams
 import std/tables
 
-const IDS = @["vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "vp", "vcsp", "vcspub", "vcs_pub", "vcs_public"]
+const ID = srcFileNameBase()
 const IS_PUB_CMD = "is-git-forge-public"
 const NOT_YOUR_FAULT = "This is not your fault; please report it!"
 const PV_URL_KEY = "REPO_WEB_URL"
@@ -71,7 +71,7 @@ method getSignificanceFactors*(this: VcsPublicCheck): CheckSignificance =
 method run*(this: VcsPublicCheck, state: var State): CheckResult =
   let config = state.config.checks[ID]
   let vcsUsedGen = vcs_used.createGenerator()
-  let vcsUsedId = vcsUsedGen.id()[0]
+  let vcsUsedId = vcsUsedGen.id()
   let vcsUsedConfig = ConfigCmdCheck(state.config).checks.getOrDefault(vcsUsedId, newCheckConfig(vcsUsedId))
   let vcsUsedResult = vcsUsedGen.generate(vcsUsedConfig).run(state)
   if not vcsUsedResult.isGood():
@@ -132,8 +132,8 @@ error message:
 """ & NOT_YOUR_FAULT
     newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-method id*(this: VcsPublicCheckGenerator): seq[string] =
-  return IDS
+method id*(this: VcsPublicCheckGenerator): string =
+  return ID
 
 method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

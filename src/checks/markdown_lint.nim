@@ -18,8 +18,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
-const IDS = @["ml", "mdl", "mdlint", "md_lint", "markdown_lint"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "ml", "mdl", "mdlint", "md_lint", "markdown_lint"]
+const ID = srcFileNameBase()
 const MDL_CMD = "mdl"
 const OK_NUM_ISSUES_PER_FILE = 5
 
@@ -145,8 +145,8 @@ method run*(this: MarkdownLintCheck, state: var State): CheckResult =
     let msg = fmt("ERROR Failed to run '{MDL_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-method id*(this: MarkdownLintCheckGenerator): seq[string] =
-  return IDS
+method id*(this: MarkdownLintCheckGenerator): string =
+  return ID
 
 method generate*(this: MarkdownLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

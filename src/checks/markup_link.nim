@@ -18,8 +18,8 @@ import ../check_config
 import ../state
 import ../util/fs
 
-const IDS = @["mul", "mulinks", "mu_links", "markup_links"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "mul", "mulinks", "mu_links", "markup_links"]
+const ID = srcFileNameBase()
 const MLC_CMD = "mlc"
 
 type MarkupLinkCheck = ref object of Check
@@ -107,8 +107,8 @@ method run*(this: MarkupLinkCheck, state: var State): CheckResult =
     let msg = fmt("ERROR Failed to run '{MLC_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-method id*(this: MarkupLinkCheckGenerator): seq[string] =
-  return IDS
+method id*(this: MarkupLinkCheckGenerator): string =
+  return ID
 
 method generate*(this: MarkupLinkCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

@@ -20,8 +20,8 @@ import std/logging
 import std/osproc
 import std/streams
 
-const IDS = @["rl", "reusel", "reuse_lint"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "rl", "reusel", "reuse_lint"]
+const ID = srcFileNameBase()
 const REUSE_CMD = "reuse"
 const REUSE_TOOL_URL = "https://reuse.software/"
 const HIGH_COMPLIANCE = 0.7
@@ -160,8 +160,8 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
     let msg = fmt("Failed to run '{REUSE_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-method id*(this: ReuseLintCheckGenerator): seq[string] =
-  return IDS
+method id*(this: ReuseLintCheckGenerator): string =
+  return ID
 
 method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

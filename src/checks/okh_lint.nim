@@ -20,8 +20,8 @@ import std/streams
 import std/strutils
 import ./okh_file_exists
 
-const IDS = @["ol", "okh_lint"]
-const ID = IDS[0]
+#const IDS = @[srcFileNameBase(), "ol", "okh_lint"]
+const ID = srcFileNameBase()
 const OKH_CMD = "okh-tool"
 
 type OkhLintCheck = ref object of Check
@@ -96,8 +96,8 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
     let msg = fmt("ERROR Failed to run '{OKH_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
 
-method id*(this: OkhLintCheckGenerator): seq[string] =
-  return IDS
+method id*(this: OkhLintCheckGenerator): string =
+  return ID
 
 method generate*(this: OkhLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
   this.ensureNonConfig(config)

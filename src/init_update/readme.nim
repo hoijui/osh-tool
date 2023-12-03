@@ -18,7 +18,8 @@ import ../state
 
 const README_TEMPLATE_URL = "https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/BLANK_README.md"
 let R_README = re".*README.*"
-const IDS = @["re", "readme"]
+#const IDS = @[srcFileNameBase(), "re", "readme"]
+const ID = srcFileNameBase()
 
 type ReadmeInitUpdate = ref object of InitUpdate
 type ReadmeInitUpdateGenerator = ref object of InitUpdateGenerator
@@ -43,7 +44,7 @@ method update(this: ReadmeInitUpdate, state: var State): UpdateResult =
   return UpdateResult(kind: Error, msg: some("Not yet implemented!")) # TODO
 
 method id*(this: ReadmeInitUpdateGenerator): seq[string] =
-  return IDS
+  return ID
 
 method generate*(this: ReadmeInitUpdateGenerator, config: Option[InitUpdateConfig] = none[InitUpdateConfig]()): InitUpdate =
   if config.isSome:

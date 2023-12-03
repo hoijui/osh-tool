@@ -100,7 +100,12 @@ proc listFilesGit(dir: string): seq[string] =
   return toSeq(res.splitLines())
 
 template srcFileName*: string =
+  ## Returns the whole file name (without the directory).
   instantiationInfo(-1).filename
+
+template srcFileNameBase*: string =
+  ## Returns the file name without the extension.
+  instantiationInfo(-1).filename[0 .. ^5]
 
 proc filterOutGenerated*(projRoot: string, unfiltered: seq[string]): seq[string] =
   try:
