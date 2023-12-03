@@ -73,7 +73,7 @@ method run(this: ReadmeExistsCheck, state: var State): CheckResult =
 method id*(this: ReadmeExistsCheckGenerator): string =
   return ID
 
-method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   ReadmeExistsCheck()
 

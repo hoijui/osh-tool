@@ -101,7 +101,7 @@ proc check*(registry: var ChecksRegistry, state: var State) =
   var maxScoreSum = CheckSignificance()
   var scoreSum = CheckSignificance()
   let checksConfigs = state.config.checks
-  let allChecks = registry.getChecks(some(checksConfigs))
+  let allChecks = registry.getChecks(checksConfigs)
   let numChecks = len(allChecks)
   for primaryId, check in allChecks:
     let res = check.run(state)

@@ -83,7 +83,7 @@ method run*(this: NoGeneratedFilesCheck, state: var State): CheckResult =
 method id*(this: NoGeneratedFilesCheckGenerator): string =
   return ID
 
-method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   NoGeneratedFilesCheck()
 

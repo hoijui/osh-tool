@@ -67,7 +67,7 @@ method run*(this: NoSpaceInFileNamesCheck, state: var State): CheckResult =
 method id*(this: NoSpaceInFileNamesCheckGenerator): string =
   return ID
 
-method generate*(this: NoSpaceInFileNamesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: NoSpaceInFileNamesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   NoSpaceInFileNamesCheck()
 

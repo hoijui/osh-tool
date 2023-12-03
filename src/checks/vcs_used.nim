@@ -142,7 +142,7 @@ for example [git](https://git-scm.com/).""")
 method id*(this: VcsUsedCheckGenerator): string =
   return ID
 
-method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   VcsUsedCheck()
 

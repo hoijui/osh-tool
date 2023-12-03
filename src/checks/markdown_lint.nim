@@ -148,7 +148,7 @@ method run*(this: MarkdownLintCheck, state: var State): CheckResult =
 method id*(this: MarkdownLintCheckGenerator): string =
   return ID
 
-method generate*(this: MarkdownLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: MarkdownLintCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   MarkdownLintCheck()
 

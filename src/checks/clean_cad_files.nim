@@ -5,7 +5,6 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import options
 import os
 import std/tables
 import system
@@ -79,7 +78,7 @@ method run*(this: CleanCadFilesCheck, state: var State): CheckResult =
 method id*(this: CleanCadFilesCheckGenerator): string =
   return ID
 
-method generate*(this: CleanCadFilesCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: CleanCadFilesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   CleanCadFilesCheck()
 

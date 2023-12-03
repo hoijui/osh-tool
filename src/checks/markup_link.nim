@@ -110,7 +110,7 @@ method run*(this: MarkupLinkCheck, state: var State): CheckResult =
 method id*(this: MarkupLinkCheckGenerator): string =
   return ID
 
-method generate*(this: MarkupLinkCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: MarkupLinkCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   MarkupLinkCheck()
 

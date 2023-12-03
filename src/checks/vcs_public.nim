@@ -135,7 +135,7 @@ error message:
 method id*(this: VcsPublicCheckGenerator): string =
   return ID
 
-method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   VcsPublicCheck()
 

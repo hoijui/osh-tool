@@ -163,7 +163,7 @@ method run*(this: ReuseLintCheck, state: var State): CheckResult =
 method id*(this: ReuseLintCheckGenerator): string =
   return ID
 
-method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   ReuseLintCheck()
 

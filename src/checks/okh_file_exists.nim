@@ -100,7 +100,7 @@ method run*(this: OkhFileExistsCheck, state: var State): CheckResult =
 method id*(this: OkhFileExistsCheckGenerator): string =
   return ID
 
-method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   OkhFileExistsCheck()
 

@@ -54,7 +54,7 @@ method sort*(this: var ChecksRegistry) {.base.} =
 method registerGenerators*(this: var ChecksRegistry) {.base.} =
   registerAll("checks")
 
-method getCheck*(this: var ChecksRegistry, config: CheckConfig = newCheckConfig("non-ID")): check.Check {.base.} =
+method getCheck*(this: var ChecksRegistry, config: CheckConfig): check.Check {.base.} =
   let id = config.id
   let generator = this.index[id]
   if this.checks.contains(id):
@@ -79,13 +79,9 @@ method getCheck*(this: var ChecksRegistry, config: CheckConfig = newCheckConfig(
     this.checks[id] = check
     return check
 
-method getChecks*(this: var ChecksRegistry, config: Option[OrderedTable[string, CheckConfig]] = none[OrderedTable[string, CheckConfig]]()): OrderedTable[string, check.Check] {.base.} =
-  if config.isSome():
-    for primaryId, checkConfig in config.get():
-      discard this.getCheck(checkConfig)
-  else:
-    for primaryId, checkGenerator in this.index:
-      discard this.getCheck()
+method getChecks*(this: var ChecksRegistry, config: OrderedTable[string, CheckConfig]): OrderedTable[string, check.Check] {.base.} =
+  for primaryId, checkConfig in config:
+    discard this.getCheck(checkConfig)
   this.sort()
   return this.checks
 

@@ -103,7 +103,7 @@ please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
 method id*(this: UsesDirStdCheckGenerator): string =
   return ID
 
-method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   UsesDirStdCheck()
 

@@ -99,7 +99,7 @@ method run*(this: OkhLintCheck, state: var State): CheckResult =
 method id*(this: OkhLintCheckGenerator): string =
   return ID
 
-method generate*(this: OkhLintCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: OkhLintCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   OkhLintCheck()
 

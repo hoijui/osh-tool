@@ -77,7 +77,7 @@ Please consider adding e.g. a 'BoM.csv'.""")
 method id*(this: BomExistsCheckGenerator): string =
   return ID
 
-method generate*(this: BomExistsCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
+method generate*(this: BomExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
   BomExistsCheck()
 

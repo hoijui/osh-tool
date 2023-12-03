@@ -8,11 +8,9 @@
 import options
 import strformat
 import std/json
-import std/jsonutils
 import tables
 import ../check
 import ../check_config
-import ../invalid_config_exception
 import ../state
 import ../util/fs
 
@@ -68,6 +66,15 @@ method getSignificanceFactors*(this: TestingCheck): CheckSignificance =
 method configSchema*(this: TestingCheckGenerator): Option[JsonNode] =
   return some(json.parseJson(CONFIG_JSON_SCHEMA))
 
+method defaultConfigJson*(this: TestingCheckGenerator): Option[JsonNode] =
+  ## Returns the default JSON config for teh check type.
+  # return json.parseJson("{}")
+  return some(json.parseJson("""
+{
+  "pass": false
+}
+"""))
+
 # TODO Remove this proc entirely, when copy&pasting this file, to use it as a template for your own check
 method isEnabled*(this: TestingCheckGenerator): bool =
   return false
@@ -89,14 +96,17 @@ method run*(this: TestingCheck, state: var State): CheckResult =
 method id*(this: TestingCheckGenerator): string =
   return ID
 
-method generate*(this: TestingCheckGenerator, config: CheckConfig = newCheckConfig(ID)): Check =
-  if config.json.isNone():
-    raise InvalidConfigException.newException(
-      fmt"This check ({this.id()}) requires a configuration to be set")
-  let jsonConfig = jsonutils.toJson(config.json.get())
-  if not jsonConfig.contains("pass"):
-    raise InvalidConfigException.newException(
-      fmt"This check ({this.id()}) requires the ocnfig property 'pass' (boolean) to be set")
+method generate*(this: TestingCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
+  let jsonConfig = if config.json.isSome():
+      config.json.get()
+    else:
+      this.defaultConfigJson().get()
+  # NOTE We need not check this here,
+  #      because the JSON Schema validation already takes care of that.
+  #      Though, we leave it here for docu purposes.
+  # if not jsonConfig.contains("pass"):
+  #   raise InvalidConfigException.newException(
+  #     fmt"This check ({this.id()}) requires the config property 'pass' (boolean) to be set")
   TestingCheck(config: jsonConfig)
 
 proc createGenerator*(): CheckGenerator =
