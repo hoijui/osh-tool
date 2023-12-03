@@ -5,6 +5,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import std/json
+import std/logging
+import std/strformat
 import options
 import tables
 import ./check
@@ -20,6 +23,11 @@ type
       ## indexed and ordered by check(-type)s ID,
       ## which equals the checks nim source file name
       ## without the ".nim" extension.
+    configSchemas*: OrderedTable[string, JsonNode]
+      ## Contains each check(-generator) parsed JSON Schema,
+      ## iff one was specified.
+      ## These are only checkd to be valid JSON when inserted in here,
+      ## not checkd to be valid JSON _Schema_s yet.
     checks: OrderedTable[string, check.Check]
       ## Contains a mapping of *primary* check-IDs
       ## to their instances, if they were already created.
@@ -31,6 +39,10 @@ proc new*(this: typedesc[ChecksRegistry]): ChecksRegistry =
     )
 
 method register*(this: var ChecksRegistry, checkGenerator: CheckGenerator) {.base.} =
+  let configSchemaOpt = checkGenerator.configSchema()
+  if configSchemaOpt.isSome:
+    let configSchema = configSchemaOpt.get()
+    this.configSchemas[checkGenerator.id()] = configSchema
   this.index[checkGenerator.id()] = checkGenerator
 
 method sort*(this: var ChecksRegistry) {.base.} =
@@ -63,6 +75,9 @@ method getChecks*(this: var ChecksRegistry, config: Option[OrderedTable[string, 
 proc getAllChecksDefaultConfig*(this: var ChecksRegistry): OrderedTable[string, CheckConfig] =
   this.registerGenerators()
   var checkConfigs = initOrderedTable[string, CheckConfig]()
-  for primaryId in this.index.keys:
-    checkConfigs[primaryId] = newCheckConfig(primaryId)
+  for (id, generator) in this.index.pairs():
+    if generator.isEnabled():
+      checkConfigs[id] = newCheckConfig(id)
+    else:
+      info fmt"Not registering check {id} into list of default checks, because it is marked as not enabled."
   return checkConfigs

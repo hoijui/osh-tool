@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import json
 import options
 
 type
@@ -14,11 +15,11 @@ type
       ## The minimum required compliance factor to pass this test.
       ## This is not used by default (set to `none`),
       ## but may be set in a supplied configuration.
-    json*: Option[string]
+    json*: Option[JsonNode]
 
 template newCheckConfig*(idArg: string): CheckConfig =
   CheckConfig(
       id: idArg,
       customReqCompFac: none[float](),
-      json: none[string](),
+      json: none[JsonNode](),
     )
