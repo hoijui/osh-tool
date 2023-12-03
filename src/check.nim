@@ -457,8 +457,7 @@ method generate*(this: CheckGenerator, config: CheckConfig = newCheckConfig(this
 
 proc ensureNonConfig*(this: CheckGenerator, config: CheckConfig) =
   if config.json.isSome:
-    let idsStr = this.id().join(", ")
-    raise InvalidConfigException.newException(fmt"This check ([{idsStr}]) does not take any configuration")
+    raise InvalidConfigException.newException(fmt"This check ({this.id()}) does not take any configuration")
 
 proc applies*(this: CheckGenerator, id: string): bool =
   ## Checks whether the given ID is a valid identifier
