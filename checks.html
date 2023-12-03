@@ -50,7 +50,7 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>bomex</strong>, be, bom_exists</td>
+<td>bom_exists</td>
 <td>BoM exists</td>
 <td>0.20</td>
 <td>0.50</td>
@@ -62,7 +62,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/bom_exists.nim"><code>bom_exists.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>ccf</strong>, ccadf, clean_cad_files</td>
+<td>clean_cad_files</td>
 <td>Clean CAD files</td>
 <td>1.00</td>
 <td>1.00</td>
@@ -74,7 +74,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_cad_files.nim"><code>clean_cad_files.nim</code></a></td>
 </tr>
 <tr class="odd">
-<td><strong>cef</strong>, celef, clean_electronics_files</td>
+<td>clean_electronics_files</td>
 <td>Clean electronics files</td>
 <td>1.00</td>
 <td>1.00</td>
@@ -86,19 +86,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/clean_electronics_files.nim"><code>clean_electronics_files.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>dss</strong>, dirstd, dir_std, dir_std_used</td>
-<td>Uses dir standard</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.30</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>Checks whether the unixish OSH directory standard is used <br/>for a sufficient amount of files and directories in the project, <br/>using the osh-dir-std CLI tool.</td>
-<td>1. to be able to extract meta-data:<br/> 1. easy indexing (and thus finding) of projects<br/> 2. easy comparing of projects<br/> 3. allows to write software tools that deal with project repos<br/>2. find your way around quickly and easily in different projects</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim"><code>uses_dir_std.nim</code></a></td>
-</tr>
-<tr class="odd">
-<td><strong>le</strong>, licex, license_exists</td>
+<td>license_exists</td>
 <td>LICENSE exists</td>
 <td>0.20</td>
 <td>1.00</td>
@@ -109,20 +97,8 @@
 <td>Before REUSE, this was the standard (and only) way<br/>to declare which license(s) are used within the project.<br/>While REUSE is in all ways superior to this approach,<br/>Many platforms and softwares still purely rely on this way<br/>to automatically detect the license(s) of a project.<br/>We thus recommend to keep the “main”<br/>(according ot your subjective decission)<br/>license of the project in such a file,<br/>by first fixing REUSE for the project,<br/>and then running a command similar to:<br/><code>cp LICENSES/CERN-OHL-S-2.0.txt LICENSE.txt</code></td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/license_exists.nim"><code>license_exists.nim</code></a></td>
 </tr>
-<tr class="even">
-<td><strong>mdngltlf</strong>, mdnogloblinks, md_no_global_links, md_no_global_links_to_local_files</td>
-<td>No global links to local files</td>
-<td>0.40</td>
-<td>0.80</td>
-<td>0.00</td>
-<td>0.80</td>
-<td>0.80</td>
-<td>Checks no links to project local files use a ‘global’ prefix,<br/>be it a web-hosting URL or an absolute local path.</td>
-<td>This is a step towards a documentation that is:<br/><br/>- locally browsable an editable without internet connection<br/>- showing and linking to the actual, local, correct content</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_global_links_to_local_files.nim"><code>no_global_links_to_local_files.nim</code></a></td>
-</tr>
 <tr class="odd">
-<td><strong>ml</strong>, mdl, mdlint, md_lint, markdown_lint</td>
+<td>markdown_lint</td>
 <td>Markdown content</td>
 <td>0.50</td>
 <td>0.90</td>
@@ -134,7 +110,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/markdown_lint.nim"><code>markdown_lint.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>mul</strong>, mulinks, mu_links, markup_links</td>
+<td>markup_link</td>
 <td>Markup link check</td>
 <td>0.70</td>
 <td>0.90</td>
@@ -146,7 +122,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/markup_link.nim"><code>markup_link.nim</code></a></td>
 </tr>
 <tr class="odd">
-<td><strong>ngf</strong>, nogenf, no_generated_files</td>
+<td>no_generated_files</td>
 <td>No generated files</td>
 <td>0.50</td>
 <td>0.60</td>
@@ -158,7 +134,19 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_generated_files.nim"><code>no_generated_files.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>nsfir</strong>, no_sources_in_root, no_source_files_in_root</td>
+<td>no_global_links_to_local_files</td>
+<td>No global links to local files</td>
+<td>0.40</td>
+<td>0.80</td>
+<td>0.00</td>
+<td>0.80</td>
+<td>0.80</td>
+<td>Checks no links to project local files use a ‘global’ prefix,<br/>be it a web-hosting URL or an absolute local path.</td>
+<td>This is a step towards a documentation that is:<br/><br/>- locally browsable an editable without internet connection<br/>- showing and linking to the actual, local, correct content</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_global_links_to_local_files.nim"><code>no_global_links_to_local_files.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>no_sources_in_root</td>
 <td>No sources in root</td>
 <td>0.10</td>
 <td>0.60</td>
@@ -169,8 +157,8 @@
 <td>Makes the Repo look more clean and more friendly,<br/>especially for non-coding people<br/>that might just wnat to browse or edit the documentation.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_sources_in_root.nim"><code>no_sources_in_root.nim</code></a></td>
 </tr>
-<tr class="odd">
-<td><strong>nsifn</strong>, nospace, no_space, no_space_in_file_names</td>
+<tr class="even">
+<td>no_space_in_file_names</td>
 <td>No space in file names</td>
 <td>0.40</td>
 <td>0.60</td>
@@ -181,20 +169,8 @@
 <td>This makes automatic processing of all the projects files<br/>much easier and less error-prone.</td>
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/no_space_in_file_names.nim"><code>no_space_in_file_names.nim</code></a></td>
 </tr>
-<tr class="even">
-<td><strong>nuf</strong>, nounwanted, no_unwanted, no_unwanted_files</td>
-<td>No unwanted files</td>
-<td>0.50</td>
-<td>0.60</td>
-<td>0.00</td>
-<td>0.50</td>
-<td>0.30</td>
-<td>Checks that no unwanted files are part of the project. <br/>These could be backups, caches, IDE/platform specific, and so on.</td>
-<td>These files, present in the repo, could cause these issues and inconvieniences:<br/><br/>- potentially inflating the repositories size<br/>- mess up local settings (e.g. local cache paths of an IDE) by one designer<br/> on an other deginers machine<br/>- make the project appear less clean<br/>- make the project maintainers look like amateurs to seasoned Open Source people<br/>- confuse people, as they are around, yet seem to have no usefulness</td>
-<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/unwanted_files_exist_not.nim"><code>unwanted_files_exist_not.nim</code></a></td>
-</tr>
 <tr class="odd">
-<td><strong>oe</strong>, okhex, okh_file_exists</td>
+<td>okh_file_exists</td>
 <td>OKH file exists</td>
 <td>0.70</td>
 <td>1.00</td>
@@ -206,7 +182,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_file_exists.nim"><code>okh_file_exists.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>ol</strong>, okh_lint</td>
+<td>okh_lint</td>
 <td>OKH manifest content</td>
 <td>0.70</td>
 <td>1.00</td>
@@ -218,7 +194,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/okh_lint.nim"><code>okh_lint.nim</code></a></td>
 </tr>
 <tr class="odd">
-<td><strong>re</strong>, rdmex, readme_exists</td>
+<td>readme_exists</td>
 <td>README exists</td>
 <td>0.20</td>
 <td>1.00</td>
@@ -230,7 +206,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/readme_exists.nim"><code>readme_exists.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>rl</strong>, reusel, reuse_lint</td>
+<td>reuse_lint</td>
 <td>REUSE Licensing info</td>
 <td>0.50</td>
 <td>1.00</td>
@@ -242,7 +218,31 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/reuse_lint.nim"><code>reuse_lint.nim</code></a></td>
 </tr>
 <tr class="odd">
-<td><strong>vp</strong>, vcsp, vcspub, vcs_pub, vcs_public</td>
+<td>unwanted_files_exist_not</td>
+<td>No unwanted files</td>
+<td>0.50</td>
+<td>0.60</td>
+<td>0.00</td>
+<td>0.50</td>
+<td>0.30</td>
+<td>Checks that no unwanted files are part of the project. <br/>These could be backups, caches, IDE/platform specific, and so on.</td>
+<td>These files, present in the repo, could cause these issues and inconvieniences:<br/><br/>- potentially inflating the repositories size<br/>- mess up local settings (e.g. local cache paths of an IDE) by one designer<br/> on an other deginers machine<br/>- make the project appear less clean<br/>- make the project maintainers look like amateurs to seasoned Open Source people<br/>- confuse people, as they are around, yet seem to have no usefulness</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/unwanted_files_exist_not.nim"><code>unwanted_files_exist_not.nim</code></a></td>
+</tr>
+<tr class="even">
+<td>uses_dir_std</td>
+<td>Uses dir standard</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.30</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>Checks whether the unixish OSH directory standard is used <br/>for a sufficient amount of files and directories in the project, <br/>using the osh-dir-std CLI tool.</td>
+<td>1. to be able to extract meta-data:<br/> 1. easy indexing (and thus finding) of projects<br/> 2. easy comparing of projects<br/> 3. allows to write software tools that deal with project repos<br/>2. find your way around quickly and easily in different projects</td>
+<td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/uses_dir_std.nim"><code>uses_dir_std.nim</code></a></td>
+</tr>
+<tr class="odd">
+<td>vcs_public</td>
 <td>VCS public</td>
 <td>0.70</td>
 <td>1.00</td>
@@ -254,7 +254,7 @@
 <td><a href="https://github.com/hoijui/osh-tool/blob/master/src/checks/vcs_public.nim"><code>vcs_public.nim</code></a></td>
 </tr>
 <tr class="even">
-<td><strong>vu</strong>, vcsu, vcs_used</td>
+<td>vcs_used</td>
 <td>VCS is used</td>
 <td>0.70</td>
 <td>1.00</td>
