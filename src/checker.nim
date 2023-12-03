@@ -56,9 +56,8 @@ proc list*(registry: var ChecksRegistry) =
   echo(fmt"")
   echo(fmt"| IDs | Name | Weight | Openness | Hardware | Quality | Machine-Readability | Description | Why | Source Code |")
   echo(fmt"| --- | ----- | --- | --- | --- | --- | --- | ----------- | ----------- | ------ |")
-  for primaryId, checkGenerator in registry.index:
-    var check = checkGenerator.generate()
-    var id = checkGenerator.id()
+  for id, config in registry.getAllChecksDefaultConfig():
+    var check = registry.getCheck(config)
     let singleLineDesc = check.description().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let singleLineWhy = check.why().replace("\\\n", "<br/>").replace("\n", "<br/>").replace("|", "\\|")
     let checkSign = check.getSignificanceFactors()
