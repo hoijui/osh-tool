@@ -31,22 +31,31 @@ proc bool2str(val: bool): string =
   #   let passedColor = res.getGoodColor()
   #   fmt"""<font color="{passedColor}">{passedName}</font>"""
 
+proc tableHeader(debug: bool, fattened: bool = false): string =
+  let tblOptHeader = if debug:
+    " | Weight | Weighted Comp. Fac."
+  else:
+    ""
+  var tblHeader = fmt"| Passed | Custom-Passed | Status | Compliance{tblOptHeader} | Check | Severity - Issue |"
+  if fattened:
+    tblHeader = tblHeader.replace("| ", "| **").replace(" |", "** |")
+  tblHeader
+
+proc tableHeaderDelims(debug: bool): string =
+  let tblOptDelim = if debug:
+    " | -: | -:"
+  else:
+    ""
+  # NOTE In some renderers, number of dashes are used to determine relative column width
+  fmt"| - | - | -- | -:{tblOptDelim} | ----- | ---------------- |"
+
 method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
   self.prelude = prelude
   self.debug = false # TODO Make this configurable somehow
   mdPrelude(strm, prelude)
-  let tblOptHeader = if self.debug:
-    " | Weight | Weighted Comp. Fac."
-  else:
-    ""
-  let tblOptDelim = if self.debug:
-    " | -: | -:"
-  else:
-    ""
-  strm.writeLine(fmt"| Passed | Custom-Passed | Status | Compliance" & tblOptHeader & " | Check | Severity - Issue |")
-  # NOTE In some renderers, number of dashes are used to determine relative column width
-  strm.writeLine(fmt"| - | - | -- | -:" & tblOptDelim & " | ----- | ---------------- |")
+  strm.writeLine(tableHeader(self.debug))
+  strm.writeLine(tableHeaderDelims(self.debug))
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let strm = self.getStream(res)
