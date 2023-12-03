@@ -91,10 +91,7 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) =
     fmt" | __{toPercentStr(stats.ratings.compliance.factor)}%__"
   else:
     ""
-  strm.writeLine("| | " &
-    fmt"| __{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__" &
-    tblOptAvers &
-    " | <- __Average__ | |")
+  strm.writeLine(fmt"| | | __{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__{tblOptAvers} | <- __Average__ | |")
   strm.writeLine("")
   strm.writeLine("<details>")
   strm.writeLine("")
