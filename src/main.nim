@@ -236,6 +236,12 @@ proc cli(): CliRes =
         debug "######################################################################"
         debug ""
         cfg.extendWith(cfgFromFile)
+        debug ""
+        debug "Config (check) parsed from CLI args & extended with config file:"
+        debug "######################################################################"
+        debug  cfg.toJsonStr()
+        debug "######################################################################"
+        debug ""
       var registry = ChecksRegistry.new()
       let config = cfg.extendWithDefaults(registry.getAllChecksDefaultConfig())
       debug ""
