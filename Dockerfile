@@ -15,8 +15,8 @@ FROM nimlang/nim:2.0.0
 ARG reuse_tool_release=1.0.0
 ARG okh_tool_release=0.4.4
 ARG okh_tool_bin=okh-tool
-ARG repvar_release=0.12.0
-ARG projvar_release=0.16.2
+ARG repvar_release=0.13.0
+ARG projvar_release=0.19.0
 ARG mle_release=0.23.0
 ARG mlc_release=0.17.1
 ARG obadgen_release=0.2.0
