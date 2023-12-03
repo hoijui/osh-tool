@@ -91,7 +91,12 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) =
     fmt" | __{toPercentStr(stats.ratings.compliance.factor)}%__"
   else:
     ""
-  strm.writeLine(fmt"| | | __{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__{tblOptAvers} | <- __Average__ | |")
+  let customPassedSummary = if stats.isNoneCustom():
+      ""
+    else:
+      bool2str(stats.isNoneCustomFailed())
+  strm.writeLine(tableHeader(self.debug, true))
+  strm.writeLine(fmt"| | {customPassedSummary} | | __{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__{tblOptAvers} | <- __Average__ | |")
   strm.writeLine("")
   strm.writeLine("<details>")
   strm.writeLine("")
