@@ -12,7 +12,9 @@ import options
 import tables
 import ./check
 import ./check_config
+import ./invalid_config_exception
 import ./util/leightweight
+import schemaValidator
 
 importAll("checks")
 
@@ -58,6 +60,21 @@ method getCheck*(this: var ChecksRegistry, config: CheckConfig = newCheckConfig(
   if this.checks.contains(id):
     return this.checks[id]
   else:
+    if this.configSchemas.contains(id):
+      let schema = this.configSchemas[id]
+      debug fmt"Test {id} config schema parsed: '{json.pretty(schema)}'."
+      let data = if config.json.isSome():
+          config.json.get()
+        else:
+          info fmt"Test {id} has a configuration schema defined, but no configuration was given for that test. This could be a problem, if any config properties are required."
+          json.parseJson("{}")
+      let valid = schemaValidator.validate(schema, data)
+      if valid:
+        info fmt"Configuration for test {id} is valid!"
+      else:
+        error fmt"Configuration for test {id} is invalid!"
+        raise InvalidConfigException.newException(
+          fmt "Config for test {id} did not validate against the checks configuration JSON Schema")
     let check = generator.generate(config)
     this.checks[id] = check
     return check
