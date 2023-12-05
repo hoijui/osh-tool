@@ -13,14 +13,14 @@ FROM nimlang/nim:2.0.0
 #     --build-arg okh_tool_bin="build/okh-tool" \
 #     .
 ARG reuse_tool_release=1.0.0
-ARG okh_tool_release=0.4.4
+ARG okh_tool_release=0.5.1
 ARG okh_tool_bin=okh-tool
 ARG repvar_release=0.13.0
-ARG projvar_release=0.19.0
-ARG mle_release=0.23.0
+ARG projvar_release=0.19.1
+ARG mle_release=0.24.0
 ARG mlc_release=0.17.1
-ARG obadgen_release=0.2.0
-ARG osh_dir_std_release=0.7.0
+ARG obadgen_release=0.2.1
+ARG osh_dir_std_release=0.7.1
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
