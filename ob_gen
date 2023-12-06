@@ -16,12 +16,16 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 SCRIPT_NAME="$(basename "$SCRIPT_PATH")"
 OUT_DIR_DEFAULT="build"
 REQUIRED_TOOLS=("jq" "bc" "sed" "awk" "repvar" "obadgen" "openssl")
+IMGS_VECTOR_LOCAL_BASE="$SCRIPT_DIR/resources/media/img"
+IMGS_BINARY_LOCAL_BASE="$SCRIPT_DIR/resources/assets/media/img"
 
 # parameters
 # repo="$(pwd)"
 out_dir="$OUT_DIR_DEFAULT"
 force=false
 example=false
+IMG_EXT="svg"
+IMGS_LOCAL_BASE="$IMGS_VECTOR_LOCAL_BASE"
 
 function print_help() {
 
@@ -45,6 +49,8 @@ function print_help() {
 	echo -e "    Where to find the locally stored osh-tool JSON report"
 	echo -e "  --example"
 	echo -e "    Use example data from an osh-tool of the OHLOOM project"
+	echo -e "  --png"
+	echo -e "    Use PNG instead of the default SVG for the bage format"
 	echo -e "  -f, --force"
 	echo -e "    Forces overwriting the signign certificate/key, if it already exists"
 	echo -e "  -h, --help"
@@ -85,6 +91,10 @@ do
 			;;
 		--example)
 			example=true
+			;;
+		--png)
+			IMG_EXT="png"
+			IMGS_LOCAL_BASE="$IMGS_BINARY_LOCAL_BASE"
 			;;
 		-f|--force)
 			force=true
@@ -161,7 +171,6 @@ fi
 VARIABLES_FILE="$out_dir/assertion-gen.vars.txt"
 OB_HOSTING_BASE="https://raw.githubusercontent.com/hoijui/osh-tool/master/resources/open-badge-examples/compliance-signed"
 OB_LOCAL_BASE="$SCRIPT_DIR/resources/open-badge-examples/compliance-signed"
-IMGS_LOCAL_BASE="$SCRIPT_DIR/resources/media/img"
 KEY_FILE_BASE="$OB_LOCAL_BASE/issuer-key"
 PRIV_KEY_PEM="$KEY_FILE_BASE.x509.priv.pem"
 PRIV_KEY_DER="$KEY_FILE_BASE.x509.priv.der"
@@ -174,7 +183,6 @@ KEY_ID="$OB_HOSTING_BASE/$(basename "$KEY_JSON")"
 # ALG="es256"
 ALG="rs256"
 KEY_VALIDITY_DAYS="730"
-IMG_EXT="svg"
 RECIPIENT_SALT="dfvnk097t6iubasr$RANDOM"
 OSH_TOOL_REPORT_JSON_URL="$PROJECT_HOSTING_BASE_URL/osh-report.json"
 OSH_TOOL_REPORT_HTML_URL="$PROJECT_HOSTING_BASE_URL/osh-report.html"
