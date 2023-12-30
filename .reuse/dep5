@@ -7,6 +7,10 @@ Files: resources/media/img/*.svg
 Copyright: Robin Vobruba <hoijui.quaero@gmail.com>
 License: CC-BY-SA-4.0
 
+Files: resources/assets/media/img/*.png
+Copyright: Robin Vobruba <hoijui.quaero@gmail.com>
+License: CC-BY-SA-4.0
+
 Files:
 	resources/open-badge-examples/compliance-signed/*.json
 	resources/open-badge-examples/compliance-signed/*.pem
