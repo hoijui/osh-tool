@@ -66,14 +66,11 @@ executed in [CI](https://en.wikipedia.org/wiki/Continuous_integration).
 The generated report is linked to form the README in a badge
 (image after the title) with the text "OSH Report".
 
-* GitLab CI
-  * <https://gitlab.com/OSEGermany/ohloom>
-  * [Generated Report](https://osegermany.gitlab.io/ohloom/osh-report.html)
-  * [CI script](https://gitlab.com/OSEGermany/ohloom/-/blob/master/.gitlab-ci.yml)
-* GitHub Actions
-  * <https://github.com/hoijui/MeditationBench>
-  * [Generated Report](https://hoijui.github.io/MeditationBench/osh-report.html)
-  * [CI script](https://github.com/hoijui/MeditationBench/blob/master/.github/workflows/check.yml)
+| CI Type | Sample Project Hosting | Generated Report | CI Script |
+| --- | ------ | --- | --- |
+| GitHub Actions | <https://github.com/hoijui/MeditationBench> | [Generated Report](https://hoijui.github.io/MeditationBench/osh-report.html) | [.github/workflows/check.yml](https://github.com/hoijui/MeditationBench/blob/master/.github/workflows/check.yml) |
+| GitHub Actions 2 | <https://github.com/osegermany/AgroCircle> | [Generated Report](https://osegermany.github.io/AgroCircle/osh-report.html) | [.github/workflows/check.yml](https://github.com/osegermany/AgroCircle/blob/master/.github/workflows/check.yml) |
+| GitLab CI | <https://gitlab.com/OSEGermany/ohloom> | [Generated Report](https://osegermany.gitlab.io/ohloom/osh-report.html) | [.gitlab-ci.yml](https://gitlab.com/OSEGermany/ohloom/-/blob/master/.gitlab-ci.yml) |
 
 ## Features
 
