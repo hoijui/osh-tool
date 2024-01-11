@@ -28,6 +28,9 @@ to check the quality of whatever is inside the repo.
 Depending on where you host your OSH projects git repo,
 you need to set it up slightly differently:
 
+- [GitHub](#github)
+- [GitLab](#gitlab)
+
 ### GitHub
 
 Make sure you have a directory structure like this in your repo:
