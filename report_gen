@@ -193,6 +193,11 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 		echo "|"
 	done
 	echo
+	echo "<p id=\"no-script-indicator\">"
+	echo "Please enabled JavaScript for this page, to see the correct URLs above,"
+	echo "without the <code>$BASE_URL</code> placeholders."
+	echo "</p>"
+	echo
 	echo "<script>"
 	echo "function repl_url(id) {"
 	echo "	let elem = document.getElementById(id);"
@@ -201,12 +206,17 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "  elem.innerHTML = elem.innerHTML.replace(\"\$REPORT_URL\", report_url);"
 	echo "  elem.innerHTML = elem.innerHTML.replace(\"\$BASE_URL\", base_url);"
 	echo "}"
+	echo "function clear_cont(id) {"
+	echo "	let elem = document.getElementById(id);"
+	echo "  elem.innerHTML = \"\";"
+	echo "}"
 	for rating in $RATINGS
 	do
 		echo
 		echo "repl_url(\"md-code-$rating\");"
 		echo "repl_url(\"html-code-$rating\");"
 	done
+	echo "clear_cont(\"no-script-indicator\");"
 	echo "</script>"
 	echo
 	echo "</details>"
