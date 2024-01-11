@@ -15,7 +15,7 @@ SPDX-License-Identifier: CC0-1.0
 
 [![In cooperation with FabCity Hamburg](
     https://raw.githubusercontent.com/osegermany/tiny-files/master/res/media/img/badge-fchh.svg)](
-    https://fabcity.hamburg)
+    https://fabcity.hamburg/)
 [![In cooperation with Open Source Ecology Germany](
     https://raw.githubusercontent.com/osegermany/tiny-files/master/res/media/img/badge-oseg.svg)](
     https://opensourceecology.de)
