@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2021-2023 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -98,6 +98,9 @@ nimble build
 ## Usage
 
 Simply run `osh -h` to see usage information.
+
+For more details how to use it locally and on CI/build-bot,
+see the [**user documentation**](doc/user/README.md).
 
 ## Community
 
