@@ -123,7 +123,7 @@ see the [**user documentation**](doc/user/README.md).
 
 ## Community
 
-Ask anything as an issue!
+Ask anything as an [issue](https://github.com/hoijui/osh-tool/issues/)!
 
 ## Similar Projects
 
