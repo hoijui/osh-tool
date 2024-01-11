@@ -128,7 +128,7 @@ Ask anything as an [issue](https://github.com/hoijui/osh-tool/issues/)!
 ## Similar Projects
 
 We are not just standing on the shoulders of giants,
-but also shoulder on shoulder with them!
+but also toe on toe with them!
 
 These are two of our big sister projects.
 They are similar both in spirit
