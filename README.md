@@ -28,12 +28,9 @@ technical project linting (quality assessment).
 
 What it can do:
 
-* Check for compliance
-
-What it will additionally do in the future:
-
-* Initialize a project repository
-* Update compliance automatically, as much as possible
+- Check for (non standardized) OSH project design compliance
+- Create human-readable reports
+- Create machine-readable reports
 
 ## Examples
 
