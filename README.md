@@ -35,7 +35,32 @@ What it will additionally do in the future:
 * Initialize a project repository
 * Update compliance automatically, as much as possible
 
-## Example Projects
+## Examples
+
+### Badges
+
+To be used at the top of a README:
+
+- [![Meditation Bench - OSH - Openness](
+    https://hoijui.github.io/MeditationBench/osh-badge-openness.svg)](
+    https://hoijui.github.io/MeditationBench/osh-report.html)
+- [![Agro Circle - OSH - Openness](
+    https://osegermany.github.io/AgroCircle/osh-badge-openness.svg)](
+    https://osegermany.github.io/AgroCircle/osh-report.html)
+- [![OHLOOM - OSH - compliance](
+    https://osegermany.gitlab.io/ohloom/osh-badge-compliance.svg)](
+    <https://osegermany.gitlab.io/ohloom/osh-report.html>)
+- [![OHLOOM - OSH - machineReadability](
+    https://osegermany.gitlab.io/ohloom/osh-badge-machineReadability.svg)](
+    <https://osegermany.gitlab.io/ohloom/osh-report.html>)
+- [![OHLOOM - OSH - quality](
+    https://osegermany.gitlab.io/ohloom/osh-badge-quality.svg)](
+    <https://osegermany.gitlab.io/ohloom/osh-report.html>)
+- [![OHLOOM - OSH - openness](
+    https://osegermany.gitlab.io/ohloom/osh-badge-openness.svg)](
+    <https://osegermany.gitlab.io/ohloom/osh-report.html>)
+
+### Example Projects
 
 Two sample hardware projects,
 using this tool to check their own Open Source'ness
