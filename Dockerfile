@@ -162,7 +162,7 @@ RUN \
     git submodule update --init && \
     # Builds the `osh` tool
     nimble -y build && \
-    cp build/osh report_gen ../ && \
+    cp build/osh report_gen* ../ && \
     cd ..
 
 # NOTE This fixes a bug; see:
