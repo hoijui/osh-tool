@@ -31,7 +31,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends \
+        bc \
         git \
+        jq \
         mercurial \
         openssl \
         pandoc \
@@ -39,8 +41,6 @@ RUN \
         python3-pip \
         rubygems \
         wget \
-        jq \
-        bc \
         && \
     rm -rf /var/lib/apt/lists/*
 #        libssl-dev \
