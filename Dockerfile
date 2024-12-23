@@ -75,7 +75,7 @@ WORKDIR /osh-tool
 
 # Copy the `osh` binary if it exists,
 # otherwise downloads and extracts it.
-# NOTE We use a begning HACK here,
+# NOTE We use a benign HACK here,
 #      COPY-ing:
 #          * a glob-for-our-binary (build/okh-tool), and
 #          * a file-that-always-exists (config.nims),
@@ -83,7 +83,7 @@ WORKDIR /osh-tool
 #      only if it exists.
 #      Note however, that if the *dir* of the binary does not exist,
 #      this *will* fail the docker build,
-#      and thus we reffer to the CWD by default,
+#      and thus we refer to the CWD by default,
 #      but allow to overwrite this variable (okh_tool_bin);
 #      see the start of the file for how to.
 COPY "$okh_tool_bin"* config.nims ./
