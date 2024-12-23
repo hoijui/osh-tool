@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 # NOTE Lint this file with https://hadolint.github.io/hadolint/
 
-# SPDX-FileCopyrightText: 2022 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2022-2024 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
-FROM nimlang/nim:2.0.0
+FROM nimlang/nim:2.2.0
 
 # Set parameters like so:
 # docker build \
