@@ -171,7 +171,6 @@ RUN git config --global --add safe.directory /github/workspace
 
 ENV PATH="${PATH}:/osh-tool"
 
-LABEL org.opencontainers.artifact.description: human readable description for the artifact (string)
 LABEL org.opencontainers.image.authors="Robin Vobruba <hoijui.quaero@gmail.com>"
 LABEL org.opencontainers.image.url="https://github.com/hoijui/osh-tool/blob/master/README.md"
 LABEL org.opencontainers.image.source="https://github.com/hoijui/osh-tool/blob/master/Dockerfile"
