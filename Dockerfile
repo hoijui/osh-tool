@@ -59,9 +59,9 @@ RUN \
     ln -sf /usr/bin/python3.9 /usr/bin/python3 && \
     ln -sf /usr/bin/python3 /usr/bin/python
 
-RUN python3.9 -m pip install reuse==$reuse_tool_release
 ENV HOME="/root"
 ENV PATH="${PATH}:${HOME}/.local/bin"
+RUN python3.9 -m pip install --no-cache-dir reuse==$reuse_tool_release
 
 # NOTE Solution from:
 # https://www.mail-archive.com/nim-general@lists.nim-lang.org/msg19329.html
