@@ -195,7 +195,7 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo
 	echo "<p id=\"no-script-indicator\">"
 	echo "Please enabled JavaScript for this page, to see the correct URLs above,"
-	echo "without the <code>$BASE_URL</code> placeholders."
+	echo "without the <code>\$BASE_URL</code> placeholders."
 	echo "</p>"
 	echo
 	echo "<script>"
