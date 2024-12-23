@@ -161,14 +161,13 @@ RUN \
     cd /osh-tool/sources && \
     git submodule update --init && \
     # Builds the `osh` tool
-    nimble -y build && cp build/osh ../ && \
+    nimble -y build && \
+    cp build/osh report_gen ../ && \
     cd ..
 
 # NOTE This fixes a bug; see:
 #      https://github.com/actions/runner/issues/2033
 RUN git config --global --add safe.directory /github/workspace
-
-COPY report_gen* /osh-tool/
 
 ENV PATH="${PATH}:/osh-tool"
 
