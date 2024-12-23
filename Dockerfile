@@ -150,7 +150,7 @@ RUN wget --quiet "$OSH_DIR_STD_DL" && \
 ENV IS_PUB_NAME="is-git-forge-public"
 #ENV IS_PUB_CLONE_URL="https://github.com/hoijui/is-git-forge-public.git"
 ENV IS_PUB_DL="https://raw.githubusercontent.com/hoijui/is-git-forge-public/master/src/software/$IS_PUB_NAME"
-RUN wget "$IS_PUB_DL" && \
+RUN wget --progress=dot:giga "$IS_PUB_DL" && \
     chmod +x "$IS_PUB_NAME"
 
 # Ensures the `osh` tool is in PATH
