@@ -32,6 +32,9 @@ RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         bc \
+        ca-certificates \
+        curl \
+        libpcre3-dev \
         git \
         jq \
         mercurial \
