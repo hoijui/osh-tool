@@ -81,15 +81,15 @@ with all sorts of standard files and tooling.
 See [src/checks](src/checks) for the currently supported checks,
 including at least:
 
-* Check README existence
-* Check LICENSE existence
+- Check README existence
+- Check LICENSE existence
 - Check [okh.toml] ([Open Know-How] OSH meta-data file) existence
 
 ## Requires
 
 To compile:
 
-* Nim and Nimble, version 0.10.0 or higher
+- Nim and Nimble, version 0.10.0 or higher
 
 ## Install
 
@@ -115,7 +115,7 @@ nimble build
 
 ## Usage
 
-Simply run `osh -h` to see usage information.
+Simply run `osh --help` to see usage information.
 
 For more details how to use it locally and on CI/build-bot,
 see the [**user documentation**](doc/user/README.md).
@@ -146,7 +146,7 @@ GNU Affero General Public License version 3
 
 This project was funded by:
 
-* the European Union's [Horizon 2020](
+- the European Union's [Horizon 2020](
       https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-2020_en)
   research and innovation program,
   under grant agreement no. 869984,
@@ -157,7 +157,7 @@ This project was funded by:
   ![Logo of the European Commission](
       https://commission.europa.eu/themes/contrib/oe_theme/dist/ec/images/logo/positive/logo-ec--en.svg)
 
-* the European Regional Development Fund (ERDF)
+- the European Regional Development Fund (ERDF)
   in the context of the [INTERFACER Project](https://www.interfacerproject.eu/),
   from December 2021
   until March 2023.
