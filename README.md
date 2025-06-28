@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021 - 2025 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -15,10 +15,10 @@ SPDX-License-Identifier: CC0-1.0
 
 [![In cooperation with FabCity Hamburg](
     https://raw.githubusercontent.com/osegermany/tiny-files/master/res/media/img/badge-fchh.svg)](
-    https://fabcity.hamburg/)
+    https://www.fabcity.hamburg/)
 [![In cooperation with Open Source Ecology Germany](
     https://raw.githubusercontent.com/osegermany/tiny-files/master/res/media/img/badge-oseg.svg)](
-    https://opensourceecology.de)
+    https://www.ose-germany.de/die-bewegung/)
 
 A command line tool for Open Source Hardware (OSH)
 technical project linting (quality assessment).
@@ -157,7 +157,7 @@ This project was funded by:
   until November 2021.
 
   ![Logo of the European Commission](
-      https://www.polemermediterranee.com/var/website/storage/images/media/images/european-commission-logo.png/422174-1-fre-FR/european-commission-logo.PNG_reference.png)
+      https://commission.europa.eu/themes/contrib/oe_theme/dist/ec/images/logo/positive/logo-ec--en.svg)
 
 * the European Regional Development Fund (ERDF)
   in the context of the [INTERFACER Project](https://www.interfacerproject.eu/),
