@@ -21,7 +21,7 @@ type
   Duo* {.size: sizeof(cint).} = enum
     Good = 1
     Bad = 2
-  DuoSet* {.size: sizeof(cint).} = set[Duo]
+  DuoSet* = set[Duo]
 
 proc toNum*(flags: DuoSet): int = #cast[cint](flags) # NOTE This is much shorter, but does not work at compile-time :/
   var num = 0
