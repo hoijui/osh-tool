@@ -83,7 +83,18 @@ including at least:
 
 - Check README existence
 - Check LICENSE existence
+- Check BoM existence
+- Very basic CAD file checks
+- Very basic Electronics CAD file checks
+- Markdown issues
+- Markdown & HTML link checking
 - Check [okh.toml] ([Open Know-How] OSH meta-data file) existence
+- Check `okh.toml` validity
+- Check detailed licensing information according to REUSE
+- Check if a Version Control System ([VCS]) (like [git]) is used
+- Check if the [VCS] repo is publicly hosted
+- Check if it adheres to the
+  [Open Source Hardware Directory Standard][osh-dir-std]
 
 ## Requires
 
@@ -167,5 +178,7 @@ This project was funded by:
 
 [okh.toml]: https://github.com/iop-alliance/OpenKnowHow/blob/master/res/sample_data/okh-TEMPLATE.toml
 [Open Know-How]: https://www.internetofproduction.org/openknowhow
+[VCS]: https://www.geeksforgeeks.org/version-control-systems/
 [git]: https://git-scm.com/
 [REUSE]: https://git.fsfe.org/reuse/tool
+[osh-dir-std]: https://gitlab.com/OSEGermany/osh-dir-std/
