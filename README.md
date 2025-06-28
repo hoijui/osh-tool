@@ -83,8 +83,7 @@ including at least:
 
 * Check README existence
 * Check LICENSE existence
-* Check [okh.toml](https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/OKH-LOSH.ttl)
-  ([Open Know-How](https://openknowhow.org) OSH meta-data file) existence
+- Check [okh.toml] ([Open Know-How] OSH meta-data file) existence
 
 ## Requires
 
@@ -135,9 +134,8 @@ They are similar both in spirit
 and in the way they are used on the command-line.
 They also work well in combination with this tool.
 
-* [`git`](https://git-scm.com/) -
-  Master of history
-* [`reuse`](https://git.fsfe.org/reuse/tool) -
+- [git] - Master of history
+- [REUSE] -
   Handles all things regarding licensing of a project and its sources
 
 ## License
@@ -166,3 +164,8 @@ This project was funded by:
 
   ![Logo of the EU ERDF program](
       https://cloud.fabcity.hamburg/s/TopenKEHkWJ8j5P/download/logo-eu-erdf.png)
+
+[okh.toml]: https://github.com/iop-alliance/OpenKnowHow/blob/master/res/sample_data/okh-TEMPLATE.toml
+[Open Know-How]: https://www.internetofproduction.org/openknowhow
+[git]: https://git-scm.com/
+[REUSE]: https://git.fsfe.org/reuse/tool
