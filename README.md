@@ -72,6 +72,65 @@ The generated report is linked to form the README in a badge
 | GitHub Actions 2 | <https://github.com/osegermany/AgroCircle> | [Generated Report](https://osegermany.github.io/AgroCircle/osh-report.html) | [.github/workflows/check.yml](https://github.com/osegermany/AgroCircle/blob/master/.github/workflows/check.yml) |
 | GitLab CI | <https://gitlab.com/OSEGermany/ohloom> | [Generated Report](https://osegermany.gitlab.io/ohloom/osh-report.html) | [.gitlab-ci.yml](https://gitlab.com/OSEGermany/ohloom/-/blob/master/.gitlab-ci.yml) |
 
+## Docker
+
+> NOTE
+> Instead of `docker` you may also use the Open Source alternative `podman`
+> in all the code snippets in this section.
+
+The easiest way to use this tool -
+if you are hosting your project on a git repo that is -
+is through CI (aka build-bot).
+You can find examples for how to do this
+in the [Example Projects](#example-projects) section. \
+The second easiest
+because it depends on/uses a lto of other CLI tools,
+many of which you would have to compile manually!
+
+and the easiest way to use this tool _with docker_,
+is to use the pre-built image hosted in the registry:
+
+You can download with this command:
+
+```shell
+docker pull hoijui/osh-tool:latest
+```
+
+And execute it in this way
+(NOTE: This gives the docker image read and write access to your current directory):
+
+```shell
+docker run \
+    --volume "$PWD:/data" \
+    hoijui/osh-tool:latest \
+    report_gen \
+        --force \
+        --download-badges
+```
+
+You should then have the report files in the directory `public/`.
+
+In the above command,
+`report_gen` is a wrapper script around `osh`.
+Think of it as what you generally want to use,
+while `osh` is a rather bare-metal tool,
+which requires post-processing the generated output for human consumption.
+
+Alternatively,
+you can also build the docker image on your local machine like so
+(note that here we use `:local` instead of `:latest`):
+
+```shell
+docker build --tag hoijui/osh-tool:local .
+```
+
+After building the image like this,
+it is also in your local registry,
+so you can use it with the `docker run` command from above;
+you just need to replace `:latest` with `:local`.
+Building the image yourself is useful
+if you develop the tool further yourself.
+
 ## Features
 
 So far, It may only check/lint OSH projects,
