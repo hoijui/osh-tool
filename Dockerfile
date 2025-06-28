@@ -53,7 +53,11 @@ RUN \
 # HACK This seems to be required because of an old Docker base image (Ubuntu) of this image (nimlang/nim).
 #      Otherwise we could just install ruby-mdl with apt (previous RUN command),
 #      and remove ruby-rubygems as well there.
-RUN gem install mdl
+# HACK We need to install mixlib-shellout (mdl dependency) with this specific version,
+#      because otherwise installing mdl fails.
+RUN \
+    gem install mixlib-shellout -v 3.3.8 \
+    && gem install mdl -v 0.13.0
 
 # We need to use Python 3.9 (default is 3.8) because of this REUSE bug:
 # https://github.com/fsfe/reuse-tool/issues/587
