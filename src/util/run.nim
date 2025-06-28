@@ -106,7 +106,7 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     process.close()
     debug fmt"'{PROJVAR_CMD}' run done."
     if exCode == 0:
-      debug fmt"'{PROJVAR_CMD}' ran successsfully."
+      debug fmt"'{PROJVAR_CMD}' ran successfully."
       if debug:
         os.copyFileWithPermissions(outFilePath, "/tmp/projvar_out_oshTool_fixed_debugging.json")
       let jsonRoot = parseJson(newFileStream(outFilePath), outFilePath)
@@ -142,7 +142,7 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines()
     process.close()
-    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finnished; analyze results ..."
+    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finished; analyze results ..."
     if exCode == 0:
       debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Process output ..."
       let jsonLines = lines.join("\n")
