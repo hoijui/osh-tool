@@ -23,14 +23,36 @@ SPDX-License-Identifier: CC0-1.0
 A command line tool for Open Source Hardware (OSH)
 technical project linting (quality assessment).
 
-[Download binaries](https://hoijui.github.io/osh-tool/)
-(latest build, Linux & Windows, 64bit)
+You give this tool a directory containing the documentation and design documents
+about a technology;
+which could be a chair, a tractor, a radio, a dress, shoes ...
+most anything human made. \
+The tool analyzes that directory,
+and then tells you how well organized it thinks the project is.
+This analysis is made up of tests,
+each of which checks for one [best](https://www.merriam-webster.com/dictionary/best%20practice)-[practice](https://en.wikipedia.org/wiki/Best_practice).
 
-What it can do:
+There are three ways to use this tool:
 
-- Check for (non standardized) OSH project design compliance
-- Create human-readable reports
-- Create machine-readable reports
+1. [through CI](#example-projects) (aka build-bot) -
+    We recommend to use this if you host your project in a (git)-repository
+2. [through docker/podman](#docker) -
+    Use this preferably when you want to run it on your local machine.
+3. natively -
+    This (probably) requires you to compile the tool yourself,
+    and also all the required CLI tools
+    (see the [Dockerfile](Dockerfile) for reference).
+    This is **not recommended**,
+    because it is much more work,
+    and it is hard to keep all the required tools up to date.
+
+    Iff you want to use this anyway,
+    you might want to try downloading one of the
+    [prebuilt binaries](https://hoijui.github.io/osh-tool/)
+    (non-static, development=build, Linux & Windows, 64bit).
+    They are not statically linked though,
+    so you might run into issues with different versions of dynamic libraries
+    (like `libc` or `ssl`).
 
 ## Examples
 
@@ -133,9 +155,11 @@ if you develop the tool further yourself.
 
 ## Features
 
-So far, It may only check/lint OSH projects,
-while later it is supposed to also initialize them
-with all sorts of standard files and tooling.
+What it does in the rough:
+
+- Check for OSH project design compliance
+- Create human-readable reports
+- Create machine-readable reports
 
 See [src/checks](src/checks) for the currently supported checks,
 including at least:
