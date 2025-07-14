@@ -9,18 +9,18 @@ FROM nimlang/nim:2.2.4-ubuntu-regular
 
 # Set parameters like so:
 # docker build \
-#     --build-arg reuse_tool_release="1.0.0" \
+#     --build-arg reuse_tool_release="5.0.2" \
 #     --build-arg okh_tool_bin="build/okh-tool" \
 #     .
-ARG reuse_tool_release=1.0.0
-ARG okh_tool_release=0.5.1
+ARG reuse_tool_release=5.0.2
+ARG okh_tool_release=2.4.2
 ARG okh_tool_bin=okh-tool
-ARG repvar_release=0.13.0
-ARG projvar_release=0.19.1
-ARG mle_release=0.24.0
+ARG repvar_release=0.14.2
+ARG projvar_release=0.19.9
+ARG mle_release=0.26.1
 ARG mlc_release=0.17.1
-ARG obadgen_release=0.2.1
-ARG osh_dir_std_release=0.7.2
+ARG obadgen_release=0.2.3
+ARG osh_dir_std_release=0.8.4
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
