@@ -146,7 +146,7 @@ RUN wget --quiet "$OBADGEN_DL" && \
     rm $OBADGEN_PKG.tar.gz && \
     rm -Rf $OBADGEN_PKG
 
-ENV OSH_DIR_STD_PKG="osh-dir-std-${osh_dir_std_release}-x86_64-unknown-linux-musl"
+ENV OSH_DIR_STD_PKG="osh-dir-std-rs-${osh_dir_std_release}-x86_64-unknown-linux-musl"
 ENV OSH_DIR_STD_DL="https://github.com/hoijui/osh-dir-std-rs/releases/download/$osh_dir_std_release/$OSH_DIR_STD_PKG.tar.gz"
 RUN wget --quiet "$OSH_DIR_STD_DL" && \
     tar xf $OSH_DIR_STD_PKG.tar.gz && \
