@@ -1,11 +1,17 @@
 # syntax=docker/dockerfile:1
 # NOTE Lint this file with https://hadolint.github.io/hadolint/
 
-# SPDX-FileCopyrightText: 2022-2024 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2022-2025 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
-FROM nimlang/nim:2.2.4-ubuntu-regular
+# NOTE This uses a horribly outdated base image (from 2020),
+#      resulting in all kinds of bugs and other issues.
+#FROM nimlang/nim:2.2.4-ubuntu-regular
+# NOTE Similar to above.
+#FROM nimlang/choosenim:latest
+# ... so we just craft our own:
+FROM bitnami/minideb:latest
 
 # Set parameters like so:
 # docker build \
@@ -29,53 +35,37 @@ ARG osh_dir_std_release=0.8.4
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
+    install_packages \
         bc \
         ca-certificates \
         curl \
         libpcre3-dev \
+        libssl-dev \
+        gcc \
         git \
         jq \
         mercurial \
         openssl \
         pandoc \
-        python3.9 \
+        python3 \
         python3-pip \
+        reuse \
         rubygems \
+        ruby-mdl \
         wget \
-        && \
-    rm -rf /var/lib/apt/lists/*
-#        libssl-dev \
-#        reuse \
-#        ruby-mdl \
+        xz-utils
 
-# HACK This seems to be required because of an old Docker base image (Ubuntu) of this image (nimlang/nim).
-#      Otherwise we could just install ruby-mdl with apt (previous RUN command),
-#      and remove ruby-rubygems as well there.
-# HACK We need to install mixlib-shellout (mdl dependency) with this specific version,
-#      because otherwise installing mdl fails.
+# Install latest stable Nim, using choosenim
 RUN \
-    gem install mixlib-shellout -v 3.3.8 \
-    && gem install mdl -v 0.13.0
+    wget -qO - https://nim-lang.org/choosenim/init.sh \
+        > choosenim_init.sh ; \
+    chmod +x choosenim_init.sh ; \
+    bash -x ./choosenim_init.sh -y ; \
+    rm ./choosenim_init.sh
 
-# We need to use Python 3.9 (default is 3.8) because of this REUSE bug:
-# https://github.com/fsfe/reuse-tool/issues/587
-RUN \
-    rm -Rf /usr/bin/python3 /usr/bin/python && \
-    ln -sf /usr/bin/python3.9 /usr/bin/python3 && \
-    ln -sf /usr/bin/python3 /usr/bin/python
-
+# Ensure nim and nimble are in PATH
 ENV HOME="/root"
-ENV PATH="${PATH}:${HOME}/.local/bin"
-RUN python3.9 -m pip install --no-cache-dir reuse==$reuse_tool_release
-
-# NOTE Solution from:
-# https://www.mail-archive.com/nim-general@lists.nim-lang.org/msg19329.html
-#RUN \
-#     wget --quiet http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && \
-#     dpkg -i libssl1.1_*.deb && \
-#     rm /libssl1.1_*.deb
+ENV PATH="${PATH}:${HOME}/.nimble/bin"
 
 RUN mkdir /osh-tool
 WORKDIR /osh-tool
