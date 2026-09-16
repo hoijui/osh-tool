@@ -44,6 +44,7 @@ RUN \
         gcc \
         git \
         jq \
+        libpcre2-8-0 \
         mercurial \
         openssl \
         pandoc \
@@ -54,7 +55,6 @@ RUN \
         ruby-mdl \
         wget \
         xz-utils
-#         libpcre2-8-0 \
 
 # Install latest stable Nim, using choosenim
 RUN \
