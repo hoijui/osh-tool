@@ -133,7 +133,7 @@ proc listFiles*(dir: string): seq[string] =
 proc containsFilesWithSuffix*(dir: string, suffix: string,
     recursive: bool = true, ignore_case: bool = false): bool =
   ## Checks whether ``dir`` contains any files ending in ``suffix``,
-  ## searchign recursively, and ignoring case.
+  ## searching recursively, and ignoring case.
   ## NOTE: Please supply a lower-case suffix!
   #when suffix != suffix.toLower():
   #  throw error

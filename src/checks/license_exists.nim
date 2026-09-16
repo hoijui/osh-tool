@@ -37,7 +37,7 @@ While REUSE is in all ways superior to this approach,
 Many platforms and softwares still purely rely on this way
 to automatically detect the license(s) of a project.
 We thus recommend to keep the "main"
-(according ot your subjective decission)
+(according to your subjective decision)
 license of the project in such a file,
 by first fixing REUSE for the project,
 and then running a command similar to:
