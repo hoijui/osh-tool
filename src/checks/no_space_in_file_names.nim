@@ -7,7 +7,7 @@
 
 from strutils import join
 import options
-import re
+import regex
 import tables
 import ../check
 import ../check_config
@@ -16,7 +16,7 @@ import ../util/fs
 
 #const IDS = @[srcFileNameBase(), "nsifn", "nospace", "no_space", "no_space_in_file_names"]
 const ID = srcFileNameBase()
-let R_SPACE = re".*\s.*"
+let R_SPACE = re2".*\s.*"
 
 type NoSpaceInFileNamesCheck = ref object of Check
 type NoSpaceInFileNamesCheckGenerator = ref object of CheckGenerator

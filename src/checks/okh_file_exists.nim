@@ -9,7 +9,7 @@ import strformat
 from strutils import join
 import os
 import options
-import re
+import regex
 import tables
 import ../config_cmd_check
 import ../check
@@ -20,8 +20,8 @@ import ../util/fs
 #const IDS = @[srcFileNameBase(), "oe", "okhex", "okh_file_exists"]
 const ID = srcFileNameBase()
 const OKH_FILE* = "okh.toml"
-let R_OKH_FILE_V1 = re"okh(-.+)?.ya?ml"
-let R_OKH_FILE_LOSH = re"okh(-.+)?.toml"
+let R_OKH_FILE_V1 = re2"okh(-.+)?.ya?ml"
+let R_OKH_FILE_LOSH = re2"okh(-.+)?.toml"
 const OKH_TEMPLATE_TOML_URL = "https://github.com/OPEN-NEXT/OKH-LOSH/blob/master/sample_data/okh-TEMPLATE.toml"
 const OKH_TOOL_URL = "https://github.com/OPEN-NEXT/LOSH-OKH-tool/"
 

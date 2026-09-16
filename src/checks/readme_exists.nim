@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import options
-import re
+import regex
 import strformat
 import tables
 import ../check
@@ -17,7 +17,7 @@ import ../util/fs
 #const IDS = @[srcFileNameBase(), "re", "rdmex", "readme_exists"]
 const ID = srcFileNameBase()
 let RS_README = "(?i)^.*README.*$"
-let R_README = re(RS_README)
+let R_README = re2(RS_README)
 
 type ReadmeExistsCheck = ref object of Check
 type ReadmeExistsCheckGenerator = ref object of CheckGenerator

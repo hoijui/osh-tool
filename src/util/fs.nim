@@ -17,31 +17,31 @@ import sequtils
 import std/json
 import strutils
 import strformat
-import re
+import regex
 import ./leightweight
 import ./run
 
-proc matchFileName(filePath: string, regex: Regex): bool =
+proc matchFileName(filePath: string, regex: Regex2): bool =
   let fileName = filePath.extractFilename()
   return match(fileName, regex)
 
-proc filterPathsMatching*(filePaths: seq[string], regex: Regex): seq[string] =
+proc filterPathsMatching*(filePaths: seq[string], regex: Regex2): seq[string] =
   ## Returns a list of only the entries from ``filePaths``
   ## that match ``regex``.
   ## NOTE
-  ## re"^.*README.*$"
+  ## re2"^.*README.*$"
   ## and
-  ## re"README"
+  ## re2"README"
   ## are equal in function.
   return toSeq(filePaths.filterIt(match(it, regex)))
 
-proc filterPathsMatchingFileName*(filePaths: seq[string], regex: Regex): seq[string] =
+proc filterPathsMatchingFileName*(filePaths: seq[string], regex: Regex2): seq[string] =
   ## Returns a list of only the entries from ``filePaths``
   ## of which the file name (last path segment) matches ``regex``.
   ## NOTE
-  ## re"^.*README.*$"
+  ## re2"^.*README.*$"
   ## and
-  ## re"README"
+  ## re2"README"
   ## are equal in function.
   return toSeq(filePaths.filterIt(matchFileName(it, regex)))
 

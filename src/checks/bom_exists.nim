@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import re
+import regex
 import options
 import strformat
 import tables
@@ -17,9 +17,9 @@ import ../util/fs
 #const IDS = @[srcFileNameBase(), "bomex", "be", "bom_exists"]
 const ID = srcFileNameBase()
 let RS_EDITABLE= "^.*(csv|tsv|odp|xls|xslx|md|markdown)$" # TODO Should/Could we add more here? .. or rahter use the osh-file-types repo right away?
-let R_EDITABLE= re(RS_EDITABLE) # The Open-o-Meter requires the BoM (and other things) to be present in an editable format; thus we should check that at some point
+let R_EDITABLE= re2(RS_EDITABLE) # The Open-o-Meter requires the BoM (and other things) to be present in an editable format; thus we should check that at some point
 let RS_BOM = "(?i)^(BoM|BillOfMaterials|Bill_of_Materials|Bill-of-Materials).*$"
-let R_BOM = re(RS_BOM)
+let R_BOM = re2(RS_BOM)
 
 type BomExistsCheck = ref object of Check
 type BomExistsCheckGenerator = ref object of CheckGenerator

@@ -7,7 +7,7 @@
 
 from strutils import join
 import options
-import re
+import regex
 import strformat
 import ../config
 import ../tools
@@ -18,7 +18,7 @@ import ../state
 
 const LICENSE_GUIDE_URL = "TODO-Licensing-Guide-URL" # TODO
 const REUSE_URL = "https://github.com/fsfe/reuse-tool"
-let R_LICENSE = re"(?i)^.*(LICENSE|COPYING).*$"
+let R_LICENSE = re2"(?i)^.*(LICENSE|COPYING).*$"
 #const IDS = @[srcFileNameBase(), "li", "license"]
 const ID = srcFileNameBase()
 

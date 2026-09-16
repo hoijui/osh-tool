@@ -8,7 +8,7 @@
 from strutils import join
 import os
 import options
-import re
+import regex
 import ../config
 import ../tools
 import ../init_update
@@ -17,7 +17,7 @@ import ../invalid_config_exception
 import ../state
 
 const README_TEMPLATE_URL = "https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/BLANK_README.md"
-let R_README = re".*README.*"
+let R_README = re2".*README.*"
 #const IDS = @[srcFileNameBase(), "re", "readme"]
 const ID = srcFileNameBase()
 

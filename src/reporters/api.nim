@@ -8,7 +8,7 @@
 import options
 import std/json
 import std/jsonutils
-import re
+import regex
 import strformat
 import strutils
 import tables
@@ -78,7 +78,7 @@ proc mdOutro*(strm: File, prelude: ReportPrelude, stats: ReportStats, bashStyle:
   strm.writeLine("| key | value |")
   strm.writeLine("| --- | -------- |")
   for (key, val) in prelude.projVars.pairs:
-    let valMd = if match(val, re"^(https?|mailto):"):
+    let valMd = if match(val, re2"^(https?|mailto):"):
         fmt"<{val}>"
       else:
         fmt"`{val}`"

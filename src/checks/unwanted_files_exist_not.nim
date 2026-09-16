@@ -7,7 +7,7 @@
 
 from strutils import join
 import options
-import re
+import regex
 import tables
 import ../check
 import ../check_config
@@ -16,7 +16,7 @@ import ../util/fs
 
 #const IDS = @[srcFileNameBase(), "nuf", "nounwanted", "no_unwanted", "no_unwanted_files"]
 const ID = srcFileNameBase()
-let R_UNWANTED_FILES = re"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trashes|ehthumbs\.db|Thumbs\.db|.*~|.*\.orig|.*\.swp|.*\.kate-swp|.*\.fcstd1)$"
+let R_UNWANTED_FILES = re2"^(\.DS_Store|\.DS_Store.|\._*|\.Spotlight-V100|\.Trashes|ehthumbs\.db|Thumbs\.db|.*~|.*\.orig|.*\.swp|.*\.kate-swp|.*\.fcstd1)$"
 
 type UnwantedFilesExistNotCheck = ref object of Check
 type UnwantedFilesExistNotCheckGenerator = ref object of CheckGenerator

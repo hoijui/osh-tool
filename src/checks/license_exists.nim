@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import options
-import re
+import regex
 import strformat
 import tables
 import ../check
@@ -17,7 +17,7 @@ import ../util/fs
 #const IDS = @[srcFileNameBase(), "le", "licex", "license_exists"]
 const ID = srcFileNameBase()
 let RS_LICENSE = "(?i)^.*(LICEN[SC]E|COPYING).*$"
-let R_LICENSE = re(RS_LICENSE)
+let R_LICENSE = re2(RS_LICENSE)
 
 type LicenseExistsCheck = ref object of Check
 type LicenseExistsCheckGenerator = ref object of CheckGenerator

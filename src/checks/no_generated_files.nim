@@ -7,7 +7,7 @@
 
 from strutils import join
 import options
-import re
+import regex
 import tables
 import ../check
 import ../check_config
@@ -16,7 +16,7 @@ import ../util/fs
 
 #const IDS = @[srcFileNameBase(), "ngf", "nogenf", "no_generated_files"]
 const ID = srcFileNameBase()
-let R_GENERATABLE= re"^.*[.](jpg|jpeg|gif|png|bmp|pdf|stl|zip|jar)$" # TODO Add much more, and maybe move this list to a CSV file
+let R_GENERATABLE= re2"^.*[.](jpg|jpeg|gif|png|bmp|pdf|stl|zip|jar)$" # TODO Add much more, and maybe move this list to a CSV file
 
 type NoGeneratedFilesCheck = ref object of Check
 type NoGeneratedFilesCheckGenerator = ref object of CheckGenerator

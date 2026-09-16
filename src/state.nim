@@ -7,7 +7,7 @@
 
 import options
 import os
-import re
+import regex
 import sequtils
 import strutils
 import ./config_cmd_check
@@ -33,12 +33,12 @@ method listFilesNonGenerated*(this: var State): seq[string] {.base.} =
     this.projFilesNonGenerated = some(filterOutGenerated(this.config.projRoot, this.listFiles()))
   return this.projFilesNonGenerated.get
 
-method listFilesMatching*(this: var State, regex: Regex): seq[string] {.base.} =
+method listFilesMatching*(this: var State, regex: Regex2): seq[string] {.base.} =
   ## Returns a list of (recursive) project file names
   ## matching ``regex``
   return toSeq(this.listFiles().filterIt(it.match(regex)))
 
-method listFilesContains*(this: var State, regex: Regex): seq[string] {.base.} =
+method listFilesContains*(this: var State, regex: Regex2): seq[string] {.base.} =
   ## Returns a list of (recursive) project file names
   ## of which a part matches ``regex``
   return toSeq(this.listFiles().filterIt(it.contains(regex)))
