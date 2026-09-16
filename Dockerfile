@@ -37,9 +37,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
     install_packages \
         bc \
+        build-essential \
         ca-certificates \
         curl \
-        libpcre3-dev \
         libssl-dev \
         gcc \
         git \
@@ -54,6 +54,7 @@ RUN \
         ruby-mdl \
         wget \
         xz-utils
+#         libpcre2-8-0 \
 
 # Install latest stable Nim, using choosenim
 RUN \
