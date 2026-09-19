@@ -13,7 +13,7 @@ binDir = "build"
 requires "nim >= 2.0.0"
 requires "csvtools"
 requires "docopt"
-requires "https://github.com/hoijui/JsonSchemaValidator"
+requires "https://github.com/hoijui/JsonSchemaValidator#9cd4d5f"
 # HACK We use our own, patched version of this library,
 #      until this gets merged upstream:
 #      <https://github.com/treeform/jsony/pull/83>
