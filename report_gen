@@ -17,6 +17,8 @@ OUT_DIR_DEFAULT="public"
 OUT_FILE_NAME_MD="osh-report.md"
 OUT_FILE_NAME_JSON="osh-report.json"
 OUT_FILE_NAME_HTML="osh-report.html"
+OUT_FILE_STDOUT="stdout.txt"
+OUT_FILE_STDERR="stderr.txt"
 BADGE_FILE_NAME_PREFIX="osh-badge-"
 RATINGS="compliance openness hardware quality machineReadability"
 
@@ -97,6 +99,8 @@ then
 fi
 
 mkdir -p "$output_dir"
+stdout_log="$output_dir/$OUT_FILE_STDOUT"
+stderr_log="$output_dir/$OUT_FILE_STDERR"
 
 # Creates the OSH report as Markdown table
 osh \
@@ -104,7 +108,9 @@ osh \
 	check \
 	--force \
 	--report-md-table "$output_md" \
-	--report-json "$output_json"
+	--report-json "$output_json" \
+	> "$stdout_log" \
+	2> "$stderr_log"
 
 # Prettify JSON
 jq < "$output_json" > "${output_json}_TMP"
@@ -228,6 +234,15 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "* [Markdown]($OUT_FILE_NAME_MD)"
 	echo "* [HTML]($OUT_FILE_NAME_HTML)"
 	echo "* [JSON]($OUT_FILE_NAME_JSON)"
+	echo
+	echo "</details>"
+	echo
+	echo "<details>"
+	echo
+	echo "<summary>Raw log output of this check run (for debugging)</summary>"
+	echo
+	echo "* [stdout]($OUT_FILE_STDOUT)"
+	echo "* [stderr]($OUT_FILE_STDERR)"
 	echo
 	echo "</details>"
 	echo
