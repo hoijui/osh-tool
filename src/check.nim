@@ -502,7 +502,7 @@ method sourcePath*(this: Check): string {.base.} =
   return "TODO Override!"
 
 method requirements*(this: Check): CheckReqs {.base.} =
-  ## Returns a machine-oriented descriptions of the requriements
+  ## Returns a machine-oriented descriptions of the requirements
   ## to run this check.
   ## This might be, that the list requires a list of all files
   ## of the project to check,
