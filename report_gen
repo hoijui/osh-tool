@@ -15,6 +15,7 @@ SCRIPT_NAME="$(basename "$0")"
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 OUT_DIR_DEFAULT="public"
 OUT_FILE_NAME_MD="osh-report.md"
+OUT_CHECKS_LIST_MD="check-list.md"
 OUT_FILE_NAME_JSON="osh-report.json"
 OUT_FILE_NAME_HTML="osh-report.html"
 OUT_FILE_STDOUT="stdout.txt"
@@ -88,6 +89,7 @@ do
 done
 
 output_md="$output_dir/$OUT_FILE_NAME_MD"
+checks_list_md="$output_dir/$OUT_CHECKS_LIST_MD"
 output_json="$output_dir/$OUT_FILE_NAME_JSON"
 output_html="$output_dir/$OUT_FILE_NAME_HTML"
 badge_file_prefix="$output_dir/$BADGE_FILE_NAME_PREFIX"
@@ -111,6 +113,10 @@ osh \
 	--report-json "$output_json" \
 	> "$stdout_log" \
 	2> "$stderr_log"
+
+osh \
+	--list-checks \
+	> "$checks_list_md"
 
 # Prettify JSON
 jq < "$output_json" > "${output_json}_TMP"
@@ -234,6 +240,14 @@ tmp_file="/tmp/report_gen-tmp-$RANDOM"
 	echo "* [Markdown]($OUT_FILE_NAME_MD)"
 	echo "* [HTML]($OUT_FILE_NAME_HTML)"
 	echo "* [JSON]($OUT_FILE_NAME_JSON)"
+	echo
+	echo "</details>"
+	echo
+	echo "<details>"
+	echo
+	echo "<summary>List of all available checks</summary>"
+	echo
+	cat "$checks_list_md"
 	echo
 	echo "</details>"
 	echo
