@@ -196,7 +196,7 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
       if lines.len() > 0:
         let jsonRoot = parseJson(lines.join("\n"))
         # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
-        for linkNode in jsonRoot:
+        for linkNode in jsonRoot.getFields()["links"]:
           let link = LinkOcc(
             srcFile: linkNode["src_file"].getStr(),
             srcLine: linkNode["src_line"].getInt(),
