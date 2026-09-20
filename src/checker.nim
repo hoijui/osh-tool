@@ -63,7 +63,7 @@ proc list*(registry: var ChecksRegistry) =
     let checkSign = check.getSignificanceFactors()
     let srcCodePath = check.sourcePath()
     let srcText = fmt"[`{srcCodePath}`]({OSH_TOOL_SRC_FILES_BASE_URL}/src/checks/{srcCodePath})"
-    echo(fmt"| {id} | {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |")
+    echo(fmt"""| <a id="check_{id}"><a  href="#check_{id}">{id}</a></a> | {check.name()} | {round(checkSign.weight)} | {round(checkSign.openness)} | {round(checkSign.hardware)} | {round(checkSign.quality)} | {round(checkSign.machineReadability)} | {singleLineDesc} | {singleLineWhy} | {srcText} |""")
 
 proc check*(registry: var ChecksRegistry, state: var State) =
   var reports = newSeq[CheckFmt]()
