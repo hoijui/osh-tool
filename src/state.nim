@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import logging
 import options
 import os
 import regex
@@ -25,12 +26,14 @@ method listFiles*(this: var State): seq[string] {.base.} =
   ## Returns a list of all the project file names, recursively
   if this.projFiles.isNone:
     this.projFiles = some(fs.listFiles(this.config.projRoot))
+    debug "listFiles: " & $this.projFiles
   return this.projFiles.get
 
 method listFilesNonGenerated*(this: var State): seq[string] {.base.} =
   ## Returns a list of all the project file names, recursively
   if this.projFilesNonGenerated.isNone:
     this.projFilesNonGenerated = some(filterOutGenerated(this.config.projRoot, this.listFiles()))
+    debug "listFilesNonGenerated: " & $this.projFilesNonGenerated
   return this.projFilesNonGenerated.get
 
 method listFilesMatching*(this: var State, regex: Regex2): seq[string] {.base.} =
@@ -50,6 +53,7 @@ method listFilesL1*(this: var State): seq[string] {.base.} =
   ## of the project ("level 1" -> L1)
   if this.projFilesL1.isNone:
     this.projFilesL1 = some(toSeq(this.listFiles().filterIt(not it.contains(pathSeps))))
+    debug "listFilesL1: " & $this.projFilesL1
   return this.projFilesL1.get
 
 method listFilesL1Matching*(this: var State, regex: Regex): seq[string] {.base.} =
