@@ -11,7 +11,7 @@
 # NOTE Similar to above.
 #FROM nimlang/choosenim:latest
 # ... so we just craft our own:
-FROM bitnami/minideb:latest
+FROM bitnami/minideb:trixie
 
 # Set parameters like so:
 # docker build \
