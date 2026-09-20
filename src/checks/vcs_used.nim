@@ -144,7 +144,7 @@ method id*(this: VcsUsedCheckGenerator): string =
 
 method generate*(this: VcsUsedCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  VcsUsedCheck()
+  VcsUsedCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   VcsUsedCheckGenerator()

@@ -69,7 +69,7 @@ method id*(this: NoSpaceInFileNamesCheckGenerator): string =
 
 method generate*(this: NoSpaceInFileNamesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  NoSpaceInFileNamesCheck()
+  NoSpaceInFileNamesCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   NoSpaceInFileNamesCheckGenerator()

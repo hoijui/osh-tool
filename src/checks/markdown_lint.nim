@@ -150,7 +150,7 @@ method id*(this: MarkdownLintCheckGenerator): string =
 
 method generate*(this: MarkdownLintCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  MarkdownLintCheck()
+  MarkdownLintCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   MarkdownLintCheckGenerator()

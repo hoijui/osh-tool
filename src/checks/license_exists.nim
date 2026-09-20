@@ -80,7 +80,7 @@ method id*(this: LicenseExistsCheckGenerator): string =
 
 method generate*(this: LicenseExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  LicenseExistsCheck()
+  LicenseExistsCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   LicenseExistsCheckGenerator()

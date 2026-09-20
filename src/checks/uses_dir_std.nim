@@ -105,7 +105,7 @@ method id*(this: UsesDirStdCheckGenerator): string =
 
 method generate*(this: UsesDirStdCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  UsesDirStdCheck()
+  UsesDirStdCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   UsesDirStdCheckGenerator()

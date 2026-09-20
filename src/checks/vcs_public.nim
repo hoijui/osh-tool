@@ -137,7 +137,7 @@ method id*(this: VcsPublicCheckGenerator): string =
 
 method generate*(this: VcsPublicCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  VcsPublicCheck()
+  VcsPublicCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   VcsPublicCheckGenerator()

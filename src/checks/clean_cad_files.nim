@@ -80,7 +80,7 @@ method id*(this: CleanCadFilesCheckGenerator): string =
 
 method generate*(this: CleanCadFilesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  CleanCadFilesCheck()
+  CleanCadFilesCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   CleanCadFilesCheckGenerator()

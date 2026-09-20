@@ -101,7 +101,7 @@ method id*(this: OkhLintCheckGenerator): string =
 
 method generate*(this: OkhLintCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  OkhLintCheck()
+  OkhLintCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   OkhLintCheckGenerator()

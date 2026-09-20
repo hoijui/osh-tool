@@ -75,7 +75,7 @@ method id*(this: ReadmeExistsCheckGenerator): string =
 
 method generate*(this: ReadmeExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  ReadmeExistsCheck()
+  ReadmeExistsCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   ReadmeExistsCheckGenerator()

@@ -147,7 +147,7 @@ method id*(this: NoSourceFilesInRootCheckGenerator): string =
 
 method generate*(this: NoSourceFilesInRootCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  NoSourceFilesInRootCheck()
+  NoSourceFilesInRootCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   NoSourceFilesInRootCheckGenerator()

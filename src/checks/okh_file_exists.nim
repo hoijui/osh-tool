@@ -102,7 +102,7 @@ method id*(this: OkhFileExistsCheckGenerator): string =
 
 method generate*(this: OkhFileExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  OkhFileExistsCheck()
+  OkhFileExistsCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   OkhFileExistsCheckGenerator()

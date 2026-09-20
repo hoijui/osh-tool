@@ -85,7 +85,7 @@ method id*(this: NoGeneratedFilesCheckGenerator): string =
 
 method generate*(this: NoGeneratedFilesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  NoGeneratedFilesCheck()
+  NoGeneratedFilesCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   NoGeneratedFilesCheckGenerator()

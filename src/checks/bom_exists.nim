@@ -79,7 +79,7 @@ method id*(this: BomExistsCheckGenerator): string =
 
 method generate*(this: BomExistsCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  BomExistsCheck()
+  BomExistsCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   BomExistsCheckGenerator()

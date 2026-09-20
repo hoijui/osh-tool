@@ -112,7 +112,7 @@ method id*(this: MarkupLinkCheckGenerator): string =
 
 method generate*(this: MarkupLinkCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  MarkupLinkCheck()
+  MarkupLinkCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   MarkupLinkCheckGenerator()

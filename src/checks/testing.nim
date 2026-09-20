@@ -107,7 +107,7 @@ method generate*(this: TestingCheckGenerator, config: CheckConfig = this.default
   # if not jsonConfig.contains("pass"):
   #   raise InvalidConfigException.newException(
   #     fmt"This check ({this.id()}) requires the config property 'pass' (boolean) to be set")
-  TestingCheck(config: jsonConfig)
+  TestingCheck(generator: this, config: jsonConfig)
 
 proc createGenerator*(): CheckGenerator =
   TestingCheckGenerator()

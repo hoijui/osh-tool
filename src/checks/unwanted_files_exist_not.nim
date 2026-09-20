@@ -74,7 +74,7 @@ method id*(this: UnwantedFilesExistNotCheckGenerator): string =
 
 method generate*(this: UnwantedFilesExistNotCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  UnwantedFilesExistNotCheck()
+  UnwantedFilesExistNotCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   UnwantedFilesExistNotCheckGenerator()

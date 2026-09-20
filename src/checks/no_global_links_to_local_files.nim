@@ -98,7 +98,7 @@ method id*(this: MdNoGlobalLinksToLocalFilesCheckGenerator): string =
 
 method generate*(this: MdNoGlobalLinksToLocalFilesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  MdNoGlobalLinksToLocalFilesCheck()
+  MdNoGlobalLinksToLocalFilesCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   MdNoGlobalLinksToLocalFilesCheckGenerator()

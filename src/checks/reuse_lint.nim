@@ -165,7 +165,7 @@ method id*(this: ReuseLintCheckGenerator): string =
 
 method generate*(this: ReuseLintCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  ReuseLintCheck()
+  ReuseLintCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   ReuseLintCheckGenerator()

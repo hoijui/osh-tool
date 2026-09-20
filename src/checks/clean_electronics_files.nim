@@ -80,7 +80,7 @@ method id*(this: CleanElectronicsFilesCheckGenerator): string =
 
 method generate*(this: CleanElectronicsFilesCheckGenerator, config: CheckConfig = this.defaultConfig()): Check =
   this.ensureNonConfig(config)
-  CleanElectronicsFilesCheck()
+  CleanElectronicsFilesCheck(generator: this)
 
 proc createGenerator*(): CheckGenerator =
   CleanElectronicsFilesCheckGenerator()
