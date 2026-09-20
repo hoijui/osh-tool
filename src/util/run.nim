@@ -179,7 +179,7 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
     args.add("--result-format=json")
     for mdFile in mdFiles:
       args.add(mdFile)
-    debug fmt"Now running '{MLE_CMD}' ..."
+    debug fmt"""Now running '{MLE_CMD}' {args.join(" ")} ..."""
     let process = osproc.startProcess(
       command = MLE_CMD,
       workingDir = projRoot,
@@ -192,6 +192,11 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
     process.close()
     debug fmt"'{MLE_CMD}' run done."
     if exCode == 0:
+      debug fmt"'{MLE_CMD}' run - parsing output (JSON) ..."
+      debug fmt"'{MLE_CMD}' run - output:"
+      debug "\n\n\n\n\n"
+      debug fmt"""{lines.join("\n")}"""
+      debug "\n\n\n\n\n"
       var links = newSeq[LinkOcc]()
       if lines.len() > 0:
         let jsonRoot = parseJson(lines.join("\n"))
@@ -203,6 +208,7 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
             srcColumn: linkNode["src_column"].getInt(),
             target: linkNode["trg_link"].getStr())
           links.add(link)
+      debug fmt"'{MLE_CMD}' run - parsing output - done."
       return links
     else:
       raise newException(IOError, fmt("""Failed to run '{MLE_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}"""))
