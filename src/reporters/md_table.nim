@@ -58,6 +58,7 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   strm.writeLine(tableHeaderDelims(self.debug))
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
+  let id = check.generator().id()
   let strm = self.getStream(res)
   let passedStr = bool2str(res.isGood())
   let customPassed = res.isCustomPassed()
@@ -82,7 +83,7 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
     fmt" | {round(weight)} | {round(weightedComp)}"
   else:
     ""
-  strm.writeLine(fmt"| {passedStr} | {customPassedStr} | {kindStr} | {comp}%" & tblOptVals & fmt" | {check.name()} | {msg} |")
+  strm.writeLine(fmt"| {passedStr} | {customPassedStr} | {kindStr} | {comp}%" & tblOptVals & fmt""" | <a href="#check_{id}">{check.name()}</a> | {msg} |""")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) =
   let strm = self.repStream
