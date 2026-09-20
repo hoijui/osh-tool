@@ -440,7 +440,7 @@ proc isCustomPassed*(res: CheckResult): Option[bool] =
 method id*(this: CheckGenerator): string {.base.} =
   ## Returns a list of short, human&machine oriented, unique IDs/names
   ## of the check that this can generate.
-  ## These IDs are used to reffer to the check in configuration.
+  ## These IDs are used to refer to the check in configuration.
   return "TODO Override!"
 
 method configSchema*(this: CheckGenerator): Option[JsonNode] {.base.} =
