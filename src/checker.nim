@@ -103,7 +103,10 @@ proc check*(registry: var ChecksRegistry, state: var State) =
   let checksConfigs = state.config.checks
   let allChecks = registry.getChecks(checksConfigs)
   let numChecks = len(allChecks)
+  debug fmt"Running {numChecks} checks ..."
   for primaryId, check in allChecks:
+    let checkLogId = fmt"{idxAll}/{numChecks} ('{check.name()}')"
+    debug fmt"Check {checkLogId} - Starting ..."
     let res = check.run(state)
     if isGood(res):
       passedChecks += 1
@@ -111,7 +114,7 @@ proc check*(registry: var ChecksRegistry, state: var State) =
       issues[$issue.severity] += 1
     if not isApplicable(res):
       let reason = if res.issues.len() > 0 and res.issues[0].msg.isSome(): fmt" because: {res.issues[0].msg.get()}" else: ""
-      debug fmt"Skip reporting check '{check.name()}', because it is inapplicable to this project (in its current state){reason}"
+      debug fmt"Check {checkLogId} - Skip reporting this check, because it is inapplicable to this project (in its current state){reason}"
       idxAll += 1
       continue
     let compliance = res.calcCompliance()
@@ -124,6 +127,7 @@ proc check*(registry: var ChecksRegistry, state: var State) =
         customCompliance.failed += 1
     else:
       customCompliance.notConfigured += 1
+    debug fmt"Check {checkLogId} - Reporting ..."
     for checkFmt in reports:
       checkFmt.report(check, res, idx, idxAll, numChecks)
     let checkSigFacs = check.getSignificanceFactors()
@@ -141,6 +145,8 @@ proc check*(registry: var ChecksRegistry, state: var State) =
     weightedComplianceSum += compliance * checkSigFacs.weight
     idx += 1
     idxAll += 1
+    debug fmt"Check {checkLogId} - done."
+  debug fmt"Running {numChecks} checks - done."
   # Divides the actually achieved compliance rates of al lsub-ratings
   # by the maximum achievable value of each.
   # -> percentage
