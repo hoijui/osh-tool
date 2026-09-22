@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # NOTE Lint this file with https://hadolint.github.io/hadolint/
 
-# SPDX-FileCopyrightText: 2022-2025 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2022-2026 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: Unlicense
 
@@ -15,10 +15,9 @@ FROM bitnami/minideb:trixie
 
 # Set parameters like so:
 # docker build \
-#     --build-arg reuse_tool_release="5.0.2" \
+#     --build-arg okh_tool_release="2.4.4" \
 #     --build-arg okh_tool_bin="build/okh-tool" \
 #     .
-ARG reuse_tool_release=5.0.2
 ARG okh_tool_release=2.4.2
 ARG okh_tool_bin=okh-tool
 ARG repvar_release=0.14.2
