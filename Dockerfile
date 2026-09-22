@@ -18,14 +18,14 @@ FROM bitnami/minideb:trixie
 #     --build-arg okh_tool_release="2.4.4" \
 #     --build-arg okh_tool_bin="build/okh-tool" \
 #     .
-ARG okh_tool_release=2.4.2
+ARG okh_tool_release=2.4.4
 ARG okh_tool_bin=okh-tool
-ARG repvar_release=0.14.2
-ARG projvar_release=0.19.9
+ARG repvar_release=0.14.6
+ARG projvar_release=0.20.2
 ARG mle_release=0.29.0
 ARG mlc_release=0.17.1
-ARG obadgen_release=0.2.3
-ARG osh_dir_std_release=0.8.4
+ARG obadgen_release=0.2.4
+ARG osh_dir_std_release=0.9.0
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
