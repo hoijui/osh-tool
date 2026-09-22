@@ -92,6 +92,7 @@ The generated report is linked to form the README in a badge
 | --- | ------ | --- | --- |
 | GitHub Actions | <https://github.com/hoijui/MeditationBench> | [Generated Report](https://hoijui.github.io/MeditationBench/osh-report.html) | [.github/workflows/check.yml](https://github.com/hoijui/MeditationBench/blob/master/.github/workflows/check.yml) |
 | GitHub Actions 2 | <https://github.com/osegermany/AgroCircle> | [Generated Report](https://osegermany.github.io/AgroCircle/osh-report.html) | [.github/workflows/check.yml](https://github.com/osegermany/AgroCircle/blob/master/.github/workflows/check.yml) |
+| CodeBerg with GitHub Actions | <https://codeberg.org/FairIT/assembly-kit> | [Generated Report](https://fairityourself.github.io/assembly-kit/osh-check/osh-report.html) | [.github/workflows/check_and_build_docu.yml](https://codeberg.org/fairIT/assembly-kit/src/branch/main/.github/workflows/check_and_build_docu.yml) |
 | GitLab CI | <https://gitlab.com/OSEGermany/ohloom> | [Generated Report](https://osegermany.gitlab.io/ohloom/osh-report.html) | [.gitlab-ci.yml](https://gitlab.com/OSEGermany/ohloom/-/blob/master/.gitlab-ci.yml) |
 
 ## Docker
