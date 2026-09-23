@@ -278,8 +278,8 @@ cd "$output_dir"
 pandoc \
 	-t html \
 	-o "$OUT_FILE_NAME_HTML" \
+	--embed-resources \
 	--standalone \
-	--self-contained \
 	-f markdown-smart \
 	--css="$SCRIPT_DIR/report_gen_additional.css" \
 	-M document-css=true \
