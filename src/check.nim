@@ -44,7 +44,7 @@ type
     DeveloperFailure, High, Middle, Low, Info
 
   CheckIssue* = object
-    ## The result of a checks run may include 0, 1 or more instnaces of this.
+    ## The result of a checks run may include 0, 1 or more instances of this.
     ## An issue further describes what would have to change in the project,
     ## for it to get a better rating according to the specific check.
     severity*: CheckIssueSeverity
@@ -190,7 +190,7 @@ type
       ## NOTE We only have this as field (vs method), so it gets serilized (e.g. to JSON)
 
   Ratings* = object
-    ## How successfull all checks combined ran,
+    ## How successful all checks combined ran,
     ## as factors from 0.0 to 1.0,
     ## taking each checks weight into account.
     compliance*: Rating
@@ -337,7 +337,7 @@ proc newCheckResult*(config: CheckConfig, kind: CheckResultKind, severity: Check
   )
 
 proc toColor*(severity: CheckIssueSeverity): string =
-  ## Converts the severity of an isssue
+  ## Converts the severity of an issue
   ## to a name of a color from the web colors palette:
   ## <https://www.w3schools.com/tags/ref_colornames.asp>
   return case severity:
@@ -364,14 +364,14 @@ proc getGoodHumanReadable*(res: CheckResult): string =
 proc getGoodColor*(res: CheckResult): string =
   ## Returns a web color name
   ## that fits to the result of `CheckResukt.isGood()`.
-  ## It will be part of this pallette:
+  ## It will be part of this palette:
   ## <https://www.w3schools.com/tags/ref_colornames.asp>
   return if res.isGood(): "Green" else: "Red"
 
 proc getKindColor*(res: CheckResult): string =
   ## Returns a web color name
   ## that fits to `CheckResukt.kind`.
-  ## It will be part of this pallette:
+  ## It will be part of this palette:
   ## <https://www.w3schools.com/tags/ref_colornames.asp>
   return case res.kind:
     of Perfect: "Green"
