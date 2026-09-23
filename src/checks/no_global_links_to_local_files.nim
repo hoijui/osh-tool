@@ -68,19 +68,20 @@ method run*(this: MdNoGlobalLinksToLocalFilesCheck, state: var State): CheckResu
   let nl = "<br>&nbsp;"
   for link in links:
     for projGlobPref in state.config.projPrefixes:
-      if link.target.startsWith(projGlobPref) and len(link.target) > len(projGlobPref) and not (len(link.target) - 1 == len(projGlobPref) and link.target[^1] == '/'):
+      let projGlobPrefDir = if projGlobPref[^1] == '/': projGlobPref else: projGlobPref & "/"
+      if link.target.startsWith(projGlobPrefDir) and len(link.target) > len(projGlobPrefDir) and not (len(link.target) - 1 == len(projGlobPrefDir) and link.target[^1] == '/'):
         var newTarget = link.target
         let uri = parseUri(newTarget)
         if uri.scheme == "file":
           # "file://..." URL
-          newTarget.removePrefix(projGlobPref)
-          newTarget = relativePath(newTarget, projGlobPref)
+          newTarget.removePrefix(projGlobPrefDir)
+          newTarget = relativePath(newTarget, projGlobPrefDir)
         elif len(uri.scheme) > 0:
           # URL, but not a "file://..." one
-          newTarget.removePrefix(projGlobPref)
+          newTarget.removePrefix(projGlobPrefDir)
         else:
           # file path
-          newTarget = relativePath(link.target, projGlobPref)
+          newTarget = relativePath(link.target, projGlobPrefDir)
         issues.add(CheckIssue(
           severity: CheckIssueSeverity.Middle,
           msg: some(fmt"'{link.srcFile}':{link.srcLine}:{link.srcColumn}{nl}    '{link.target}'{nl}    ->{nl}    '{newTarget}'")))
