@@ -33,21 +33,28 @@ proc bool2str(val: bool): string =
 
 proc tableHeader(debug: bool, fattened: bool = false): string =
   let tblOptHeader = if debug:
-    " | Weight | Weighted Comp. Fac."
+    " <th>Weight</th> <th>Weighted Comp. Fac.</th>"
   else:
     ""
-  var tblHeader = fmt"| Passed | Custom-Passed | Status | Compliance{tblOptHeader} | Check | Severity - Issue |"
+  var tblHeader = fmt"""<th>Passed</th> <th>Custom-Passed</th> <th>Status</th> <th style="text-align: right;">Compliance</th>{tblOptHeader} <th>Check</th> <th>Severity - Issue</th>"""
   if fattened:
-    tblHeader = tblHeader.replace("| ", "| **").replace(" |", "** |")
-  tblHeader
-
-proc tableHeaderDelims(debug: bool): string =
-  let tblOptDelim = if debug:
-    " | -: | -:"
-  else:
-    ""
-  # NOTE In some renderers, number of dashes are used to determine relative column width
-  fmt"| - | - | -- | -:{tblOptDelim} | ----- | ---------------- |"
+    tblHeader = tblHeader.replace("<th>", "<th><b>").replace("</th>", "</b></th>")
+  fmt"""<table>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 18%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr>
+{tblHeader}
+</tr>
+</thead>
+<tbody>
+"""
 
 method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   let strm = self.repStream
@@ -55,7 +62,6 @@ method init(self: MdTableCheckFmt, prelude: ReportPrelude) =
   self.debug = false # TODO Make this configurable somehow
   mdPrelude(strm, prelude)
   strm.writeLine(tableHeader(self.debug))
-  strm.writeLine(tableHeaderDelims(self.debug))
 
 method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int, indexAll: int, total: int) =
   let id = check.generator().id()
@@ -75,21 +81,21 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let weightedComp = compFac * weight
   let msg = res.issues
     .map(proc (issue: CheckIssue): string =
-      fmt"""<font color="{issue.severity.toColor()}">__{issue.severity}__</font>{msgFmt(issue.msg)}"""
+      fmt"""<font color="{issue.severity.toColor()}"><b>{issue.severity}</b></font>{msgFmt(issue.msg)}"""
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
   let tblOptVals = if self.debug:
-    fmt" | {round(weight)} | {round(weightedComp)}"
+    fmt" <td>{round(weight)}</td> <td>{round(weightedComp)}</td>"
   else:
     ""
-  strm.writeLine(fmt"| {passedStr} | {customPassedStr} | {kindStr} | {comp}%" & tblOptVals & fmt""" | <a href="#check_{id}">{check.name()}</a> | {msg} |""")
+  strm.writeLine(fmt"""<tr> <td>{passedStr}</td> <td>{customPassedStr}</td> <td>{kindStr}</td> <td style="text-align: right;">{comp}%""" & tblOptVals & fmt"""</td> <td><a href="#check_{id}">{check.name()}</a> </td> <td>{msg}</td> </tr>""")
 
 method finalize(self: MdTableCheckFmt, stats: ReportStats) =
   let strm = self.repStream
   let tblOptAvers = if self.debug:
-    fmt" | __{toPercentStr(stats.checks.weightsSum / float(stats.checks.run))}%__" &
-    fmt" | __{toPercentStr(stats.ratings.compliance.factor)}%__"
+    fmt" <th><b>{toPercentStr(stats.checks.weightsSum / float(stats.checks.run))}%</b></th>" &
+    fmt" <th><b>{toPercentStr(stats.ratings.compliance.factor)}%</b></th>"
   else:
     ""
   let customPassedSummary = if stats.isNoneCustom():
@@ -97,7 +103,9 @@ method finalize(self: MdTableCheckFmt, stats: ReportStats) =
     else:
       bool2str(stats.isNoneCustomFailed())
   strm.writeLine(tableHeader(self.debug, true))
-  strm.writeLine(fmt"| | {customPassedSummary} | | __{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%__{tblOptAvers} | <- __Average__ | |")
+  strm.writeLine(fmt"<tr> <th></th> <th>{customPassedSummary}</th> <th></th> <th><b>{toPercentStr(stats.checks.complianceSum / float(stats.checks.run))}%</b></th>{tblOptAvers} <th><- <b>Average</b></th> <th></th> </tr>")
+  strm.writeLine("</tbody>")
+  strm.writeLine("</table>")
   strm.writeLine("")
   strm.writeLine("<details>")
   strm.writeLine("")
