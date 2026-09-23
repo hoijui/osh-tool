@@ -79,12 +79,31 @@ method report(self: MdTableCheckFmt, check: Check, res: CheckResult, index: int,
   let comp = toPercentStr(compFac)
   let weight = check.getSignificanceFactors().weight
   let weightedComp = compFac * weight
-  let msg = res.issues
+  var issueStats = initOrderedTable[CheckIssueSeverity, int](5)
+  issueStats[CheckIssueSeverity.DeveloperFailure] = 0
+  issueStats[CheckIssueSeverity.High] = 0
+  issueStats[CheckIssueSeverity.Middle] = 0
+  issueStats[CheckIssueSeverity.Low] = 0
+  issueStats[CheckIssueSeverity.Info] = 0
+  for issue in res.issues:
+    issueStats[issue.severity] += 1
+  let msgSummary = issueStats.pairs()
+      .toSeq()
+      .filter(proc (iStats: tuple[severity: CheckIssueSeverity, ocurences: int]): bool = iStats.ocurences > 0)
+      .map(proc (iStats: tuple[severity: CheckIssueSeverity, ocurences: int]): string =
+        fmt"""<font color="{iStats.severity.toColor()}"><b>{iStats.severity}</b></font>: {iStats.ocurences}"""
+      )
+      .join(", ")
+  let msgFull = res.issues
     .map(proc (issue: CheckIssue): string =
       fmt"""<font color="{issue.severity.toColor()}"><b>{issue.severity}</b></font>{msgFmt(issue.msg)}"""
     )
     .join("<br><hline/><br>")
     .replace("\n", " <br>&nbsp;")
+  let msg = if msgFull == "":
+      msgFull
+    else:
+      fmt"""<details><summary>{msgSummary}</summary><br><br>{msgFull}</details>"""
   let tblOptVals = if self.debug:
     fmt" <td>{round(weight)}</td> <td>{round(weightedComp)}</td>"
   else:
