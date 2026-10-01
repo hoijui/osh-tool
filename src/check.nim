@@ -61,6 +61,10 @@ type
       ## The main status indicator of the check run.
     issues*: seq[CheckIssue]
       ## Zero or more issues
+    complianceFractionOverride*: Option[float32]
+      ## This will usually be `none`,
+      ## but some checks may want to override this.
+      ## See [`Ratings.factor`]
     # msg*: Option[string]
 
   CheckReq* {.size: sizeof(cint).} = enum
@@ -384,6 +388,10 @@ proc calcCompliance*(res: CheckResult): float32 =
   ## Calculates the compliance factor of executing a check.
   ## Explained here (among other things):
   ## https://github.com/hoijui/osh-tool/issues/27
+
+  if res.complianceFractionOverride.isSome():
+    return res.complianceFractionOverride.get()
+
   let oKind = case res.kind:
     of Perfect:
       1.0
