@@ -8,7 +8,6 @@
 import json
 import options
 import strformat
-import strutils
 import system
 import tables
 import ../check
@@ -32,9 +31,14 @@ method name*(this: UsesDirStdCheck): string =
   return "Uses dir standard"
 
 method description*(this: UsesDirStdCheck): string =
-  return fmt"""Checks whether the {DIR_STD_NAME} OSH directory standard is used \
+  return fmt"""Checks whether an OSH directory standard is used \
 for a sufficient amount of files and directories in the project, \
-using the {OSH_DIR_STD_TOOL_CMD} CLI tool."""
+using the {OSH_DIR_STD_TOOL_CMD} CLI tool.
+This standard is comprised of multiple sub-standards,
+or say:
+There is not just one accepted way to name your dirs and files,
+but multiple,
+and new ones may be added by the community."""
 
 method why*(this: UsesDirStdCheck): string =
   return """1. to be able to extract meta-data:
@@ -64,39 +68,92 @@ method getSignificanceFactors*(this: UsesDirStdCheck): CheckSignificance =
 method run*(this: UsesDirStdCheck, state: var State): CheckResult =
   let config = state.config.checks[ID]
   try:
-    let args = ["rate", "--standard", DIR_STD_NAME, "--include-coverage"]
+    let args = ["rate", "--all", "--include-coverage"]
     let jsonLines = runOshDirStd(state.config.projRoot, args, state.listFiles())
     let jsonRoot = parseJson(jsonLines)
+    var prefixText = """The compliance factors for the different standards
+(0.0 means the checked project does not coincide with the standard at all,
+while 1.0 means the checked project follows the standard perfectly):\n"""
+
+    # Find highest compliance factor
+    var maxFactor = 0.0
     for std in jsonRoot:
-      if std["rating"]["name"].getStr() == DIR_STD_NAME:
+      let compFactor = float32(std["rating"]["factor"].getFloat())
+      if compFactor > maxFactor:
+        maxFactor = compFactor
+
+    # Find most fitting standards
+    # (could be more then one, if they reached the same factor)
+    # and report standard compliance factors
+    var mostFittingStds: seq[JsonNode]
+    if maxFactor == 0.0:
+      prefixText &= "This project does not comply at all with any of the directory standards (all compliance factors are 0.0)\n"
+    else:
+      for std in jsonRoot:
+        let name = std["rating"]["name"].getStr()
         let compFactor = float32(std["rating"]["factor"].getFloat())
-        var notInStdFiles = newSeq[string]()
+        if compFactor == maxFactor:
+          mostFittingStds.add(std)
+          prefixText &= fmt"- {name}: *{compFactor}*\n"
+        elif compFactor > 0.0:
+          prefixText &= fmt"- {name}: {compFactor}\n"
+
+      prefixText &= "\n"
+      prefixText &= "There are {mostFittingStds.len()} standards\n"
+      prefixText &= "that fit with a compliance factor of {maxFactor},\n"
+      prefixText &= "which is the maximum obtained by this project.\n"
+      prefixText &= "They are:\n"
+
+      var issues: seq[CheckIssue] = @[]
+      for std in mostFittingStds:
+        let name = std["rating"]["name"].getStr()
+        prefixText &= "\n"
+        prefixText &= "##### {name}\n"
+        prefixText &= "\n"
+        prefixText &= "project files not covered by the standard:\n"
+        prefixText &= "\n"
         for notInStdFile in std["coverage"]["out"]:
-          notInStdFiles.add(notInStdFile.getStr())
-        let notInStdFilesStr = """
+          issues.add(CheckIssue(
+              severity: CheckIssueSeverity.Low,
+              msg: some(notInStdFile.getStr())
+            ))
+      let maxFactorRounded = round(maxFactor)
+      # let numFiles = state.listFiles()
+      # let kind = if issues.len() / mostFittingStds.len() > OK_NUM_FACTOR_OF_UNCOVERED_FILES * numFiles:
+      #     CheckResultKind.Ok
+      #   else:
+      #     CheckResultKind.Acceptable
 
+      let kind = if maxFactor == 1.0:
+        CheckResultKind.Perfect
+      elif maxFactor >= HIGH_COMPLIANCE:
+        issues.add(CheckIssue(
+            severity: CheckIssueSeverity.Middle,
+            msg: some(fmt"""Compliance factor {maxFactorRounded} is not perfect, but close, \
+being above the high compliance margin of {HIGH_COMPLIANCE}; good! :-)"""))
+          )
+        CheckResultKind.Ok
+      elif maxFactor >= MIN_COMPLIANCE:
+        issues.add(CheckIssue(
+            severity: CheckIssueSeverity.Middle,
+            msg: some(fmt"""Compliance factor {maxFactorRounded} is above the minimum compliance margin \
+of {MIN_COMPLIANCE}"""))
+          )
+        CheckResultKind.Acceptable
+      else:
+        issues.add(CheckIssue(
+            severity: CheckIssueSeverity.Middle,
+            msg: some(fmt"""Compliance factor {maxFactorRounded} is low; \
+below the minimum compliance margin of {MIN_COMPLIANCE}"""))
+          )
+        CheckResultKind.Bad
 
-files not covered by the standard:
-
-- """ & notInStdFiles.join("\n- ")
-        let compFactorRounded = round(compFactor)
-        if compFactor == 1.0:
-          return newCheckResult(config, CheckResultKind.Perfect)
-        elif compFactor >= HIGH_COMPLIANCE:
-          return newCheckResult(config, CheckResultKind.Ok, CheckIssueSeverity.Middle,
-              some(fmt"""Compliance factor {compFactorRounded} is not perfect, but close, \
-being above the high compliance margin of {HIGH_COMPLIANCE}""" & notInStdFilesStr))
-        elif compFactor >= MIN_COMPLIANCE:
-          return newCheckResult(config, CheckResultKind.Ok, CheckIssueSeverity.Middle,
-              some(fmt"""Compliance factor {compFactorRounded} is above the minimum compliance margin \
-of {MIN_COMPLIANCE}; good! :-)""" & notInStdFilesStr))
-        else:
-          return newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.Middle,
-              some(fmt"""Compliance factor {compFactorRounded} is low; \
-below the minimum compliance margin of {MIN_COMPLIANCE}""" & notInStdFilesStr))
-    return newCheckResult(config, CheckResultKind.Ok, CheckIssueSeverity.DeveloperFailure,
-        some(fmt"""Compliance factor for the '{DIR_STD_NAME}' directory standard name not found; \
-please report to the developers of this tool here: <{OSH_TOOL_ISSUES_URL}>"""))
+      return CheckResult(
+        config: config,
+        kind: kind,
+        issues: issues,
+        complianceFractionOverride: some(float32(maxFactor))
+      )
   except OSError as err:
     return newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(err.msg))
 

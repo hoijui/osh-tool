@@ -1,7 +1,7 @@
 # This file is part of osh-tool.
 # <https://github.com/hoijui/osh-tool>
 #
-# SPDX-FileCopyrightText: 2021 - 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+# SPDX-FileCopyrightText: 2021 - 2026 Robin Vobruba <hoijui.quaero@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -21,7 +21,6 @@ import std/tempfiles
 const PROJVAR_CMD = "projvar"
 const MLE_CMD = "mle"
 const OSH_DIR_STD_TOOL_CMD* = "osh-dir-std"
-const DIR_STD_NAME* = "unixish"
 const POSSIBLE_PV_PROJ_PREFIX_KEYS = [
   # "BUILD_HOSTING_URL",
   "REPO_RAW_VERSIONED_PREFIX_URL",
