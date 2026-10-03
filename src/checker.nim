@@ -76,6 +76,7 @@ proc check*(registry: var ChecksRegistry, state: var State) =
       projvar: toolVersion("projvar", "--version", "--quiet"),
       mlc: toolVersion("mlc", "--version", "--quiet"),
       mle: toolVersion("mle", "--version", "--quiet"),
+      lychee: toolVersion("lychee", "--version", "--quiet"),
       osh_dir_std: toolVersion("osh-dir-std", "--version", "--quiet"),
   )
   let prelude = ReportPrelude(

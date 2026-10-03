@@ -103,6 +103,7 @@ type
       projvar: string,
       mlc: string,
       mle: string,
+      lychee: string,
       osh_dir_std: string,
     ]
       ## The versions of external CLI tools used by the checks.

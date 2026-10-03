@@ -24,6 +24,7 @@ ARG repvar_release=0.14.6
 ARG projvar_release=0.20.2
 ARG mle_release=0.29.0
 ARG mlc_release=0.17.1
+ARG lychee_release=0.24.2
 ARG obadgen_release=0.2.4
 ARG osh_dir_std_release=0.9.0
 
@@ -127,6 +128,14 @@ RUN wget --quiet "$MLC_DL" && \
     mv $MLC_PKG/mlc ./ && \
     rm $MLC_PKG.tar.gz && \
     rm -Rf $MLC_PKG
+
+ENV LYCHEE_PKG="lychee-x86_64-unknown-linux-musl"
+ENV LYCHEE_DL="https://github.com/lycheeverse/lychee/releases/download/lychee-v$lychee_release/$LYCHEE_PKG.tar.gz"
+RUN wget --quiet "$LYCHEE_DL" && \
+    tar xf $LYCHEE_PKG.tar.gz && \
+    mv $LYCHEE_PKG/lychee ./ && \
+    rm $LYCHEE_PKG.tar.gz && \
+    rm -Rf $LYCHEE_PKG
 
 ENV OBADGEN_PKG="obadgen-${obadgen_release}-x86_64-unknown-linux-musl"
 ENV OBADGEN_DL="https://github.com/hoijui/obadgen/releases/download/$obadgen_release/$OBADGEN_PKG.tar.gz"
