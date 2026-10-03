@@ -129,7 +129,6 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
       args = args,
       env = nil,
       options = {poUsePath})
-    debug fmt"Waiting for '{OSH_DIR_STD_TOOL_CMD}' run to end ..."
     let procStdin = process.inputStream()
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Writing to stdin ..."
     for path in fileListing:
@@ -140,6 +139,7 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
     process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines()
+    debug fmt"Waiting for '{OSH_DIR_STD_TOOL_CMD}' run to end ..."
     process.close()
     debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finished; analyze results ..."
     if exCode == 0:
