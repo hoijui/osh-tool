@@ -5,6 +5,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import json
 import options
 import std/logging
 import std/osproc
@@ -20,7 +21,10 @@ import ../util/fs
 
 #const IDS = @[srcFileNameBase(), "mul", "mulinks", "mu_links", "markup_links"]
 const ID = srcFileNameBase()
+const HIGH_COMPLIANCE = 0.97
+const MIN_COMPLIANCE = 0.80
 const MLC_CMD = "mlc"
+const LYCHEE_CMD = "lychee"
 
 type MarkupLinkCheck = ref object of Check
 type MarkupLinkCheckGenerator = ref object of CheckGenerator
@@ -66,19 +70,115 @@ method getSignificanceFactors*(this: MarkupLinkCheck): CheckSignificance =
     machineReadability: 0.6,
     )
 
-method run*(this: MarkupLinkCheck, state: var State): CheckResult =
+proc runWithLychee(this: MarkupLinkCheck, state: var State, markupFiles: seq[string]): CheckResult =
   let config = state.config.checks[ID]
-  # return newCheckResult(CheckResultKind.Perfect)
-  let mdFiles = filterByExtensions(state.listFiles(), @["md", "markdown"], 1)
-  if mdFiles.len() == 0:
-    return newCheckResult(
-      config,
-      CheckResultKind.Inapplicable,
-      CheckIssueSeverity.Low,
-      some(fmt"No Markdown sources found, thus we can not lint anything")
-    )
   try:
-    debug fmt"Now running '{MLC_CMD}' ..."
+    debug fmt"Now running '{LYCHEE_CMD}' (link-checker - CLI) ..."
+    let process = osproc.startProcess(
+      command = LYCHEE_CMD,
+      workingDir = state.config.projRoot,
+      args = [
+        "--format=json",
+        "--host-stats",
+        "--include-fragments=full",
+        "--include-mail",
+        "--include-verbatim",
+        "--no-progress",
+        "--suggest",
+        "--files-from", "-"],
+      env = nil,
+      options = {poUsePath}
+      )
+
+    debug fmt"Waiting for '{LYCHEE_CMD}' run to end ..."
+    let procStdin = process.inputStream()
+    debug fmt"  {LYCHEE_CMD}: Writing Markup files to stdin ..."
+    for path in markupFiles:
+      procStdin.writeLine(path)
+    debug fmt"  {LYCHEE_CMD}: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
+    procStdin.close()
+    debug fmt"  {LYCHEE_CMD}: Ask for exit code and stdout ..."
+    let (lines, exCode) = process.readLines()
+    debug fmt"  {LYCHEE_CMD}: Collect stderr ..."
+    let stderrCollected = process.errorStream.readAll()
+    process.errorStream.close()
+    debug fmt"Waiting for '{LYCHEE_CMD}' run to end ..."
+    process.close()
+
+    debug fmt"  {LYCHEE_CMD}: Run finished; analyze results ..."
+    if exCode == 0:
+      newCheckResult(config, CheckResultKind.Perfect)
+    else:
+      if exCode == 2:
+        # At least one link failed to resolve
+        debug fmt"Parsing {LYCHEE_CMD}' output as JSON ..."
+        let jsonRoot = parseJson(lines.join("\n"))
+        debug fmt"Calculating links success rate ..."
+        # Total number of links seen in this link-check
+        let numLinks = jsonRoot["total"].getInt()
+        let numFailedLinks = jsonRoot["errors"].getInt()
+        let successRate = float32(numLinks - numFailedLinks) / float32(numLinks)
+        var issues: seq[CheckIssue] = @[]
+        let extendedIssues = false
+        debug fmt"Wrapping bad links in issues ..."
+        for (localFilePath, failedLinks) in jsonRoot["error_map"].pairs:
+          for failedLink in failedLinks:
+            let span = failedLink["span"]
+            let badLink = fmt"""{localFilePath}:{span["line"].getInt()}:{span["column"].getInt()}:{failedLink["url"].getStr()}"""
+            let msg = if extendedIssues:
+                let status = failedLink["status"]
+                let issueDesc = if status.hasKey("code"):
+                    status["code"].getStr()
+                  elif status.hasKey("details"):
+                    status["details"].getStr()
+                  else:
+                    status["text"].getStr()
+                fmt"""Bad Link at:
+  {badLink}
+      -> issue: {issueDesc}"""
+              else:
+                badLink
+            issues.add(CheckIssue(
+                severity: CheckIssueSeverity.Low,
+                msg: some(msg)
+              ))
+        debug fmt"Wrapping bad links in issues - done."
+        let kind = if successRate >= HIGH_COMPLIANCE:
+            CheckResultKind.Ok
+          elif successRate >= MIN_COMPLIANCE:
+            CheckResultKind.Acceptable
+          else:
+            CheckResultKind.Bad
+        return CheckResult(
+          config: config,
+          kind: kind,
+          issues: issues,
+        )
+      else:
+        # The tool failed to run for an extraordinary reason
+        debug fmt"""{LYCHEE_CMD} exited with unknown code {exCode}.
+stdout was:
+################################################################
+{lines.join("\n")}
+################################################################
+stdout was:
+################################################################
+{stderrCollected}
+################################################################"""
+        let msg = fmt("ERROR Failed to run '{LYCHEE_CMD}'; reason unknown; exit code: {exCode}")
+        return newCheckResult(
+          config,
+          CheckResultKind.Bad,
+          CheckIssueSeverity.High,
+          some(msg))
+  except OSError as err:
+    let msg = fmt("ERROR Failed to run '{LYCHEE_CMD}'; make sure it is in your PATH: {err.msg}")
+    newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+
+proc runWithMlc(this: MarkupLinkCheck, state: var State, markupFiles: seq[string]): CheckResult =
+  let config = state.config.checks[ID]
+  try:
+    debug fmt"Now running '{MLC_CMD}' (link-checker - CLI) ..."
     let process = osproc.startProcess(
       command = MLC_CMD,
       workingDir = state.config.projRoot,
@@ -106,6 +206,19 @@ method run*(this: MarkupLinkCheck, state: var State): CheckResult =
   except OSError as err:
     let msg = fmt("ERROR Failed to run '{MLC_CMD}'; make sure it is in your PATH: {err.msg}")
     newCheckResult(config, CheckResultKind.Bad, CheckIssueSeverity.High, some(msg))
+
+method run*(this: MarkupLinkCheck, state: var State): CheckResult =
+  let config = state.config.checks[ID]
+  let markupFiles = filterByExtensions(state.listFiles(), @["md", "markdown"], 1)
+  if markupFiles.len() == 0:
+    return newCheckResult(
+      config,
+      CheckResultKind.Inapplicable,
+      CheckIssueSeverity.Low,
+      some(fmt"No Markdown sources found, thus we can not lint anything")
+    )
+  # this.runWithMlc(state, markupFiles)
+  this.runWithLychee(state, markupFiles)
 
 method id*(this: MarkupLinkCheckGenerator): string =
   return ID
