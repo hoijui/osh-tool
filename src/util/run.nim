@@ -200,13 +200,14 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
       if lines.len() > 0:
         let jsonRoot = parseJson(lines.join("\n"))
         # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
-        for linkNode in jsonRoot.getFields()["links"]:
-          let link = LinkOcc(
-            srcFile: linkNode["src_file"].getStr(),
-            srcLine: linkNode["src_line"].getInt(),
-            srcColumn: linkNode["src_column"].getInt(),
-            target: linkNode["trg_link"].getStr())
-          links.add(link)
+        if jsonRoot.getFields().hasKey("links"):
+          for linkNode in jsonRoot.getFields()["links"]:
+            let link = LinkOcc(
+              srcFile: linkNode["src_file"].getStr(),
+              srcLine: linkNode["src_line"].getInt(),
+              srcColumn: linkNode["src_column"].getInt(),
+              target: linkNode["trg_link"].getStr())
+            links.add(link)
       debug fmt"'{MLE_CMD}' run - parsing output - done."
       return links
     else:
