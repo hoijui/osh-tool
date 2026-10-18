@@ -40,8 +40,9 @@ type
 
 proc toolVersion*(binName: string, args: varargs[string]): string =
   var version = "-0.0.0"
+  let logId = fmt"'{binName}' version check:"
   try:
-    debug fmt"Trying to find version for tool '{binName}' ..."
+    debug fmt"{logId} Trying to find version for tool '{binName}' ..."
     let parent_env = true # This is required for 'reuse', at least
     let env = if parent_env:
         nil # => Inherit from parent process
@@ -53,23 +54,36 @@ proc toolVersion*(binName: string, args: varargs[string]): string =
       args = args.toSeq(),
       env = env,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
-    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
-    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
     let (lines, exCode) = process.readLines()
+    debug fmt"{logId} Collect stderr ..."
+    let stderrCollected = process.errorStream.readAll()
+    process.errorStream.close()
+    debug fmt"{logId} Closing process ..."
     process.close()
-    debug fmt"'{binName}' version check done."
+    debug fmt"{logId} run done, now analyzing outcome ..."
     if exCode == 0:
-      let firstLine = lines[0]
-      let words = firstLine.split(' ')
-      version = if words.len() > 1:
-        words[1]
-      else:
-        words[0]
-      debug fmt"{binName} version: '{version}'"
+      var li = 0
+      while li < lines.len():
+        let words = lines[li].split(' ')
+        var wi = 0
+        while wi < words.len() and not words[wi].contains('.'):
+          wi += 1
+        if wi < words.len():
+          version = words[wi]
+          break
+        else:
+          # try next line
+          li += 1
+          continue
+      if version == "-0.0.0":
+        let argsStr = args.toSeq().join(" ")
+        warn fmt"{logId} Failed to extract version from output of '{binName} {argsStr}'"
+      debug fmt"{logId} {binName} version: '{version}'"
     else:
-      warn fmt"Failed to run '{binName}'; exit state was {exCode}"
+      let linesStr = lines.join("\n")
+      warn fmt"{logId} Failed to run; exit state was {exCode}, stdout was:\n{linesStr}\n##########\nstderr was:\n{stderrCollected}\n##########"
   except OSError as err:
-    warn fmt"Failed to run '{binName}'; make sure it is in your PATH: {err.msg}"
+    warn fmt"{logId} Failed to run; make sure '{binName}' it is in your PATH: {err.msg}"
   return version
 
 proc runProjvar*(projRoot: string) : TableRef[string, string] =
