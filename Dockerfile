@@ -18,11 +18,11 @@ FROM bitnami/minideb:trixie
 #     --build-arg okh_tool_release="2.4.4" \
 #     --build-arg okh_tool_bin="build/okh-tool" \
 #     .
-ARG okh_tool_release=2.4.4
+ARG okh_tool_release=2.4.5
 ARG okh_tool_bin=okh-tool
 ARG repvar_release=0.14.6
 ARG projvar_release=0.20.2
-ARG mle_release=0.29.0
+ARG mle_release=0.29.2
 ARG mlc_release=0.17.1
 ARG lychee_release=0.24.2
 ARG obadgen_release=0.2.4
