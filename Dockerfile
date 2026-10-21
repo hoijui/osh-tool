@@ -26,7 +26,7 @@ ARG mle_release=0.29.2
 ARG mlc_release=0.17.1
 ARG lychee_release=0.24.2
 ARG obadgen_release=0.2.4
-ARG osh_dir_std_release=0.9.0
+ARG osh_dir_std_release=0.9.1
 
 # Installs the FSF REUSE CLI tool
 # NOTE This is a bug-fix/hack to ensure installation of dependency 'tzdata'
