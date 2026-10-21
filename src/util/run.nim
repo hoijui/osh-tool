@@ -135,9 +135,9 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     raise newException(IOError, fmt("{logId} Failed to run; make sure it is in your PATH: {err.msg}"))
 
 proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[string]): string =
-  debug fmt"Running {OSH_DIR_STD_TOOL_CMD} ..."
+  let logId = fmt"'{OSH_DIR_STD_TOOL_CMD}' run:"
   try:
-    debug fmt"Now running '{OSH_DIR_STD_TOOL_CMD}' ..."
+    debug fmt"{logId} Starting ..."
     let process = osproc.startProcess(
       command = OSH_DIR_STD_TOOL_CMD,
       workingDir = projRoot,
@@ -145,28 +145,29 @@ proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[s
       env = nil,
       options = {poUsePath})
     let procStdin = process.inputStream()
-    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Writing to stdin ..."
+    debug fmt"{logId} Writing to stdin ..."
     for path in fileListing:
       procStdin.writeLine(path)
-    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
+    debug fmt"{logId} Close stdin (we supposedly should not do this manually, but apparently we have to!) ..."
     procStdin.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
-    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: And in some cases, this is required to not hang (closing stderr) ... :/"
-    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
-    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Ask for exit code and stdout ..."
+    debug fmt"{logId} Collecting stderr ..."
+    let stderrCollected = process.errorStream.readAll()
+    process.errorStream.close()
+    debug fmt"{logId} Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines()
-    debug fmt"Waiting for '{OSH_DIR_STD_TOOL_CMD}' run to end ..."
+    debug fmt"{logId} Closing process ..."
     process.close()
-    debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Run finished; analyze results ..."
+    debug fmt"{logId} Run finished; analyze results ..."
     if exCode == 0:
-      debug fmt"  {OSH_DIR_STD_TOOL_CMD}: Process output ..."
+      debug fmt"{logId} Process output ..."
       let jsonLines = lines.join("\n")
-      debug fmt"  {OSH_DIR_STD_TOOL_CMD}: jsonLines:"
+      debug fmt"{logId} jsonLines:"
       debug jsonLines
       return jsonLines
     else:
-      raise newException(IOError, fmt("""Failed to run '{OSH_DIR_STD_TOOL_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}"""))
+      raise newException(IOError, fmt("""{logId} Failed to run; exit state was {exCode}; stdout:\n{lines.join("\n")}\n##########\nstderr:\n{stderrCollected}\n##########"""))
   except OSError as err:
-    raise newException(IOError, fmt("Failed to run '{OSH_DIR_STD_TOOL_CMD}'; make sure it is in your PATH: {err.msg}"))
+    raise newException(IOError, fmt("{logId} Failed to run; make sure it is in your PATH: {err.msg}"))
 
 proc createProjectPrefixes*(projRoot: string, projVars: TableRef[string, string]): seq[string] =
   debug "Projvar fetched vars:"
