@@ -88,6 +88,7 @@ proc toolVersion*(binName: string, args: varargs[string]): string =
 
 proc runProjvar*(projRoot: string) : TableRef[string, string] =
   let debug = false
+  let logId = fmt"'{PROJVAR_CMD}' run:"
   try:
     var args = newSeq[string]()
     var options = {poUsePath};
@@ -95,31 +96,31 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
     args.add("--file-out=" & outFilePath)
     args.add("--none")
     args.add("--raw-panic")
-    options.incl(poUsePath)
+    # options.incl(poUsePath)
     if debug:
       args.add("--log-level=trace")
       args.add("--show-all-retrieved=/tmp/projvar_oshTool_showAllRetrieved.md")
-      options.incl(poParentStreams)
-      debug fmt"'{PROJVAR_CMD}' CWD: '{projRoot}'"
+      # options.incl(poParentStreams)
+      debug fmt"{logId} CWD: '{projRoot}'"
       let argsStr = args.join(" ")
-      debug fmt"'{PROJVAR_CMD}' args: {argsStr}"
-    debug fmt"Now running '{PROJVAR_CMD}' ..."
+      debug fmt"{logId} args: {argsStr}"
+    debug fmt"{logId} Now running ..."
     let process = osproc.startProcess(
       command = PROJVAR_CMD,
       workingDir = projRoot,
       args = args,
       env = nil, # nil => inherit from parent process
       options = options)
-    debug fmt"Waiting for '{PROJVAR_CMD}' run to end ..."
-    if not debug:
-      # NOTE **Essential** - These prevent hanging/freezing when reading stdout below
-      process.inputStream.close()
-      process.errorStream.close()
+    debug fmt"{logId} Waiting for run to end ..."
     let exCode = osproc.waitForExit(process)
+    debug fmt"{logId} Collect stderr ..."
+    let stderrCollected = process.errorStream.readAll()
+    process.errorStream.close()
+    debug fmt"{logId} Closing process ..."
     process.close()
-    debug fmt"'{PROJVAR_CMD}' run done."
+    debug fmt"{logId} done; Now analyzing outputs ..."
     if exCode == 0:
-      debug fmt"'{PROJVAR_CMD}' ran successfully."
+      debug fmt"{logId} successful"
       if debug:
         os.copyFileWithPermissions(outFilePath, "/tmp/projvar_out_oshTool_fixed_debugging.json")
       let jsonRoot = parseJson(newFileStream(outFilePath), outFilePath)
@@ -129,9 +130,9 @@ proc runProjvar*(projRoot: string) : TableRef[string, string] =
         vars[key] = val.getStr()
       return vars
     else:
-      raise newException(IOError, fmt("""Failed to run '{PROJVAR_CMD}'; exit state was {exCode}"""))
+      raise newException(IOError, fmt("{logId} Failed to run; exit state was {exCode}, stderr was:\n{stderrCollected}"))
   except OSError as err:
-    raise newException(IOError, fmt("Failed to run '{PROJVAR_CMD}'; make sure it is in your PATH: {err.msg}"))
+    raise newException(IOError, fmt("{logId} Failed to run; make sure it is in your PATH: {err.msg}"))
 
 proc runOshDirStd*(projRoot: string, args: openArray[string], fileListing: seq[string]): string =
   debug fmt"Running {OSH_DIR_STD_TOOL_CMD} ..."
