@@ -187,6 +187,7 @@ proc createProjectPrefixes*(projRoot: string, projVars: TableRef[string, string]
   return projPrefixes
 
 proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCont =
+  let logId = fmt"'{MLE_CMD}' run:"
   try:
     var args = newSeq[string]()
     # let outFilePath = genTempPath(fmt"osh-tool_{MLE_CMD}_", ".json")
@@ -194,28 +195,35 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
     args.add("--result-format=json")
     for mdFile in mdFiles:
       args.add(mdFile)
-    debug fmt"""Now running '{MLE_CMD}' {args.join(" ")} ..."""
+    debug fmt"""{logId} args: {args.join(" ")} ..."""
+    debug fmt"{logId} Starting ..."
     let process = osproc.startProcess(
       command = MLE_CMD,
       workingDir = projRoot,
       args = args,
       env = nil,
       options = {poUsePath}) # NOTE Add for debugging: poParentStreams
-    process.inputStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
-    process.errorStream.close() # NOTE **Essential** - This prevents hanging/freezing when reading stdout below
+    debug fmt"{logId} Collecting stderr ..."
+    let stderrCollected = process.errorStream.readAll()
+    process.errorStream.close()
+    debug fmt"{logId} Ask for exit code and stdout ..."
     let (lines, exCode) = process.readLines()
+    debug fmt"{logId} Closing process ..."
     process.close()
-    debug fmt"'{MLE_CMD}' run done."
+    debug fmt"{logId} done; now analyzing outcomes ..."
     if exCode == 0:
-      debug fmt"'{MLE_CMD}' run - parsing output (JSON) ..."
-      debug fmt"'{MLE_CMD}' run - output:"
-      debug "\n\n\n\n\n"
+      debug fmt"{logId} parsing output (JSON) ..."
+      debug fmt"{logId} stdout:"
+      debug "##########"
       debug fmt"""{lines.join("\n")}"""
-      debug "\n\n\n\n\n"
+      debug "##########"
+      debug fmt"{logId} stdout:"
+      debug "##########"
+      debug fmt"""{stderrCollected}"""
+      debug "##########"
       var links = newSeq[LinkOcc]()
       if lines.len() > 0:
         let jsonRoot = parseJson(lines.join("\n"))
-        # let jsonRoot = parseJson(newFileStream(outFilePath), $outFile)
         if jsonRoot.getFields().hasKey("links"):
           for linkNode in jsonRoot.getFields()["links"]:
             let link = LinkOcc(
@@ -224,9 +232,9 @@ proc extractMarkdownLinks*(projRoot: string, mdFiles: seq[string]) : LinkOccsCon
               srcColumn: linkNode["src_column"].getInt(),
               target: linkNode["trg_link"].getStr())
             links.add(link)
-      debug fmt"'{MLE_CMD}' run - parsing output - done."
+      debug fmt"{logId} parsing output - done."
       return links
     else:
-      raise newException(IOError, fmt("""Failed to run '{MLE_CMD}'; exit state was {exCode}; output:\n{lines.join("\n")}"""))
+      raise newException(IOError, fmt("""{logId} Failed to run; exit state was {exCode}; stdout:\n{lines.join("\n")}\n##########\nstderr:\n{stderrCollected}\n##########"""))
   except OSError as err:
-    raise newException(IOError, fmt("Failed to run '{MLE_CMD}'; make sure it is in your PATH: {err.msg}"))
+    raise newException(IOError, fmt("{logId} Failed to run; make sure it is in your PATH: {err.msg}"))
